@@ -18,4 +18,11 @@
 import Foundation
 
 /// The speed of light.
-let c = Measurement(value: 299_792_458, unit: UnitSpeed.metersPerSecond)
+///
+/// - SeeAlso: ``c²``
+public let c = Measurement(value: 299_792_458, unit: UnitSpeed.metersPerSecond)
+
+/// The speed of light, squared.
+///
+/// - SeeAlso: ``c``
+public let c² = Measurement(value: pow(c.value, 2), unit: c.unit)

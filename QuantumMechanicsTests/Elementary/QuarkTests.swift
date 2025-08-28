@@ -25,7 +25,7 @@ struct UpQuarkTests {
   func baseMassIsTwoPointThreeMev(_ quark: UpQuark<AnySingleColor>) {
     #expect(
       quark.getMass(approximatedBy: .base)
-        == Measurement(value: 2.3, unit: UnitMass.megaelectronvolt)
+        == Measurement(value: 2.3, unit: UnitMass.megaelectronvoltsPerC²)
     )
   }
 
@@ -38,7 +38,7 @@ struct DownQuarkTests {
   func baseMassIsFourPointEightMev(_ quark: DownQuark<AnySingleColor>) {
     #expect(
       quark.getMass(approximatedBy: .base)
-        == Measurement(value: 4.8, unit: UnitMass.megaelectronvolt)
+        == Measurement(value: 4.8, unit: UnitMass.megaelectronvoltsPerC²)
     )
   }
 
@@ -51,7 +51,7 @@ struct StrangeQuarkTests {
   func baseMassIsNinetyFivePointZeroMev(_ quark: StrangeQuark<AnySingleColor>) {
     #expect(
       quark.getMass(approximatedBy: .base)
-        == Measurement(value: 95.0, unit: UnitMass.megaelectronvolt)
+        == Measurement(value: 95.0, unit: UnitMass.megaelectronvoltsPerC²)
     )
   }
 
@@ -64,7 +64,7 @@ struct CharmQuarkTests {
   func baseMassIsOnePointTwoSevenFiveGev(_ quark: CharmQuark<AnySingleColor>) {
     #expect(
       quark.getMass(approximatedBy: .base)
-        == Measurement(value: 1.275, unit: UnitMass.gigaelectronvolt)
+        == Measurement(value: 1.275, unit: UnitMass.gigaelectronvoltsPerC²)
     )
   }
 
@@ -77,7 +77,7 @@ struct BottomQuarkTests {
   func baseMassIsFourPointOneEightGev(_ quark: BottomQuark<AnySingleColor>) {
     #expect(
       quark.getMass(approximatedBy: .base)
-        == Measurement(value: 4.18, unit: UnitMass.gigaelectronvolt)
+        == Measurement(value: 4.18, unit: UnitMass.gigaelectronvoltsPerC²)
     )
   }
 
@@ -90,7 +90,7 @@ struct TopQuarkTests {
   func baseMassIsOneHundredAndSeventyThreePointTwoOneGev(_ quark: TopQuark<AnySingleColor>) {
     #expect(
       quark.getMass(approximatedBy: .base)
-        == Measurement(value: 173.21, unit: UnitMass.gigaelectronvolt)
+        == Measurement(value: 173.21, unit: UnitMass.gigaelectronvoltsPerC²)
     )
   }
 

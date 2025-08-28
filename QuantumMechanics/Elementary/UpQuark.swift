@@ -18,13 +18,19 @@
 import Foundation
 
 /// Base value for calculating an approximation of the mass of a ``UpQuark``.
-private let upBaseMass = Measurement(value: 2.3, unit: UnitMass.megaelectronvolt)
+private let upBaseMass = Measurement(value: 2.3, unit: UnitMass.megaelectronvoltsPerC²)
 
 /// Statistical uncertainty for calculating an approximation of the mass of a ``UpQuark``.
-private let upMassStatisticalUncertainty = Measurement(value: 0.7, unit: UnitMass.megaelectronvolt)
+private let upMassStatisticalUncertainty = Measurement(
+  value: 0.7,
+  unit: UnitMass.megaelectronvoltsPerC²
+)
 
 /// Systematic uncertainty for calculating an approxiumation to the mass of a ``UpQuark``.
-private let upMassSystematicUncertainty = Measurement(value: 0.5, unit: UnitMass.megaelectronvolt)
+private let upMassSystematicUncertainty = Measurement(
+  value: 0.5,
+  unit: UnitMass.megaelectronvoltsPerC²
+)
 
 /// Lightest ``Quark``, with a Lagrangian mass of 2.3 ± 0.7 ± 0.5 MeV/*c*². As per the Standard
 /// Model, cannot decay.

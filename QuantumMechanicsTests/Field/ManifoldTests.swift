@@ -15,24 +15,13 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Foundation
+import Testing
 
-extension UnitMass {
-  /// Amount in gigaelectronvolts (GeV/*c*²).
-  static let gigaelectronvolt = UnitMass(
-    symbol: "GeV",
-    converter: UnitConverterLinear(coefficient: 5.6095886 * pow(10, 26) / pow(c.value, 2))
-  )
+@testable import QuantumMechanics
 
-  /// Amount in megaelectronvolts (MeV/*c*²).
-  static let megaelectronvolt = UnitMass(
-    symbol: "MeV",
-    converter: UnitConverterLinear(coefficient: 5.6095886 * pow(10, 29) / pow(c.value, 2))
-  )
-
-  /// Amount in electronvolts (eV/*c*²).
-  static let electronvolt = UnitMass(
-    symbol: "eV",
-    converter: UnitConverterLinear(coefficient: 5.6095886 * pow(10, 35) / pow(c.value, 2))
-  )
+struct ManifoldTests {
+  @Test
+  func calculatesLagrangian() {
+    #expect(_RealLine(mass: 2).L(q: 4, q̇: 8, t: 16) == 8.881784197001252e-16)
+  }
 }

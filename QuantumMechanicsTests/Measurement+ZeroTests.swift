@@ -29,5 +29,8 @@ struct MeasurementZeroTests {
   }
 
   @Test
+  func valueOfZeroUnitEnergyIsZero() { #expect(Measurement<UnitEnergy>.zero.value == 0) }
+
+  @Test
   func valueOfZeroUnitMassIsZero() { #expect(Measurement<UnitMass>.zero.value == 0) }
 }

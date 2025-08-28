@@ -18,10 +18,13 @@
 import Foundation
 
 /// Base value for calculating an approximation of the mass of a ``StrangeQuark``.
-private let baseMass = Measurement(value: 95, unit: UnitMass.megaelectronvolt)
+private let baseMass = Measurement(value: 95, unit: UnitMass.megaelectronvoltsPerC²)
 
 /// Statistical uncertainty for calculating an approximation of the mass of a ``StrangeQuark``.
-private let massStatisticalUncertainty = Measurement(value: 5, unit: UnitMass.gigaelectronvolt)
+private let massStatisticalUncertainty = Measurement(
+  value: 5,
+  unit: UnitMass.gigaelectronvoltsPerC²
+)
 
 /// Third lightest ``Quark``, with a Lagrangian mass of 95 ± 5 MeV/*c*². Decays to a ``DownQuark``.
 public struct StrangeQuark<ColorLike: SingleColor>: Quark {

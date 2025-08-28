@@ -17,12 +17,17 @@
 
 import Foundation
 
-extension UnitElectricCharge {
-  /// Amount in elementary charge (*e*). *e* is a fundamental constant as per the SI, equating
-  /// 1.602176634 × 10⁻¹⁹ C and representing the least amount of electric charge which can exist
-  /// unconfined in the universe.
-  static let elementary = UnitElectricCharge(
-    symbol: "e",
-    converter: UnitConverterLinear(coefficient: 1.602_176_634 * pow(10, -19))
-  )
+extension Measurement where UnitType: Dimension {
+  /// Converts this `Measurement` into the specified `unit`.
+  ///
+  /// This function differs from that provided by ``Foundation`` in that another `Measurement` is
+  /// not instantiated in case the unit of this one and that to which it should be converted are
+  /// equal.
+  ///
+  /// - Parameter otherUnit: A unit of the same `Dimension`.
+  /// - Returns: The converted `Measurement`.
+  public func _converted(to otherUnit: UnitType) -> Self {
+    guard unit != otherUnit else { return self }
+    return converted(to: otherUnit)
+  }
 }

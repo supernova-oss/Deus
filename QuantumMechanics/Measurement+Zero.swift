@@ -27,6 +27,11 @@ extension Measurement where UnitType == UnitElectricCharge {
   public static let zero = Measurement(value: 0, unit: UnitType.baseUnit())
 }
 
+extension Measurement where UnitType == UnitEnergy {
+  /// An energy of 0 J.
+  public static let zero = Measurement(value: 0, unit: UnitType.baseUnit())
+}
+
 extension Measurement where UnitType == UnitMass {
   /// A mass of 0 kg.
   public static let zero = Measurement(value: 0, unit: UnitType.baseUnit())

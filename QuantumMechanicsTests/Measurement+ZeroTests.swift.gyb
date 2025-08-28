@@ -1,7 +1,7 @@
 %{
   import os
 
-  unit_classes = ['UnitAngle', 'UnitElectricCharge', 'UnitMass']
+  unit_classes = ['UnitAngle', 'UnitElectricCharge', 'UnitEnergy', 'UnitMass']
 }%
 ${os.environ.get('LICENSE_HEADER_SWIFT')}
 

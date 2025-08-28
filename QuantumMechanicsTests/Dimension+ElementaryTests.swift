@@ -20,26 +20,21 @@ import Testing
 
 @testable import QuantumMechanics
 
-struct PositivePionTests {
-  private let upQuark = UpQuark(colorLike: red)
-  private let downAntiquark = Anti(DownQuark(colorLike: red))
-  private lazy var positivePion = upQuark + downAntiquark
-
-  @Test("u + d̄ → π⁺")
-  mutating func resultsFromCombiningAnUpQuarkAndADownAntiquark() {
-    #expect(positivePion.quarks.elementsEqual([.init(upQuark), .init(downAntiquark)]))
-  }
-
+@Suite("Dimension+Elementary tests")
+struct DimensionElementaryTests {
   @Test
-  mutating func chargeIsOneE() {
-    #expect(positivePion.charge == Measurement(value: 1, unit: .elementary))
-  }
-
-  @Test
-  mutating func massIsOneHundredAndThirtyNinePointFiftySevenThousandAndThirtyNineGeV() {
+  func eIsOnePointSixZeroTwoOneSevenSixSixThreeFourJ() {
     #expect(
-      positivePion.getMass(approximatedBy: .base)
-        == Measurement(value: 139.57039, unit: .gigaelectronvoltsPerC²)
+      Measurement(value: 1, unit: UnitEnergy.electronvolts)._converted(to: .joules).value
+        .isApproximatelyEqual(to: 1.602176634e-19)
+    )
+  }
+
+  @Test
+  func eVHasSameNumericValueAsE() {
+    #expect(
+      Measurement(value: 1, unit: UnitEnergy.electronvolts).value
+        == Measurement(value: 1, unit: UnitElectricCharge.elementary).value
     )
   }
 }

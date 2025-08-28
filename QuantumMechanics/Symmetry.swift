@@ -30,6 +30,6 @@ extension Complex<Double> {
   ///
   /// - Parameter theta: Angle of the rotation.
   func u1(by theta: Measurement<UnitAngle>) -> Self {
-    self * .exp(.i * theta.converted(to: .radians).value)
+    self * .exp(.i * theta._converted(to: .radians).value)
   }
 }
