@@ -31,17 +31,23 @@
       'implementation_type': 'ElectricCharge'
     },
     {
+      'base_unit_symbol': 'J',
+      'conversion': {'joules': 1, 'electronvolts': 0},
+      'implementation_type': 'Energy'
+    },
+    {
       'base_unit_symbol': 'kg',
       'conversion': {
-        'electronvoltsPerLightSpeedSquared': 1,
-        'megaelectronvoltsPerLightSpeedSquared': 1e-12,
-        'gigaelectronvoltsPerLightSpeedSquared': 1e-6
+        'electronvoltsPerLightSpeedSquared': 1.78266192e-36,
+        'gigaelectronvoltsPerLightSpeedSquared': 1.78266192e-27,
+        'kilograms': 1,
+        'megaelectronvoltsPerLightSpeedSquared': 1.78266192e-30
       },
       'implementation_type': 'Mass'
     },
     {
       'base_unit_symbol': 'm/s',
-      'conversion': {'metersPerSecond': 1},
+      'conversion': {'metersPerSecond': 1, 'light': 299792458},
       'implementation_type': 'Speed'
     }
   ]
@@ -99,15 +105,24 @@ import Testing
   % variable_name = decapitalized(implementation_type)
   % unit_names = measurement['conversion'].keys()
   % unit_representable_type = 'UnitRepresentable<' + implementation_type + '>'
-  % unit_representables = map(lambda (index, unit_name): ('UnitRepresentable(unit: \\' + implementation_type + '.Type.' if index == 0 else '.init(unit: \.') + unit_name + ')', enumerate(unit_names))
+  % unit_representables_expression = map(lambda (index, unit_name): ('UnitRepresentable(unit: \\' + implementation_type + '.Type.' if index == 0 else '.init(unit: \.') + unit_name + ')', enumerate(unit_names))
   % full_unit_accesses = list(map(lambda unit_name: implementation_type + '.' + unit_name, unit_names))
   % contextual_unit_accesses = [full_unit_accesses[0]] + map(lambda unit_name: '.' + unit_name, unit_names[1:])
-  % unit_representables_expression = '[' + ', '.join(unit_representables) + ']'
+  % unit_representables_expression = '[' + ', '.join(unit_representables_expression) + ']'
   % measurement_combinations_expression = '[' + ', '.join(map(lambda (key_index, key): ', '.join(map(lambda (value_index, value): '(' + partialize(value_index, key) + '(2), ' + partialize(key_index, value) + '(2))', enumerate(contextual_unit_accesses))), enumerate(contextual_unit_accesses))) + ']'
   % measurements_expression = '[' + ', '.join(map(lambda unit_name: unit_name + '(2)', contextual_unit_accesses)) + ']'
 fileprivate struct ${implementation_type}Tests {
+  @Test(arguments: ${unit_representables_expression})
+  func makes(in unitRepresentable: ${unit_representable_type}) {
+    let measurable = ${implementation_type}.self[keyPath: unitRepresentable.unit]
+    let ${variable_name} = ${implementation_type}._make(quantityInCurrentUnit: 2, conversionCoefficient: measurable.conversionCoefficient, symbol: measurable.symbol)
+    #expect(${variable_name}.quantityInCurrentUnit == 2)
+    #expect(${variable_name}.conversionCoefficient == measurable.conversionCoefficient)
+    #expect(${variable_name}.symbol == measurable.symbol)
+  }
+
   @Test
-  func callingTheInitializerProduces${implementation_type}WhoseQuantityIsInTheBaseUnit() {
+  func initializesFromBaseUnit() {
     let ${variable_name} = ${implementation_type}(quantityInBaseUnit: 2)
     #expect(${variable_name}.quantityInBaseUnit == 2)
     #expect(${variable_name}.symbol == ${implementation_type}.baseUnitSymbol)
@@ -137,7 +152,8 @@ fileprivate struct ${implementation_type}Tests {
   @Test(arguments: zip(${measurements_expression}, ${unit_representables_expression}))
   func converts(_ measurement: ${implementation_type}, into unitRepresentable: ${unit_representable_type}) {
     let converted = measurement.converted(into: unitRepresentable.unit)
-    #expect(converted.quantityInBaseUnit == converted.quantityInCurrentUnit / measurement.conversionCoefficient)
+    #expect(converted.quantityInBaseUnit == measurement.quantityInCurrentUnit * converted.conversionCoefficient)
+    #expect(converted.symbol == ${implementation_type}.self[keyPath: unitRepresentable.unit].symbol)
   }
 
   @Test(arguments: ${unit_representables_expression})
@@ -159,7 +175,7 @@ private struct UnitRepresentable<MeasurementType>: @unchecked Sendable where Mea
 extension UnitRepresentable: CustomDebugStringConvertible {
   var debugDescription: String {
     switch unit {
-% for implementation_type, unit_name in {(measurement['implementation_type'], unit_name) for measurement in measurements for unit_name in measurement['conversion'].keys()}:
+% for implementation_type, unit_name in sorted({(measurement['implementation_type'], unit_name) for measurement in measurements for unit_name in measurement['conversion'].keys()}):
       case _ where unit == \${implementation_type}.Type.${unit_name}: "${unit_name}"
 % end
       default: "Unknown instance of UnitRepresentable<\(MeasurementType.self)>"

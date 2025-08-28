@@ -23,23 +23,27 @@ public struct Angle: Measurement {
   public let conversionCoefficient: Double
   public let symbol: String
 
-  public static let baseUnitSymbol = "rad"
-
   /// Ratio of the length of an arc to its radius. 1 rad = (π / 180)º.
   static let radians = Measurable<Self>(conversionCoefficient: 1, symbol: Self.baseUnitSymbol)
 
-  public init(quantityInBaseUnit: Double) {
-    self = .init(
-      quantityInCurrentUnit: quantityInBaseUnit,
-      conversionCoefficient: 1,
-      symbol: Self.baseUnitSymbol
-    )
-  }
+  public static let baseUnitSymbol = "rad"
 
   private init(quantityInCurrentUnit: Double, conversionCoefficient: Double, symbol: String) {
     self.quantityInCurrentUnit = quantityInCurrentUnit
     self.conversionCoefficient = conversionCoefficient
     self.symbol = symbol
+  }
+
+  public static func _make(
+    quantityInCurrentUnit: Double,
+    conversionCoefficient: Double,
+    symbol: String
+  ) -> Angle {
+    .init(
+      quantityInCurrentUnit: quantityInCurrentUnit,
+      conversionCoefficient: conversionCoefficient,
+      symbol: symbol
+    )
   }
 }
 
@@ -51,8 +55,6 @@ public struct ElectricCharge: Measurement {
   public let conversionCoefficient: Double
   public let symbol: String
 
-  public static let baseUnitSymbol = "e"
-
   /// Quantity of charge in elementary charge (*e*). *e* is a fundamental constant as per the SI,
   /// equivalent to 1.602176634𝑒⁻¹⁹ coulombs and equating to the least amount of electric charge
   /// which can exist unconfined in the Universe.
@@ -61,18 +63,67 @@ public struct ElectricCharge: Measurement {
     symbol: Self.baseUnitSymbol
   )
 
-  public init(quantityInBaseUnit: Double) {
-    self = .init(
-      quantityInCurrentUnit: quantityInBaseUnit,
-      conversionCoefficient: 1,
-      symbol: Self.baseUnitSymbol
-    )
-  }
+  public static let baseUnitSymbol = "e"
 
   private init(quantityInCurrentUnit: Double, conversionCoefficient: Double, symbol: String) {
     self.quantityInCurrentUnit = quantityInCurrentUnit
     self.conversionCoefficient = conversionCoefficient
     self.symbol = symbol
+  }
+
+  public static func _make(
+    quantityInCurrentUnit: Double,
+    conversionCoefficient: Double,
+    symbol: String
+  ) -> ElectricCharge {
+    .init(
+      quantityInCurrentUnit: quantityInCurrentUnit,
+      conversionCoefficient: conversionCoefficient,
+      symbol: symbol
+    )
+  }
+}
+
+/// Conserved property transferred into a body or system, by which an amount of work performed is
+/// quantified. Results in an increase or decrease of heat; light; or both in the physical system
+/// upon performance of such work.
+public struct Energy: Measurement {
+  public let quantityInCurrentUnit: Double
+  public let conversionCoefficient: Double
+  public let symbol: String
+
+  /// Amount of work produced by a force of 1 newton onto an object until it is moved by 1 meter in
+  /// the direction of such force.
+  public static let joules = Measurable<Self>(conversionCoefficient: 1, symbol: Self.baseUnitSymbol)
+
+  /// Amount of work for accelerating an electron through an electric potential difference of 1 volt
+  /// in vacuum. Its value in ``joules`` is the same as that of the constant *e* (standing for the
+  /// elementary charge): equals to 1.602176634𝑒⁻¹⁹ ``joules``.
+  ///
+  /// - SeeAlso: ``ElectricCharge/elementary``
+  public static let electronvolts = Measurable<Self>(
+    conversionCoefficient: 1.602_176_634e-19,
+    symbol: "eV"
+  )
+
+  public static let baseUnitSymbol = "J"
+
+  private init(quantityInCurrentUnit: Double, conversionCoefficient: Double, symbol: String) {
+    self.quantityInCurrentUnit = quantityInCurrentUnit
+    self.conversionCoefficient = conversionCoefficient
+    self.symbol = symbol
+  }
+
+  public static func _make(
+    quantityInCurrentUnit: Double,
+    conversionCoefficient: Double,
+    symbol: String
+  ) -> Energy {
+    .init(
+      quantityInCurrentUnit: quantityInCurrentUnit,
+      conversionCoefficient: conversionCoefficient,
+      symbol: symbol
+    )
   }
 }
 
@@ -82,13 +133,13 @@ public struct Mass: Measurement {
   public let conversionCoefficient: Double
   public let symbol: String
 
-  public static let baseUnitSymbol = "eV/c²"
+  public static let kilograms = Measurable<Self>(conversionCoefficient: 1, symbol: "kg")
 
   /// One-millionth of an eV/c².
   ///
   /// - SeeAlso: ``electronvoltsPerLightSpeedSquared``
   public static let gigaelectronvoltsPerLightSpeedSquared = Measurable<Self>(
-    conversionCoefficient: 1e6,
+    conversionCoefficient: 1.78_266_192e-27,
     symbol: "GeV/c²"
   )
 
@@ -96,32 +147,34 @@ public struct Mass: Measurement {
   ///
   /// - SeeAlso: ``electronvoltsPerLightSpeedSquared``
   public static let megaelectronvoltsPerLightSpeedSquared = Measurable<Self>(
-    conversionCoefficient: 1e12,
+    conversionCoefficient: 1.78_266_192e-30,
     symbol: "MeV/c²"
   )
 
-  /// Amount of work for accelerating an electron through an electric potential difference of 1 volt
-  /// in vacuum per the square of the speed of light. Its value in joules is the same as that of the
-  /// constant *e* (standing for the elementary charge): equals to 1.602176634𝑒⁻¹⁹ joules.
-  ///
-  /// - SeeAlso: ``ElectricCharge/elementary``
+  /// Amount of ``Energy/electronvolts`` per the square of the speed of light.
   public static let electronvoltsPerLightSpeedSquared = Measurable<Self>(
-    conversionCoefficient: 1,
-    symbol: Self.baseUnitSymbol
+    conversionCoefficient: 1.78_266_192e-36,
+    symbol: "eV/c²"
   )
 
-  public init(quantityInBaseUnit: Double) {
-    self = .init(
-      quantityInCurrentUnit: quantityInBaseUnit,
-      conversionCoefficient: 1,
-      symbol: Self.baseUnitSymbol
-    )
-  }
+  public static let baseUnitSymbol = "eV/c²"
 
   private init(quantityInCurrentUnit: Double, conversionCoefficient: Double, symbol: String) {
     self.quantityInCurrentUnit = quantityInCurrentUnit
     self.conversionCoefficient = conversionCoefficient
     self.symbol = symbol
+  }
+
+  public static func _make(
+    quantityInCurrentUnit: Double,
+    conversionCoefficient: Double,
+    symbol: String
+  ) -> Mass {
+    .init(
+      quantityInCurrentUnit: quantityInCurrentUnit,
+      conversionCoefficient: conversionCoefficient,
+      symbol: symbol
+    )
   }
 }
 
@@ -131,7 +184,8 @@ public struct Speed: Measurement {
   public let conversionCoefficient: Double
   public let symbol: String
 
-  public static let baseUnitSymbol = "m/s"
+  /// ``Speed`` expressed by the constant *c*, which is that of the of light in vacuum.
+  public static let light = Measurable<Self>(conversionCoefficient: 299_792_458, symbol: "c")
 
   /// Amount of meters traversed by matter or light at each second.
   public static let metersPerSecond = Measurable<Self>(
@@ -139,18 +193,24 @@ public struct Speed: Measurement {
     symbol: Self.baseUnitSymbol
   )
 
-  public init(quantityInBaseUnit: Double) {
-    self = .init(
-      quantityInCurrentUnit: quantityInBaseUnit,
-      conversionCoefficient: 1,
-      symbol: Self.baseUnitSymbol
-    )
-  }
+  public static let baseUnitSymbol = "m/s"
 
   private init(quantityInCurrentUnit: Double, conversionCoefficient: Double, symbol: String) {
     self.quantityInCurrentUnit = quantityInCurrentUnit
     self.conversionCoefficient = conversionCoefficient
     self.symbol = symbol
+  }
+
+  public static func _make(
+    quantityInCurrentUnit: Double,
+    conversionCoefficient: Double,
+    symbol: String
+  ) -> Speed {
+    .init(
+      quantityInCurrentUnit: quantityInCurrentUnit,
+      conversionCoefficient: conversionCoefficient,
+      symbol: symbol
+    )
   }
 }
 
@@ -180,6 +240,32 @@ public protocol Measurement: AdditiveArithmetic, Comparable, CustomStringConvert
   /// ``UnitConvertible/symbol`` of the base unit of this ``Measurement``.
   static var baseUnitSymbol: String { get }
 
+  /// Produces a ``Measurement`` of this type from a quantity in the current unit.
+  ///
+  /// - Parameters:
+  ///   - quantityInCurrentUnit: Quantity in the current unit.
+  ///   - conversionCoefficient: Factor by which the value in the base unit is multiplied, resulting
+  ///     in the value in the current unit.
+  ///
+  ///     Formally, given this value as *x*,
+  ///
+  ///     - ``quantityInCurrentUnit`` = ``quantityInBaseUnit`` / *x*; and
+  ///     - ``quantityInBaseUnit`` = ``quantityInCurrentUnit`` × *x*.
+  ///   - symbol: Abbreviated textual representation of the unit as per the SI.
+  static func _make(
+    quantityInCurrentUnit: Double,
+    conversionCoefficient: Double,
+    symbol: String
+  ) -> Self
+}
+
+extension Measurement {
+  /// Reference to the factory of this type of ``Measurement`` in a given unit.
+  public typealias Unit = KeyPath<Self.Type, Measurable<Self>>
+
+  /// Quantity in the base unit.
+  public var quantityInBaseUnit: Double { quantityInCurrentUnit * conversionCoefficient }
+
   /// Initializes this type of ``Measurement`` from a quantity in its base unit.
   ///
   /// ## Contract
@@ -193,15 +279,13 @@ public protocol Measurement: AdditiveArithmetic, Comparable, CustomStringConvert
   /// 3. `symbol` = ``baseUnitSymbol``.
   ///
   /// - Parameter quantityInBaseUnit: Quantity in the base unit.
-  init(quantityInBaseUnit: Double)
-}
-
-extension Measurement {
-  /// Reference to the factory of this type of ``Measurement`` in a given unit.
-  public typealias Unit = KeyPath<Self.Type, Measurable<Self>>
-
-  /// Quantity in the base unit.
-  public var quantityInBaseUnit: Double { quantityInCurrentUnit * conversionCoefficient }
+  public init(quantityInBaseUnit: Double) {
+    self = ._make(
+      quantityInCurrentUnit: quantityInBaseUnit,
+      conversionCoefficient: 1,
+      symbol: Self.baseUnitSymbol
+    )
+  }
 
   /// Produces another ``Measurement``, with the sign of its quantities negated.
   ///
@@ -214,7 +298,13 @@ extension Measurement {
   ///
   /// - Parameter unit: Unit into which this ``Measurement`` will be converted.
   public func converted(into unit: Unit) -> Self {
-    .init(quantityInBaseUnit: quantityInBaseUnit * Self.self[keyPath: unit].conversionCoefficient)
+    let measurable = Self.self[keyPath: unit]
+    let conversionCoefficient = measurable.conversionCoefficient
+    return ._make(
+      quantityInCurrentUnit: quantityInBaseUnit / conversionCoefficient,
+      conversionCoefficient: conversionCoefficient,
+      symbol: measurable.symbol
+    )
   }
 
   /// Formats one of the quantities of this type of ``Measurement``.
@@ -280,7 +370,11 @@ public struct Measurable<MeasurementType: Measurement>: UnitConvertible {
   ///
   /// - Parameter quantityInCurrentUnit: Quantity in the current unit.
   public func callAsFunction(_ quantityInCurrentUnit: Double) -> MeasurementType {
-    .init(quantityInBaseUnit: quantityInCurrentUnit * conversionCoefficient)
+    ._make(
+      quantityInCurrentUnit: quantityInCurrentUnit,
+      conversionCoefficient: conversionCoefficient,
+      symbol: symbol
+    )
   }
 }
 

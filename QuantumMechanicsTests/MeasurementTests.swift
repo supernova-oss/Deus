@@ -20,8 +20,21 @@ import Testing
 @testable import QuantumMechanics
 
 fileprivate struct AngleTests {
+  @Test(arguments: [UnitRepresentable(unit: \Angle.Type.radians)])
+  func makes(in unitRepresentable: UnitRepresentable<Angle>) {
+    let measurable = Angle.self[keyPath: unitRepresentable.unit]
+    let angle = Angle._make(
+      quantityInCurrentUnit: 2,
+      conversionCoefficient: measurable.conversionCoefficient,
+      symbol: measurable.symbol
+    )
+    #expect(angle.quantityInCurrentUnit == 2)
+    #expect(angle.conversionCoefficient == measurable.conversionCoefficient)
+    #expect(angle.symbol == measurable.symbol)
+  }
+
   @Test
-  func callingTheInitializerProducesAngleWhoseQuantityIsInTheBaseUnit() {
+  func initializesFromBaseUnit() {
     let angle = Angle(quantityInBaseUnit: 2)
     #expect(angle.quantityInBaseUnit == 2)
     #expect(angle.symbol == Angle.baseUnitSymbol)
@@ -63,9 +76,10 @@ fileprivate struct AngleTests {
   func converts(_ measurement: Angle, into unitRepresentable: UnitRepresentable<Angle>) {
     let converted = measurement.converted(into: unitRepresentable.unit)
     #expect(
-      converted.quantityInBaseUnit == converted.quantityInCurrentUnit
-        / measurement.conversionCoefficient
+      converted.quantityInBaseUnit == measurement.quantityInCurrentUnit
+        * converted.conversionCoefficient
     )
+    #expect(converted.symbol == Angle.self[keyPath: unitRepresentable.unit].symbol)
   }
 
   @Test(arguments: [UnitRepresentable(unit: \Angle.Type.radians)])
@@ -78,8 +92,21 @@ fileprivate struct AngleTests {
 }
 
 fileprivate struct ElectricChargeTests {
+  @Test(arguments: [UnitRepresentable(unit: \ElectricCharge.Type.elementary)])
+  func makes(in unitRepresentable: UnitRepresentable<ElectricCharge>) {
+    let measurable = ElectricCharge.self[keyPath: unitRepresentable.unit]
+    let electricCharge = ElectricCharge._make(
+      quantityInCurrentUnit: 2,
+      conversionCoefficient: measurable.conversionCoefficient,
+      symbol: measurable.symbol
+    )
+    #expect(electricCharge.quantityInCurrentUnit == 2)
+    #expect(electricCharge.conversionCoefficient == measurable.conversionCoefficient)
+    #expect(electricCharge.symbol == measurable.symbol)
+  }
+
   @Test
-  func callingTheInitializerProducesElectricChargeWhoseQuantityIsInTheBaseUnit() {
+  func initializesFromBaseUnit() {
     let electricCharge = ElectricCharge(quantityInBaseUnit: 2)
     #expect(electricCharge.quantityInBaseUnit == 2)
     #expect(electricCharge.symbol == ElectricCharge.baseUnitSymbol)
@@ -129,9 +156,10 @@ fileprivate struct ElectricChargeTests {
   ) {
     let converted = measurement.converted(into: unitRepresentable.unit)
     #expect(
-      converted.quantityInBaseUnit == converted.quantityInCurrentUnit
-        / measurement.conversionCoefficient
+      converted.quantityInBaseUnit == measurement.quantityInCurrentUnit
+        * converted.conversionCoefficient
     )
+    #expect(converted.symbol == ElectricCharge.self[keyPath: unitRepresentable.unit].symbol)
   }
 
   @Test(arguments: [UnitRepresentable(unit: \ElectricCharge.Type.elementary)])
@@ -146,9 +174,109 @@ fileprivate struct ElectricChargeTests {
   }
 }
 
-fileprivate struct MassTests {
+fileprivate struct EnergyTests {
+  @Test(arguments: [UnitRepresentable(unit: \Energy.Type.joules), .init(unit: \.electronvolts)])
+  func makes(in unitRepresentable: UnitRepresentable<Energy>) {
+    let measurable = Energy.self[keyPath: unitRepresentable.unit]
+    let energy = Energy._make(
+      quantityInCurrentUnit: 2,
+      conversionCoefficient: measurable.conversionCoefficient,
+      symbol: measurable.symbol
+    )
+    #expect(energy.quantityInCurrentUnit == 2)
+    #expect(energy.conversionCoefficient == measurable.conversionCoefficient)
+    #expect(energy.symbol == measurable.symbol)
+  }
+
   @Test
-  func callingTheInitializerProducesMassWhoseQuantityIsInTheBaseUnit() {
+  func initializesFromBaseUnit() {
+    let energy = Energy(quantityInBaseUnit: 2)
+    #expect(energy.quantityInBaseUnit == 2)
+    #expect(energy.symbol == Energy.baseUnitSymbol)
+  }
+
+  @Test
+  func identityIsZeroInBaseUnit() {
+    #expect(Energy.zero.quantityInCurrentUnit == 0)
+    #expect(Energy.zero.symbol == Energy.baseUnitSymbol)
+  }
+
+  @Test(arguments: [UnitRepresentable(unit: \Energy.Type.joules), .init(unit: \.electronvolts)])
+  func negates(in unitRepresentable: UnitRepresentable<Energy>) {
+    #expect(
+      -Energy.self[keyPath: unitRepresentable.unit](2)
+        == Energy.self[keyPath: unitRepresentable.unit](-2)
+    )
+  }
+
+  @Test(arguments: [
+    (Energy.joules(2), Energy.joules(2)), (.joules(2), .electronvolts(2)),
+    (.electronvolts(2), .joules(2)), (.electronvolts(2), .electronvolts(2))
+  ])
+  func adds(_ addition: Energy, to measurement: Energy) {
+    #expect(
+      measurement + addition
+        == .init(quantityInBaseUnit: measurement.quantityInBaseUnit + addition.quantityInBaseUnit)
+    )
+  }
+
+  @Test(arguments: [
+    (Energy.joules(2), Energy.joules(2)), (.joules(2), .electronvolts(2)),
+    (.electronvolts(2), .joules(2)), (.electronvolts(2), .electronvolts(2))
+  ])
+  func subtracts(_ subtraction: Energy, from measurement: Energy) {
+    #expect(
+      measurement - subtraction
+        == .init(
+          quantityInBaseUnit: measurement.quantityInBaseUnit - subtraction.quantityInBaseUnit
+        )
+    )
+  }
+
+  @Test(
+    arguments: zip(
+      [Energy.joules(2), .electronvolts(2)],
+      [UnitRepresentable(unit: \Energy.Type.joules), .init(unit: \.electronvolts)]
+    )
+  )
+  func converts(_ measurement: Energy, into unitRepresentable: UnitRepresentable<Energy>) {
+    let converted = measurement.converted(into: unitRepresentable.unit)
+    #expect(
+      converted.quantityInBaseUnit == measurement.quantityInCurrentUnit
+        * converted.conversionCoefficient
+    )
+    #expect(converted.symbol == Energy.self[keyPath: unitRepresentable.unit].symbol)
+  }
+
+  @Test(arguments: [UnitRepresentable(unit: \Energy.Type.joules), .init(unit: \.electronvolts)])
+  func isDescribedByQuantityInCurrentUnitAndSymbol(_ unitRepresentable: UnitRepresentable<Energy>) {
+    let energy = Energy.self[keyPath: unitRepresentable.unit](2)
+    #expect(
+      "\(energy)" == "\(Energy.formatted(quantity: energy.quantityInCurrentUnit)) \(energy.symbol)"
+    )
+  }
+}
+
+fileprivate struct MassTests {
+  @Test(arguments: [
+    UnitRepresentable(unit: \Mass.Type.electronvoltsPerLightSpeedSquared), .init(unit: \.kilograms),
+    .init(unit: \.megaelectronvoltsPerLightSpeedSquared),
+    .init(unit: \.gigaelectronvoltsPerLightSpeedSquared)
+  ])
+  func makes(in unitRepresentable: UnitRepresentable<Mass>) {
+    let measurable = Mass.self[keyPath: unitRepresentable.unit]
+    let mass = Mass._make(
+      quantityInCurrentUnit: 2,
+      conversionCoefficient: measurable.conversionCoefficient,
+      symbol: measurable.symbol
+    )
+    #expect(mass.quantityInCurrentUnit == 2)
+    #expect(mass.conversionCoefficient == measurable.conversionCoefficient)
+    #expect(mass.symbol == measurable.symbol)
+  }
+
+  @Test
+  func initializesFromBaseUnit() {
     let mass = Mass(quantityInBaseUnit: 2)
     #expect(mass.quantityInBaseUnit == 2)
     #expect(mass.symbol == Mass.baseUnitSymbol)
@@ -161,7 +289,7 @@ fileprivate struct MassTests {
   }
 
   @Test(arguments: [
-    UnitRepresentable(unit: \Mass.Type.electronvoltsPerLightSpeedSquared),
+    UnitRepresentable(unit: \Mass.Type.electronvoltsPerLightSpeedSquared), .init(unit: \.kilograms),
     .init(unit: \.megaelectronvoltsPerLightSpeedSquared),
     .init(unit: \.gigaelectronvoltsPerLightSpeedSquared)
   ])
@@ -174,12 +302,18 @@ fileprivate struct MassTests {
 
   @Test(arguments: [
     (Mass.electronvoltsPerLightSpeedSquared(2), Mass.electronvoltsPerLightSpeedSquared(2)),
+    (.electronvoltsPerLightSpeedSquared(2), .kilograms(2)),
     (.electronvoltsPerLightSpeedSquared(2), .megaelectronvoltsPerLightSpeedSquared(2)),
     (.electronvoltsPerLightSpeedSquared(2), .gigaelectronvoltsPerLightSpeedSquared(2)),
+    (.kilograms(2), .electronvoltsPerLightSpeedSquared(2)), (.kilograms(2), .kilograms(2)),
+    (.kilograms(2), .megaelectronvoltsPerLightSpeedSquared(2)),
+    (.kilograms(2), .gigaelectronvoltsPerLightSpeedSquared(2)),
     (.megaelectronvoltsPerLightSpeedSquared(2), .electronvoltsPerLightSpeedSquared(2)),
+    (.megaelectronvoltsPerLightSpeedSquared(2), .kilograms(2)),
     (.megaelectronvoltsPerLightSpeedSquared(2), .megaelectronvoltsPerLightSpeedSquared(2)),
     (.megaelectronvoltsPerLightSpeedSquared(2), .gigaelectronvoltsPerLightSpeedSquared(2)),
     (.gigaelectronvoltsPerLightSpeedSquared(2), .electronvoltsPerLightSpeedSquared(2)),
+    (.gigaelectronvoltsPerLightSpeedSquared(2), .kilograms(2)),
     (.gigaelectronvoltsPerLightSpeedSquared(2), .megaelectronvoltsPerLightSpeedSquared(2)),
     (.gigaelectronvoltsPerLightSpeedSquared(2), .gigaelectronvoltsPerLightSpeedSquared(2))
   ])
@@ -192,12 +326,18 @@ fileprivate struct MassTests {
 
   @Test(arguments: [
     (Mass.electronvoltsPerLightSpeedSquared(2), Mass.electronvoltsPerLightSpeedSquared(2)),
+    (.electronvoltsPerLightSpeedSquared(2), .kilograms(2)),
     (.electronvoltsPerLightSpeedSquared(2), .megaelectronvoltsPerLightSpeedSquared(2)),
     (.electronvoltsPerLightSpeedSquared(2), .gigaelectronvoltsPerLightSpeedSquared(2)),
+    (.kilograms(2), .electronvoltsPerLightSpeedSquared(2)), (.kilograms(2), .kilograms(2)),
+    (.kilograms(2), .megaelectronvoltsPerLightSpeedSquared(2)),
+    (.kilograms(2), .gigaelectronvoltsPerLightSpeedSquared(2)),
     (.megaelectronvoltsPerLightSpeedSquared(2), .electronvoltsPerLightSpeedSquared(2)),
+    (.megaelectronvoltsPerLightSpeedSquared(2), .kilograms(2)),
     (.megaelectronvoltsPerLightSpeedSquared(2), .megaelectronvoltsPerLightSpeedSquared(2)),
     (.megaelectronvoltsPerLightSpeedSquared(2), .gigaelectronvoltsPerLightSpeedSquared(2)),
     (.gigaelectronvoltsPerLightSpeedSquared(2), .electronvoltsPerLightSpeedSquared(2)),
+    (.gigaelectronvoltsPerLightSpeedSquared(2), .kilograms(2)),
     (.gigaelectronvoltsPerLightSpeedSquared(2), .megaelectronvoltsPerLightSpeedSquared(2)),
     (.gigaelectronvoltsPerLightSpeedSquared(2), .gigaelectronvoltsPerLightSpeedSquared(2))
   ])
@@ -213,12 +353,12 @@ fileprivate struct MassTests {
   @Test(
     arguments: zip(
       [
-        Mass.electronvoltsPerLightSpeedSquared(2), .megaelectronvoltsPerLightSpeedSquared(2),
-        .gigaelectronvoltsPerLightSpeedSquared(2)
+        Mass.electronvoltsPerLightSpeedSquared(2), .kilograms(2),
+        .megaelectronvoltsPerLightSpeedSquared(2), .gigaelectronvoltsPerLightSpeedSquared(2)
       ],
       [
         UnitRepresentable(unit: \Mass.Type.electronvoltsPerLightSpeedSquared),
-        .init(unit: \.megaelectronvoltsPerLightSpeedSquared),
+        .init(unit: \.kilograms), .init(unit: \.megaelectronvoltsPerLightSpeedSquared),
         .init(unit: \.gigaelectronvoltsPerLightSpeedSquared)
       ]
     )
@@ -226,13 +366,14 @@ fileprivate struct MassTests {
   func converts(_ measurement: Mass, into unitRepresentable: UnitRepresentable<Mass>) {
     let converted = measurement.converted(into: unitRepresentable.unit)
     #expect(
-      converted.quantityInBaseUnit == converted.quantityInCurrentUnit
-        / measurement.conversionCoefficient
+      converted.quantityInBaseUnit == measurement.quantityInCurrentUnit
+        * converted.conversionCoefficient
     )
+    #expect(converted.symbol == Mass.self[keyPath: unitRepresentable.unit].symbol)
   }
 
   @Test(arguments: [
-    UnitRepresentable(unit: \Mass.Type.electronvoltsPerLightSpeedSquared),
+    UnitRepresentable(unit: \Mass.Type.electronvoltsPerLightSpeedSquared), .init(unit: \.kilograms),
     .init(unit: \.megaelectronvoltsPerLightSpeedSquared),
     .init(unit: \.gigaelectronvoltsPerLightSpeedSquared)
   ])
@@ -243,8 +384,21 @@ fileprivate struct MassTests {
 }
 
 fileprivate struct SpeedTests {
+  @Test(arguments: [UnitRepresentable(unit: \Speed.Type.metersPerSecond), .init(unit: \.light)])
+  func makes(in unitRepresentable: UnitRepresentable<Speed>) {
+    let measurable = Speed.self[keyPath: unitRepresentable.unit]
+    let speed = Speed._make(
+      quantityInCurrentUnit: 2,
+      conversionCoefficient: measurable.conversionCoefficient,
+      symbol: measurable.symbol
+    )
+    #expect(speed.quantityInCurrentUnit == 2)
+    #expect(speed.conversionCoefficient == measurable.conversionCoefficient)
+    #expect(speed.symbol == measurable.symbol)
+  }
+
   @Test
-  func callingTheInitializerProducesSpeedWhoseQuantityIsInTheBaseUnit() {
+  func initializesFromBaseUnit() {
     let speed = Speed(quantityInBaseUnit: 2)
     #expect(speed.quantityInBaseUnit == 2)
     #expect(speed.symbol == Speed.baseUnitSymbol)
@@ -256,7 +410,7 @@ fileprivate struct SpeedTests {
     #expect(Speed.zero.symbol == Speed.baseUnitSymbol)
   }
 
-  @Test(arguments: [UnitRepresentable(unit: \Speed.Type.metersPerSecond)])
+  @Test(arguments: [UnitRepresentable(unit: \Speed.Type.metersPerSecond), .init(unit: \.light)])
   func negates(in unitRepresentable: UnitRepresentable<Speed>) {
     #expect(
       -Speed.self[keyPath: unitRepresentable.unit](2)
@@ -264,7 +418,10 @@ fileprivate struct SpeedTests {
     )
   }
 
-  @Test(arguments: [(Speed.metersPerSecond(2), Speed.metersPerSecond(2))])
+  @Test(arguments: [
+    (Speed.metersPerSecond(2), Speed.metersPerSecond(2)), (.metersPerSecond(2), .light(2)),
+    (.light(2), .metersPerSecond(2)), (.light(2), .light(2))
+  ])
   func adds(_ addition: Speed, to measurement: Speed) {
     #expect(
       measurement + addition
@@ -272,7 +429,10 @@ fileprivate struct SpeedTests {
     )
   }
 
-  @Test(arguments: [(Speed.metersPerSecond(2), Speed.metersPerSecond(2))])
+  @Test(arguments: [
+    (Speed.metersPerSecond(2), Speed.metersPerSecond(2)), (.metersPerSecond(2), .light(2)),
+    (.light(2), .metersPerSecond(2)), (.light(2), .light(2))
+  ])
   func subtracts(_ subtraction: Speed, from measurement: Speed) {
     #expect(
       measurement - subtraction
@@ -284,19 +444,20 @@ fileprivate struct SpeedTests {
 
   @Test(
     arguments: zip(
-      [Speed.metersPerSecond(2)],
-      [UnitRepresentable(unit: \Speed.Type.metersPerSecond)]
+      [Speed.metersPerSecond(2), .light(2)],
+      [UnitRepresentable(unit: \Speed.Type.metersPerSecond), .init(unit: \.light)]
     )
   )
   func converts(_ measurement: Speed, into unitRepresentable: UnitRepresentable<Speed>) {
     let converted = measurement.converted(into: unitRepresentable.unit)
     #expect(
-      converted.quantityInBaseUnit == converted.quantityInCurrentUnit
-        / measurement.conversionCoefficient
+      converted.quantityInBaseUnit == measurement.quantityInCurrentUnit
+        * converted.conversionCoefficient
     )
+    #expect(converted.symbol == Speed.self[keyPath: unitRepresentable.unit].symbol)
   }
 
-  @Test(arguments: [UnitRepresentable(unit: \Speed.Type.metersPerSecond)])
+  @Test(arguments: [UnitRepresentable(unit: \Speed.Type.metersPerSecond), .init(unit: \.light)])
   func isDescribedByQuantityInCurrentUnitAndSymbol(_ unitRepresentable: UnitRepresentable<Speed>) {
     let speed = Speed.self[keyPath: unitRepresentable.unit](2)
     #expect(
@@ -317,15 +478,19 @@ where MeasurementType: Measurement {
 extension UnitRepresentable: CustomDebugStringConvertible {
   var debugDescription: String {
     switch unit {
-    case _ where unit == \ElectricCharge.Type.elementary: "elementary"
-    case _ where unit == \Speed.Type.metersPerSecond: "metersPerSecond"
-    case _ where unit == \Mass.Type.gigaelectronvoltsPerLightSpeedSquared:
-      "gigaelectronvoltsPerLightSpeedSquared"
     case _ where unit == \Angle.Type.radians: "radians"
+    case _ where unit == \ElectricCharge.Type.elementary: "elementary"
+    case _ where unit == \Energy.Type.electronvolts: "electronvolts"
+    case _ where unit == \Energy.Type.joules: "joules"
     case _ where unit == \Mass.Type.electronvoltsPerLightSpeedSquared:
       "electronvoltsPerLightSpeedSquared"
+    case _ where unit == \Mass.Type.gigaelectronvoltsPerLightSpeedSquared:
+      "gigaelectronvoltsPerLightSpeedSquared"
+    case _ where unit == \Mass.Type.kilograms: "kilograms"
     case _ where unit == \Mass.Type.megaelectronvoltsPerLightSpeedSquared:
       "megaelectronvoltsPerLightSpeedSquared"
+    case _ where unit == \Speed.Type.light: "light"
+    case _ where unit == \Speed.Type.metersPerSecond: "metersPerSecond"
     default: "Unknown instance of UnitRepresentable<\(MeasurementType.self)>"
     }
   }
