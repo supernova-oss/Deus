@@ -18,19 +18,16 @@
 import Foundation
 
 /// Base value for calculating an approximation of the mass of a ``TopQuark``.
-private let topBaseMass = Measurement(value: 173.21, unit: UnitMass.gigaelectronvoltsPerC²)
+private let topBaseMass = Measurement(value: 173.21, unit: UnitMass.gigaelectronvolt)
 
 /// Statistical uncertainty for calculating an approximation of the mass of a ``TopQuark``.
 private let topMassStatisticalUncertainty = Measurement(
   value: 0.51,
-  unit: UnitMass.gigaelectronvoltsPerC²
+  unit: UnitMass.gigaelectronvolt
 )
 
 /// Systematic uncertainty for calculating an approxiumation to the mass of a ``TopQuark``.
-private let topMassSystematicUncertainty = Measurement(
-  value: 0.7,
-  unit: UnitMass.gigaelectronvoltsPerC²
-)
+private let topMassSystematicUncertainty = Measurement(value: 0.7, unit: UnitMass.gigaelectronvolt)
 
 /// Heaviest ``Quark``, with a Lagrangian mass of 173.21 ± 0.51 ± 0.7 GeV/*c*². Decays to a
 /// ``BottomQuark``.

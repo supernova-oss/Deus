@@ -18,19 +18,13 @@
 import Foundation
 
 /// Base value for calculating an approximation of the mass of a ``DownQuark``.
-private let baseMass = Measurement(value: 4.8, unit: UnitMass.megaelectronvoltsPerC²)
+private let baseMass = Measurement(value: 4.8, unit: UnitMass.megaelectronvolt)
 
 /// Statistical uncertainty for calculating an approximation of the mass of a ``DownQuark``.
-private let massStatisticalUncertainty = Measurement(
-  value: 0.5,
-  unit: UnitMass.megaelectronvoltsPerC²
-)
+private let massStatisticalUncertainty = Measurement(value: 0.5, unit: UnitMass.megaelectronvolt)
 
 /// Systematic uncertainty for calculating an approxiumation to the mass of a ``DownQuark``.
-private let massSystematicUncertainty = Measurement(
-  value: 0.3,
-  unit: UnitMass.megaelectronvoltsPerC²
-)
+private let massSystematicUncertainty = Measurement(value: 0.3, unit: UnitMass.megaelectronvolt)
 
 /// Second lightest ``Quark``, with a Lagrangian mass of 4.8 ± 0.5 ± 0.3 MeV/*c*². Decays to an
 /// ``UpQuark``.

@@ -31,6 +31,10 @@ extension UnitElectricCharge {
 }
 
 extension UnitEnergy {
+  /// Amount in electronvolts (eV/*c*²).
+  @available(*, deprecated, renamed: "electronvolts")
+  public static let electronvolt = electronvolts
+
   /// Unit of energy whose numeric value is equal to that of *e* in C. Represents the amount of
   /// energy gained or lost by an electron moving through an electric potential difference of 1 V.
   ///
@@ -46,11 +50,19 @@ extension UnitMass {
   /// multiples and submultiples.
   private static let x = 1.78266192
 
+  /// Amount in electronvolts (eV/*c*²).
+  @available(*, deprecated, renamed: "electronvoltsPerC²")
+  public static let electronvolt = electronvoltsPerC²
+
   /// Amount in electronvolts per the square of the speed of light (eV/*c*²).
   public static let electronvoltsPerC² = UnitMass(
     symbol: "eV",
     converter: UnitConverterLinear(coefficient: x * pow(10, -36))
   )
+
+  /// Amount in gigaelectronvolts (GeV/*c*²).
+  @available(*, deprecated, renamed: "gigaelectronvoltsPerC²")
+  public static let gigaelectronvolt = gigaelectronvoltsPerC²
 
   /// Amount in gigaelectronvolts per the square of the speed of light (GeV/*c*²).
   public static let gigaelectronvoltsPerC² = UnitMass(
@@ -58,7 +70,11 @@ extension UnitMass {
     converter: UnitConverterLinear(coefficient: x * pow(10, -27))
   )
 
-  /// Amount in megaelectronvoltsPerC²s per the square of the speed of light (MeV/*c*²).
+  /// Amount in megaelectronvolts (MeV/*c*²).
+  @available(*, deprecated, renamed: "megaelectronvoltsPerC²")
+  public static let megaelectronvolt = megaelectronvoltsPerC²
+
+  /// Amount in gigaelectronvolts per the square of the speed of light (GeV/*c*²).
   public static let megaelectronvoltsPerC² = UnitMass(
     symbol: "MeV",
     converter: UnitConverterLinear(coefficient: x * pow(10, -30))

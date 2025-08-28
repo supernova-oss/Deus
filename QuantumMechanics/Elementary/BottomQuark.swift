@@ -18,13 +18,10 @@
 import Foundation
 
 /// Base value for calculating an approximation of the mass of a ``BottomQuark``.
-private let baseMass = Measurement(value: 4.18, unit: UnitMass.gigaelectronvoltsPerC²)
+private let baseMass = Measurement(value: 4.18, unit: UnitMass.gigaelectronvolt)
 
 /// Statistical uncertainty for calculating an approximation of the mass of a ``BottomQuark``.
-private let massStatisticalUncertainty = Measurement(
-  value: 0.03,
-  unit: UnitMass.gigaelectronvoltsPerC²
-)
+private let massStatisticalUncertainty = Measurement(value: 0.03, unit: UnitMass.gigaelectronvolt)
 
 /// Second heaviest ``Quark``, with a Lagrangian mass of 4.18 ± 0.03 GeV/*c*². Decays to a
 /// ``CharmQuark``.

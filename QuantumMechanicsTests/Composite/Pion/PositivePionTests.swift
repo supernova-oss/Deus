@@ -39,7 +39,7 @@ struct PositivePionTests {
   mutating func massIsOneHundredAndThirtyNinePointFiftySevenThousandAndThirtyNineGeV() {
     #expect(
       positivePion.getMass(approximatedBy: .base)
-        == Measurement(value: 139.57039, unit: .gigaelectronvoltsPerC²)
+        == Measurement(value: 139.57039, unit: .gigaelectronvolt)
     )
   }
 }
