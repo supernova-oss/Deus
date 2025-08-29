@@ -17,19 +17,6 @@
 
 import Foundation
 
-extension UnitElectricCharge {
-  /// Coefficient of the factor of the conversion of the base unit of electric charge, C, into *e*.
-  fileprivate static let x = 1.602176634
-
-  /// Amount in elementary charge (*e*). *e* is a fundamental constant as per the SI, equating
-  /// 1.602176634 × 10⁻¹⁹ C and representing the least amount of electric charge which can exist
-  /// unconfined in the universe.
-  public static let elementary = UnitElectricCharge(
-    symbol: "e",
-    converter: UnitEnergy.electronvolts.converter
-  )
-}
-
 extension UnitEnergy {
   /// Amount in electronvolts (eV/*c*²).
   @available(*, deprecated, renamed: "electronvolts")
@@ -41,6 +28,19 @@ extension UnitEnergy {
   /// - SeeAlso: ``Foundation/UnitElectricCharge/elementary``
   public static let electronvolts = UnitEnergy(
     symbol: "eV",
+    converter: UnitElectricCharge.elementary.converter
+  )
+}
+
+extension UnitElectricCharge {
+  /// Coefficient of the factor of the conversion of the base unit of electric charge, C, into *e*.
+  private static let x = 1.602176634
+
+  /// Amount in elementary charge (*e*). *e* is a fundamental constant as per the SI, equating
+  /// 1.602176634 × 10⁻¹⁹ C and representing the least amount of electric charge which can exist
+  /// unconfined in the universe.
+  public static let elementary = UnitElectricCharge(
+    symbol: "e",
     converter: UnitConverterLinear(coefficient: UnitElectricCharge.x * pow(10, -19))
   )
 }
