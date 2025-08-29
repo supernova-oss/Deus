@@ -66,3 +66,16 @@ public protocol Manifold {
   /// - SeeAlso: ``Foundation/UnitEnergy/electronvolts``
   func potentialEnergy(coordinate: Double, time: Double) -> Double
 }
+
+/// The Lorentz factor *γ* quantifies the dilation of time, contraction of length and energy
+/// relativization in a rest frame in relation to an event occurring at the given velocity `v`.
+///
+/// - Parameter velocity: Velocity of the event in m/s.
+/// - Returns: The dimensionless change in the system in which a ``Manifold`` is from a rest frame,
+///   resulted from the event.
+@differentiable(reverse)
+public func lorentzFactor(velocity: Double) -> Double {
+  1
+    / (1 - pow(velocity, 2) / UnitSpeed.lightSquared.converter.baseUnitValue(fromValue: 1))
+    .squareRoot()
+}

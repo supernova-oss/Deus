@@ -15,6 +15,7 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
+import Foundation
 import Testing
 
 @testable import QuantumMechanics
@@ -24,6 +25,15 @@ struct ManifoldTests {
   func calculatesLagrangian() {
     #expect(
       _RealLine(mass: 2).lagrangian(coordinate: 4, velocity: 8, time: 16) == 8.881784197001252e-16
+    )
+  }
+
+  @Test
+  func calculatesLorentzFactor() {
+    #expect(
+      lorentzFactor(velocity: 2).isApproximatelyEqual(
+        to: (1 - 1 / (50 * UnitSpeed.light.converter.baseUnitValue(fromValue: 1))).squareRoot()
+      )
     )
   }
 }

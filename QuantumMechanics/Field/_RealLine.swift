@@ -53,16 +53,4 @@ extension _RealLine: Manifold {
   ///
   /// - Parameter velocity: Velocity of the coordinate in m/s.
   func kineticEnergy(velocity: Double) -> Double { (lorentzFactor(velocity: velocity) - 1) * mass }
-
-  /// The Lorentz factor *γ* quantifies the dilation of time, contraction of length and energy
-  /// relativization in a rest frame in relation to an event occurring at the given velocity `v`.
-  ///
-  /// - Parameter velocity: Velocity of the event in m/s.
-  /// - Returns: The dimensionless change in the system in which this ``RealLine`` is for the
-  ///   inertial observer of the event.
-  private func lorentzFactor(velocity: Double) -> Double {
-    1
-      / (1 - pow(velocity, 2) / UnitSpeed.lightSquared.converter.baseUnitValue(fromValue: 1))
-      .squareRoot()
-  }
 }
