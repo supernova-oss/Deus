@@ -35,22 +35,24 @@ public struct _RealLine {
 extension _RealLine: Manifold {
   @differentiable(reverse,wrt: (coordinate, velocity))
   public func lagrangian(coordinate: Double, velocity: Double.TangentVector, time: Double) -> Double
-  { kineticTerm(velocity: velocity) - potentialEnergy(coordinate: coordinate, time: time) }
+  { kineticEnergy(velocity: velocity) - potentialEnergy(coordinate: coordinate, time: time) }
 
-  /// Potential energy *V* = E - E₀, scalar whose gradient outputs a force, at the given coordinate
-  /// and time. Since this ``RealLine`` exists only for testing purposes and strives to be as simple
-  /// as possible in terms of calculus, its *V* at any coordinate and time will always be zero.
+  /// Potential energy *V* = *E₀* - *Eₖ*, scalar function whose gradient outputs a force, at the
+  /// given coordinate and time. Since this ``RealLine`` exists only for testing purposes and
+  /// strives to be as simple as possible in terms of calculus, its *V* at any coordinate and time
+  /// will always be zero.
   ///
   /// - Parameters:
-  ///   - coordinate: Coordinate *q* at which the configuration is located.
-  ///   - time: Time at which the configuration is.
+  ///   - coordinate: The coordinate *q*.
+  ///   - time: Time *t* at which the coordinate is.
   /// - Returns: Zero; this implementation of a real line contains no potential energy.
+  /// - SeeAlso: ``kineticEnergy(velocity:)``
   public func potentialEnergy(coordinate: Double, time: Double) -> Double { 0 }
 
-  /// The kinetic term describes the amount of energy of the motion of a coordinate.
+  /// The kinetic energy *Eₖ* describes the amount of energy of the motion of a coordinate.
   ///
   /// - Parameter velocity: Velocity of the coordinate in m/s.
-  func kineticTerm(velocity: Double) -> Double { (lorentzFactor(velocity: velocity) - 1) * mass }
+  func kineticEnergy(velocity: Double) -> Double { (lorentzFactor(velocity: velocity) - 1) * mass }
 
   /// The Lorentz factor *γ* quantifies the dilation of time, contraction of length and energy
   /// relativization in a rest frame in relation to an event occurring at the given velocity `v`.

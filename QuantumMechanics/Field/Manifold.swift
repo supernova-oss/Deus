@@ -26,24 +26,27 @@ public protocol Manifold {
   /// Type of a position in this ``Manifold``.
   associatedtype Coordinate: Differentiable
 
-  // TODO: Ideally, L(q:q̇:t:) and V(q:t:) would return an instance of Measurement of UnitEnergy and
-  // UnitAction respectively, where UnitAction represents eV/eV⁻¹ in particle physics or J/s in
-  // classical mechanics. However, SourceKitService crashes when such type is extended to conform to
-  // Differentiable as of Swift 6.2-snapshot-2025-08-21.
+  // TODO: Ideally, `lagrangian(coordinate:velocity:time:)` and `potentialEnergy(coordinate:time:)`
+  // would return an instance of `Measurement` of `UnitEnergy` and `UnitAction` respectively, where
+  // `UnitAction` represents eV/eV⁻¹ in particle physics or J/s in classical mechanics. However,
+  // SourceKitService crashes when such type is extended to conform to `Differentiable` as of Swift
+  // 6.2-snapshot-2025-08-21.
 
   /// Calculates the Lagrangian *L* over the given coordinate and moment in time.
   ///
   /// The Lagrangian is a smooth, scalar function on the tangent bundle (the union of every tangent
-  /// space at all coordinates in which lies the velocity associated to each of them; i.e., a bundle
-  /// whose coordinates are (qₙ, q̇ₙ)) of this ``Manifold``. It is the density with which `q` moves
-  /// over `t`, part of the formula for an action *S* (the path of such coordinate):
+  /// space at all coordinates *qₙ* in which lies the velocity *q̇ₙ* associated to each of them; i.e.,
+  /// a bundle whose coordinates are (*qₙ*, *q̇ₙ*)) of this ``Manifold``. It is the density with which
+  /// the `coordinate` moves over `time`, part of the formula for an action *S* (the path of such
+  /// coordinate):
   ///
-  /// **S[q] = ∫ᵗ²ₜ₁ *L*(q, q̇, t) × ∂*t***; or simply **S = ∫ᵗ²ₜ₁ *L* × ∂*t***.
+  /// - *S*[*q*] = ∫*ᵗ²ₜ₁* *L*(*q*, *q̇*, *t*) × ∂*t*; or simply
+  /// - *S* = ∫*ᵗ²ₜ₁* *L* × ∂*t*.
   ///
   /// - Parameters:
-  ///   - coordinate: Coordinate *q* at which the configuration is located.
-  ///   - velocity: Rate of change of `q` over `t`, *q*’(*t*); its velocity.
-  ///   - time: Time at which the configuration is.
+  ///   - coordinate: The coordinate *q*.
+  ///   - velocity: Rate of change *q̇* of the `coordinate` over `time`; its velocity.
+  ///   - time: Time *t* at which the coordinate is.
   /// - Returns: A scalar in a Lagrangian density 𝐿, determined by the type of coordinate of this
   ///   ``Manifold``.
   @differentiable(reverse,wrt: (coordinate, velocity))
@@ -53,12 +56,12 @@ public protocol Manifold {
     time: Double
   ) -> Double
 
-  /// Calculates the potential energy *V* = E - E₀, scalar whose gradient outputs a force, in this
-  /// ``Manifold`` at a given coordinate and a specified time.
+  /// Calculates the potential energy *V* = *E₀* - *Eₖ*, scalar function whose gradient outputs a
+  /// force, in this ``Manifold`` at a given coordinate and a specified time.
   ///
   /// - Parameters:
-  ///   - coordinate: Coordinate *q* at which the configuration is located.
-  ///   - time: Time at which the configuration is.
+  ///   - coordinate: The coordinate *q*.
+  ///   - time: Time *t* at which the coordinate is.
   /// - Returns: The potential energy *V* in eV.
   /// - SeeAlso: ``Foundation/UnitEnergy/electronvolts``
   func potentialEnergy(coordinate: Double, time: Double) -> Double
