@@ -31,31 +31,35 @@ public protocol Manifold {
   // classical mechanics. However, SourceKitService crashes when such type is extended to conform to
   // Differentiable as of Swift 6.2-snapshot-2025-08-21.
 
-  /// Calculates the Lagrangian over the given coordinate and moment in time.
+  /// Calculates the Lagrangian *L* over the given coordinate and moment in time.
   ///
-  /// The Lagrangian *L* is a smooth, scalar function on the tangent bundle (the union of every
-  /// tangent space at all coordinates in which lies the velocity associated to each of them; i.e.,
-  /// a bundle whose coordinates are (qₙ, q̇ₙ)) of this ``Manifold``. It is the density with which `q`
-  /// moves over `t`, part of the formula for an action *S* (the path of such coordinate):
+  /// The Lagrangian is a smooth, scalar function on the tangent bundle (the union of every tangent
+  /// space at all coordinates in which lies the velocity associated to each of them; i.e., a bundle
+  /// whose coordinates are (qₙ, q̇ₙ)) of this ``Manifold``. It is the density with which `q` moves
+  /// over `t`, part of the formula for an action *S* (the path of such coordinate):
   ///
   /// **S[q] = ∫ᵗ²ₜ₁ *L*(q, q̇, t) × ∂*t***; or simply **S = ∫ᵗ²ₜ₁ *L* × ∂*t***.
   ///
   /// - Parameters:
-  ///   - q: Coordinate *q* at which the configuration is located.
-  ///   - q̇: Rate of change of `q` over `t`, *q*’(*t*); its velocity.
-  ///   - t: Time at which the configuration is.
+  ///   - coordinate: Coordinate *q* at which the configuration is located.
+  ///   - velocity: Rate of change of `q` over `t`, *q*’(*t*); its velocity.
+  ///   - time: Time at which the configuration is.
   /// - Returns: A scalar in a Lagrangian density 𝐿, determined by the type of coordinate of this
   ///   ``Manifold``.
-  @differentiable(reverse,wrt: (q, q̇))
-  func L(q: Coordinate, q̇: Coordinate.TangentVector, t: Double) -> Double
+  @differentiable(reverse,wrt: (coordinate, velocity))
+  func lagrangian(
+    coordinate: Coordinate,
+    velocity: Coordinate.TangentVector,
+    time: Double
+  ) -> Double
 
   /// Calculates the potential energy *V* = E - E₀, scalar whose gradient outputs a force, in this
   /// ``Manifold`` at a given coordinate and a specified time.
   ///
   /// - Parameters:
-  ///   - q: Coordinate *q* at which the configuration is located.
-  ///   - t: Time at which the configuration is.
+  ///   - coordinate: Coordinate *q* at which the configuration is located.
+  ///   - time: Time at which the configuration is.
   /// - Returns: The potential energy *V* in eV.
   /// - SeeAlso: ``Foundation/UnitEnergy/electronvolts``
-  func V(q: Double, t: Double) -> Double
+  func potentialEnergy(coordinate: Double, time: Double) -> Double
 }

@@ -22,6 +22,8 @@ import Testing
 struct ManifoldTests {
   @Test
   func calculatesLagrangian() {
-    #expect(_RealLine(mass: 2).L(q: 4, q̇: 8, t: 16) == 8.881784197001252e-16)
+    #expect(
+      _RealLine(mass: 2).lagrangian(coordinate: 4, velocity: 8, time: 16) == 8.881784197001252e-16
+    )
   }
 }

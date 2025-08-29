@@ -51,32 +51,41 @@ extension UnitMass {
   private static let x = 1.78266192
 
   /// Amount in electronvolts (eV/*c*²).
-  @available(*, deprecated, renamed: "electronvoltsPerC²")
-  public static let electronvolt = electronvoltsPerC²
+  @available(*, deprecated, renamed: "electronvoltsPerLightSpeedSquared")
+  public static let electronvolt = electronvoltsPerLightSpeedSquared
 
   /// Amount in electronvolts per the square of the speed of light (eV/*c*²).
-  public static let electronvoltsPerC² = UnitMass(
-    symbol: "eV",
+  ///
+  /// - SeeAlso: ``Foundation/UnitSpeed/lightSquared``
+  /// - SeeAlso: ``electronvolt``
+  public static let electronvoltsPerLightSpeedSquared = UnitMass(
+    symbol: "eV/c²",
     converter: UnitConverterLinear(coefficient: x * pow(10, -36))
   )
 
   /// Amount in gigaelectronvolts (GeV/*c*²).
-  @available(*, deprecated, renamed: "gigaelectronvoltsPerC²")
-  public static let gigaelectronvolt = gigaelectronvoltsPerC²
+  @available(*, deprecated, renamed: "gigaelectronvoltsPerLightSpeedSquared")
+  public static let gigaelectronvolt = gigaelectronvoltsPerLightSpeedSquared
 
   /// Amount in gigaelectronvolts per the square of the speed of light (GeV/*c*²).
-  public static let gigaelectronvoltsPerC² = UnitMass(
-    symbol: "GeV",
+  ///
+  /// - SeeAlso: ``Foundation/UnitSpeed/lightSquared``
+  public static let gigaelectronvoltsPerLightSpeedSquared = UnitMass(
+    symbol: "GeV/c²",
     converter: UnitConverterLinear(coefficient: x * pow(10, -27))
   )
 
   /// Amount in megaelectronvolts (MeV/*c*²).
-  @available(*, deprecated, renamed: "megaelectronvoltsPerC²")
-  public static let megaelectronvolt = megaelectronvoltsPerC²
+  ///
+  /// - SeeAlso: ``Foundation/UnitSpeed/lightSquared``
+  @available(*, deprecated, renamed: "megaelectronvoltsPerLightSpeedSquared")
+  public static let megaelectronvolt = megaelectronvoltsPerLightSpeedSquared
 
   /// Amount in gigaelectronvolts per the square of the speed of light (GeV/*c*²).
-  public static let megaelectronvoltsPerC² = UnitMass(
-    symbol: "MeV",
+  ///
+  /// - SeeAlso: ``Foundation/UnitSpeed/lightSquared``
+  public static let megaelectronvoltsPerLightSpeedSquared = UnitMass(
+    symbol: "MeV/c²",
     converter: UnitConverterLinear(coefficient: x * pow(10, -30))
   )
 }

@@ -26,7 +26,7 @@ import Testing
   % massValue = float(mass[0])
   % massUnit = mass[1]
   % spelledUnitizedMass = ''.join(char for char in inflect.engine().number_to_words(massValue).title() if char.isalpha()) + massUnit.capitalize()
-  % massUnitReference = "UnitMass.megaelectronvoltsPerC²" if massUnit == 'MeV' else "UnitMass.gigaelectronvoltsPerC²" if massUnit == "GeV" else "UnitMass.baseUnit()"
+  % massUnitReference = "UnitMass.megaelectronvoltsPerLightSpeedSquared" if massUnit == 'MeV' else "UnitMass.gigaelectronvoltsPerLightSpeedSquared" if massUnit == "GeV" else "UnitMass.baseUnit()"
   % symbol = flavor[0]
 struct ${implementation}Tests {
   ${caseAttribute}

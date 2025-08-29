@@ -33,30 +33,34 @@ public struct _RealLine {
 }
 
 extension _RealLine: Manifold {
-  @differentiable(reverse,wrt: (q, q̇))
-  public func L(q: Double, q̇: Double.TangentVector, t: Double) -> Double { T(q̇: q̇) - V(q: q, t: t) }
+  @differentiable(reverse,wrt: (coordinate, velocity))
+  public func lagrangian(coordinate: Double, velocity: Double.TangentVector, time: Double) -> Double
+  { kineticTerm(velocity: velocity) - potentialEnergy(coordinate: coordinate, time: time) }
 
   /// Potential energy *V* = E - E₀, scalar whose gradient outputs a force, at the given coordinate
   /// and time. Since this ``RealLine`` exists only for testing purposes and strives to be as simple
   /// as possible in terms of calculus, its *V* at any coordinate and time will always be zero.
   ///
   /// - Parameters:
-  ///   - q: Coordinate *q* at which the configuration is located.
-  ///   - t: Time at which the configuration is.
+  ///   - coordinate: Coordinate *q* at which the configuration is located.
+  ///   - time: Time at which the configuration is.
   /// - Returns: Zero; this implementation of a real line contains no potential energy.
-  public func V(q: Double, t: Double) -> Double { 0 }
+  public func potentialEnergy(coordinate: Double, time: Double) -> Double { 0 }
 
-  /// The kinetic term describes the amount of energy used by an object in motion for it to perform
-  /// such movement.
-  func T(q̇: Double) -> Double { (γ(v: q̇) - 1) * mass }
+  /// The kinetic term describes the amount of energy of the motion of a coordinate.
+  ///
+  /// - Parameter velocity: Velocity of the coordinate in m/s.
+  func kineticTerm(velocity: Double) -> Double { (lorentzFactor(velocity: velocity) - 1) * mass }
 
   /// The Lorentz factor *γ* quantifies the dilation of time, contraction of length and energy
   /// relativization in a rest frame in relation to an event occurring at the given velocity `v`.
   ///
-  /// - Parameter v: Velocity of the event in m/s.
+  /// - Parameter velocity: Velocity of the event in m/s.
   /// - Returns: The dimensionless change in the system in which this ``RealLine`` is for the
   ///   inertial observer of the event.
-  private func γ(v: Double) -> Double {
-    1 / (1 - pow(v, 2) / c²._converted(to: .metersPerSecond).value).squareRoot()
+  private func lorentzFactor(velocity: Double) -> Double {
+    1
+      / (1 - pow(velocity, 2) / UnitSpeed.lightSquared.converter.baseUnitValue(fromValue: 1))
+      .squareRoot()
   }
 }
