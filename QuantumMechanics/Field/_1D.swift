@@ -18,27 +18,31 @@
 import _Differentiation
 import Foundation
 
-/// 1D, unitary ``Manifold``.
+/// 1-dimensional, unitary ``Space``.
 
-// TODO: This Manifold implementation is not intended to be referenced in production; its main
-// purpose is the testing of the differentiations performed by the _Differentiation module for the
-// Lagrangian of a real line, the simplest manifold there is.
+// TODO: These implementations are not intended to be referenced in production; their main purpose
+// is the testing of the differentiations performed by the `_Differentiation` module for the
+// Lagrangian of a real line (i.e., 1D space), the simplest space there is.
 //
-// As of 6.2-snapshot-2025-08-21, implementing Manifold crashes the frontend due to the
-// differentiation. Exposing it as public API hidden by an underscore is a paliative workaround for
-// such issue.
-public struct _RealLine {
-  /// Sum of the mass of all coordinates in eV/c².
-  let mass: Double
-}
+// As of Swift 6.2-snapshot-2025-08-21, implementing `Space` in a test framework crashes the
+// frontend due to the differentiation. Exposing it as internal API hidden by an underscore is a
+// paliative work around such issue.
+struct _1DSpace: Space {
+  public typealias ConfigurationManifold = _1DManifold
 
-extension _RealLine: Manifold {
+  public let mass: Double
+
   @differentiable(reverse,wrt: (coordinate, velocity))
-  public func lagrangian(coordinate: Double, velocity: Double.TangentVector, time: Double) -> Double
-  { kineticEnergy(velocity: velocity) - potentialEnergy(coordinate: coordinate, time: time) }
+  public func lagrangian(
+    coordinate: _1DManifold.Point,
+    velocity: _1DManifold.Point.TangentVector,
+    time: Double
+  ) -> Double {
+    kineticEnergy(velocity: velocity) - potentialEnergy(coordinate: coordinate, time: time)
+  }
 
   /// Potential energy *V* = *E₀* - *Eₖ*, scalar function whose gradient outputs a force, at the
-  /// given coordinate and time. Since this ``RealLine`` exists only for testing purposes and
+  /// given coordinate and time. Since this 1D ``Space`` exists only for testing purposes and
   /// strives to be as simple as possible in terms of calculus, its *V* at any coordinate and time
   /// will always be zero.
   ///
@@ -46,13 +50,12 @@ extension _RealLine: Manifold {
   ///   - coordinate: The coordinate *q*.
   ///   - time: Time *t* at which the coordinate is.
   /// - Returns: Zero; this implementation of a real line contains no potential energy.
-  /// - SeeAlso: ``kineticEnergy(velocity:)``
+  /// - SeeAlso: ``Space/kineticEnergy(velocity:)``
   @differentiable(reverse,wrt: coordinate)
-  public func potentialEnergy(coordinate: Double, time: Double) -> Double { 0 }
-
-  /// The kinetic energy *Eₖ* describes the amount of energy of the motion of a coordinate.
-  ///
-  /// - Parameter velocity: Velocity of the coordinate in m/s.
-  @differentiable(reverse,wrt: velocity)
-  func kineticEnergy(velocity: Double) -> Double { (lorentzFactor(velocity: velocity) - 1) * mass }
+  public func potentialEnergy(coordinate: _1DManifold.Point, time: Double) -> Double { 0 }
 }
+
+/// 1-dimensional, unitary ``Manifold``.
+public struct _1DManifold {}
+
+extension _1DManifold: Manifold { public typealias Point = Double }

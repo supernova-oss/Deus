@@ -20,18 +20,18 @@ import Testing
 
 @testable import QuantumMechanics
 
-struct ManifoldTests {
-  private let manifold = _RealLine(mass: 2)
+struct SpaceTests {
+  private let space = _1DSpace(mass: 2)
 
   @Test
   func calculatesLagrangian() {
-    #expect(manifold.lagrangian(coordinate: 4, velocity: 8, time: 16) == 8.881784197001252e-16)
+    #expect(space.lagrangian(coordinate: 4, velocity: 8, time: 16) == 8.881784197001252e-16)
   }
 
   @Test
   func calculatesLorentzFactor() {
     #expect(
-      manifold.lorentzFactor(velocity: 2).isApproximatelyEqual(
+      space.lorentzFactor(velocity: 2).isApproximatelyEqual(
         to: (1 - 1 / (50 * UnitSpeed.light.converter.baseUnitValue(fromValue: 1))).squareRoot()
       )
     )
