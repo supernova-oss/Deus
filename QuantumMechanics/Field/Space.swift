@@ -50,10 +50,11 @@ public protocol Space {
   ///
   /// - Parameters:
   ///   - coordinate: The coordinate *q*.
-  ///   - velocity: Rate of change *q̇* of the `coordinate` over `time`; its velocity.
+  ///   - velocity: Rate of change *q̇* of the `coordinate` over `time`; its velocity in 1/c².
   ///   - time: Time *t* at which the coordinate is.
   /// - Returns: A scalar in a Lagrangian density 𝐿, determined by the type of coordinate of this
   ///   ``Space``.
+  /// - SeeAlso: ``Foundation/UnitSpeed/lightSquared``
   @differentiable(reverse,wrt: (coordinate, velocity))
   func lagrangian(
     coordinate: ConfigurationManifold.Point,
