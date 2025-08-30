@@ -47,10 +47,12 @@ extension _RealLine: Manifold {
   ///   - time: Time *t* at which the coordinate is.
   /// - Returns: Zero; this implementation of a real line contains no potential energy.
   /// - SeeAlso: ``kineticEnergy(velocity:)``
+  @differentiable(reverse,wrt: coordinate)
   public func potentialEnergy(coordinate: Double, time: Double) -> Double { 0 }
 
   /// The kinetic energy *Eₖ* describes the amount of energy of the motion of a coordinate.
   ///
   /// - Parameter velocity: Velocity of the coordinate in m/s.
+  @differentiable(reverse,wrt: velocity)
   func kineticEnergy(velocity: Double) -> Double { (lorentzFactor(velocity: velocity) - 1) * mass }
 }

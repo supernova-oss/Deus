@@ -21,17 +21,17 @@ import Testing
 @testable import QuantumMechanics
 
 struct ManifoldTests {
+  private let manifold = _RealLine(mass: 2)
+
   @Test
   func calculatesLagrangian() {
-    #expect(
-      _RealLine(mass: 2).lagrangian(coordinate: 4, velocity: 8, time: 16) == 8.881784197001252e-16
-    )
+    #expect(manifold.lagrangian(coordinate: 4, velocity: 8, time: 16) == 8.881784197001252e-16)
   }
 
   @Test
   func calculatesLorentzFactor() {
     #expect(
-      lorentzFactor(velocity: 2).isApproximatelyEqual(
+      manifold.lorentzFactor(velocity: 2).isApproximatelyEqual(
         to: (1 - 1 / (50 * UnitSpeed.light.converter.baseUnitValue(fromValue: 1))).squareRoot()
       )
     )
