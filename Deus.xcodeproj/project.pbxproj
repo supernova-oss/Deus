@@ -698,7 +698,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh ./Deus.sh\n";
+			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\nbrew install swift-sh\nchmod +x Deus.swift\n./Deus.swift\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
