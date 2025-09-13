@@ -19,6 +19,7 @@
 
 import Foundation
 import Subprocess // swiftlang/swift-subprocess ~> 0.1
+import SwiftFormat // swiftlang/swift-format ~> 601.0
 import System
 
 /// `FileManager` by which files will be written to or removed.
@@ -193,20 +194,41 @@ private func withVenv(_ body: () async throws -> Void) async throws {
 
 /// Generates .swift files based on each .swift.gyb file present in the project.
 private func generateBoilerplate() async throws {
-  let suffix = ".swift.gyb"
-  for await var file in fileManager.flatten(at: srcrootURL) {
-    var name = file.lastPathComponent
-    guard !file.hasDirectoryPath && name.hasSuffix(suffix) && name != suffix else { continue }
-    let directory = file.deletingLastPathComponent().path()
-    name.removeSubrange(name.index(name.endIndex, offsetBy: -suffix.count)...)
+  let formatter = SwiftFormatter(
+    configuration: try .init(contentsOf: srcrootURL.appending(path: ".swift-format"))
+  )
+  let gybFileNameSuffix = ".swift.gyb"
+  for await var gybFileURL in fileManager.flatten(at: srcrootURL) {
+    var gybFileName = gybFileURL.lastPathComponent
+    guard
+      !gybFileURL.hasDirectoryPath && gybFileName.hasSuffix(gybFileNameSuffix)
+        && gybFileName != gybFileNameSuffix
+    else { continue }
+    let directory = gybFileURL.deletingLastPathComponent().path()
+    let gybFileNameSuffixStartIndex = gybFileName.index(
+      gybFileName.endIndex,
+      offsetBy: -gybFileNameSuffix.count
+    )
+    gybFileName.removeSubrange(gybFileNameSuffixStartIndex...)
+    let swiftFileURL = URL(filePath: "\(directory)\(gybFileName).swift")
     try await run(
       .name("/usr/bin/python3"),
-      arguments: [
-        "gyb.py", "--line-directive", "", "-o", "\(directory)/\(name).swift", file.path()
-      ],
+      arguments: ["gyb.py", "--line-directive", "", "-o", swiftFileURL.path(), gybFileURL.path()],
       workingDirectory: srcrootFilePath,
       output: .standardOutput
     )
+    try formatter.format(at: swiftFileURL)
+  }
+}
+
+extension SwiftFormatter {
+  /// Formats the file at given `URL` according to the specified configuration.
+  ///
+  /// - Parameter fileURL: `URL` of the .swift file to be formatted.
+  fileprivate func format(at fileURL: URL) throws {
+    var output = ""
+    try format(contentsOf: fileURL, to: &output)
+    try output.write(to: fileURL, atomically: true, encoding: .utf8)
   }
 }
 
