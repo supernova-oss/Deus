@@ -10,11 +10,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Configure Swift toolchain
+        run: |
+             curl -O https://download.swift.org/swiftly/darwin/swiftly.pkg && \
+               installer -pkg swiftly.pkg -target CurrentUserHomeDirectory && \
+               ~/.swiftly/bin/swiftly init --skip-install && \
+               . "${SWIFTLY_HOME_DIR:-$HOME/.swiftly}/env.sh" && \
+               hash -r
+             swiftly install main-snapshot
+             toolchain_path=$(ls -d ~/Library/Developer/Toolchains/*DEVELOPMENT-SNAPSHOT*.xctoolchain | head -n 1)
+             echo SWIFT_TOOLCHAIN=$(defaults read "$toolchain_path/Info" CFBundleIdentifier) \
+               >> $GITHUB_ENV
       - name: Select Xcode
         run: sudo xcode-select -switch /Applications/Xcode_16.4.app/Contents/Developer
       - name: Test
         run: |
              mkdir build && xcodebuild \
+             -toolchain "$SWIFT_TOOLCHAIN" \
              -scheme Deus \
              -destination 'platform=OS X,arch=${{ matrix.arch }}' \
              -allowProvisioningUpdates CODE_SIGN_IDENTITY='-' \
