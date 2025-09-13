@@ -20,18 +20,6 @@ import Testing
 @testable import QuantumMechanics
 
 struct AnySingleColorLikeTests {
-  @Test(arguments: [
-    AnySingleColorLike(red), .init(Anti(red)), .init(green), .init(Anti(green)), .init(blue),
-    .init(Anti(blue))
-  ])
-  func allKnownColorsAndAnticolorsAreIncludedInDiscretion(_ colorLike: AnySingleColorLike) {
-    #expect(
-      AnySingleColorLike.discretion.contains(where: { discreteColorLike in
-        discreteColorLike == colorLike
-      })
-    )
-  }
-
   @Test(arguments: AnySingleColorLike.discretion)
   func isBaseColorLike(_ colorLike: AnySingleColorLike) {
     if colorLike.base is Red {

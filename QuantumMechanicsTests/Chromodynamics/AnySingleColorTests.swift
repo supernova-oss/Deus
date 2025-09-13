@@ -20,15 +20,6 @@ import Testing
 @testable import QuantumMechanics
 
 struct AnySingleColorTests {
-  @Test(arguments: [AnySingleColor(red), .init(green), .init(blue)])
-  func allKnownColorsAreIncludedInDiscretion(_ singleColor: AnySingleColor) {
-    #expect(
-      AnySingleColor.discretion.contains(where: { discreteSingleColor in
-        discreteSingleColor == singleColor
-      })
-    )
-  }
-
   @Suite("Equality")
   struct EqualityTests {
     @Suite("Red")

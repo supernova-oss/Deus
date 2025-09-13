@@ -1,0 +1,104 @@
+%{
+  # ===------------------------------------------------------------------------------------------===
+  # Copyright © 2025 Deus
+  #
+  # This file is part of the Deus open-source project.
+  #
+  # This program is free software: you can redistribute it and/or modify it under the terms of the
+  # GNU General Public License as published by the Free Software Foundation, either version 3 of the
+  # License, or (at your option) any later version.
+  #
+  # This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  # without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+  # the GNU General Public License for more details.
+  #
+  # You should have received a copy of the GNU General Public License along with this program. If
+  # not, see https://www.gnu.org/licenses.
+  # ===------------------------------------------------------------------------------------------===
+
+  import os
+
+  """Specifies each `Discrete`-conforming type that has an equatable wrapper by which such type gets
+  erased and, also, how to create their instances to be passed in as parameters of the test cases.
+  Each erasure is an object containing the following information:
+
+  - name
+    The name of the non-erased base type, without the '-like' suffix (e.g., setting it as
+    'Particle' denotes that tests for `AnyParticleLike` and `AnyParticle` will be generated).
+  - bases
+    Expressions of the instances whose types will be erased by their respective wrapper.
+  """
+  erasures = [{
+    'name': 'SingleColor',
+    'bases': ['red', 'green', 'blue']
+  }]
+  erasures.append({
+    'name': 'Quark',
+    'bases': [
+        f'{flavor.capitalize()}Quark(colorLike: {color})'
+        for flavor in ['up', 'down', 'charm', 'strange', 'bottom', 'top']
+        for color in erasures[0]['bases']
+      ]
+  })
+
+  def instantiate(erasure, includes_counterparts):
+    """Returns a list containing the expressions of the erased instances of the type of the given
+    erasure, instantiated with each of the specified bases. If `includes_counterparts` is `True`,
+    the antimatter counterpart is appended alongside each expression of the instance of the erased
+    matter part.
+
+    E.g., if the "Quark" erasure is at index 1,
+    `instantiate_erased(erasures[1], includes_counterparts=true)` returns each expression of
+    instantiation of erased quark and antiquark flavors:
+
+    [
+      'AnyQuarkLike(UpQuark(colorLike: red))',
+      '.init(Anti(UpQuark(colorLike: red)))',
+      '.init(UpQuark(colorLike: green))',
+      '.init(Anti(UpQuark(colorLike: green)))',
+      '.init(UpQuark(colorLike: blue))',
+      '.init(Anti(UpQuark(colorLike: blue)))',
+      '.init(DownQuark(colorLike: red))',
+      '.init(Anti(DownQuark(colorLike: red)))',
+      …
+    ]
+
+    In the case in which `includes_counterparts` is `False`, antiquarks are not included and,
+    instead of `AnyQuarkLike`s, `AnyQuark`s are used as wrappers.
+    """
+    name = erasure['name']
+    erased_type = f'Any{name}' + ('Like' if includes_counterparts else '')
+    exclusive_bases = erasure['bases']
+    inclusive_bases = []
+    for exclusive_base in exclusive_bases:
+      inclusive_bases.append(exclusive_base)
+      if includes_counterparts: inclusive_bases.append(f'Anti({exclusive_base})')
+    return [
+      (erased_type if index == 0 else '.init') + f'({inclusive_base})'
+      for index, inclusive_base in enumerate(inclusive_bases)
+    ]
+}%
+${os.environ.get('LICENSE_HEADER_SWIFT')}
+
+import Testing
+
+@testable import QuantumMechanics
+
+% for index, erasure in enumerate(erasures):
+  % for opposability in ['Like', '']:
+    % name = erasure['name']
+    % type = name + opposability
+    % type = type[0].capitalize() + type[1:]
+    % erased_type = 'Any' + type
+    % parameter_name = type[0].lower() + type[1:]
+struct ${erased_type}DiscretionTests {
+  @Test(arguments: [${', '.join(instantiate(erasure, includes_counterparts=bool(opposability)))}])
+  func allKnown${name}sAndTheirCounterpartsAreIncludedInDiscretion(_ ${parameter_name}: ${erased_type}) {
+    #expect(${erased_type}.discretion.contains(where: { discrete${type} in discrete${type} == ${parameter_name} }))
+  }
+}
+  % if index < len(erasures):
+
+  % end
+  % end
+% end
