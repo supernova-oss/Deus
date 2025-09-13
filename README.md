@@ -29,21 +29,10 @@
     <td>15.5</td>
   </tr>
   <tr>
-    <td>Swift toolchain</td>
-    <td id="requirements-footnote-1-ref">6 (snapshot<a href="#requirements-footnote-1"><sup>1</sup></a>)</td>
-  </tr>
-  <tr>
     <td>Xcode</td>
     <td>16.4</td>
   </tr>
 </table>
-<hr />
-<ol>
-  <li id="requirements-footnote-1">
-    <p><a href="https://github.com/project-deus/Deus/tree/main/QuantumMechanics"><code>QuantumMechanics</code></a> relies on <a href="https://github.com/swiftlang/swift/blob/d837d6052cf5403644e14956ee4376454ad633bd/docs/DifferentiableProgramming.md" target="_blank">differentiable programming</a> (for, e.g., calculating the Lagrangian of a phase of a space), which is implemented by Swift in an unstable module. Differentiation is delegated to such module because <a href="https://github.com/swiftlang/swift/blob/d837d6052cf5403644e14956ee4376454ad633bd/docs/DifferentiableProgramming.md#history-of-differentiation-algorithms" target="_blank">its implementation is far from trivial</a>.</p>
-    <p>Only the latest major version of the toolchain can have its snapshot installed. To check which version is the latest major one, refer to the <a href="https://github.com/swiftlang/swift/releases" target="_blank">Releases page of Swift</a>. <a href="#requirements-footnote-1-ref">↩</a></p>
-  </li>
-</ol>
 <h2>Development process</h2>
 <p>Some parts of the process of developing Deus are documented by the author himself in his video series <a href="https://youtube.com/playlist?list=PLHiVqgQ7o8farBkJrCzFdJe6hsDT3ight" target="_blank"><cite>Deus: Simulando o Universo</cite></a> (<cite>Deus: Simulating the Universe</cite>), in which the thinking behind the overall structure of the project is explained and important concepts regarding the physics themselves are taught.</p>
 <figure>
