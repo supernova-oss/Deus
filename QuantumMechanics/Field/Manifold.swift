@@ -15,14 +15,14 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
+import _Differentiation
 import Foundation
+internal import Numerics
 
-extension UnitElectricCharge {
-  /// Amount in elementary charge (*e*). *e* is a fundamental constant as per the SI, equating
-  /// 1.602176634 × 10⁻¹⁹ C and representing the least amount of electric charge which can exist
-  /// unconfined in the universe.
-  static let elementary = UnitElectricCharge(
-    symbol: "e",
-    converter: UnitConverterLinear(coefficient: 1.602_176_634 * pow(10, -19))
-  )
+/// *n*-dimensional, locally-Euclidean topological space whose neighborhoods by which each of its
+/// points is contained are homeomorphic subsets of ℝ*ⁿ*, denoting a resemblance of such
+/// neighborhoods to an Euclidean space.
+public protocol Manifold {
+  /// Type of a point *p* in this ``Manifold``.
+  associatedtype Point: Differentiable
 }

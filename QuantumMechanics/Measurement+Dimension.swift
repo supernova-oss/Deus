@@ -17,22 +17,17 @@
 
 import Foundation
 
-extension Measurement where UnitType == UnitAngle {
-  /// An angle of 0º.
-  public static let zero = Measurement(value: 0, unit: UnitType.baseUnit())
-}
-
-extension Measurement where UnitType == UnitElectricCharge {
-  /// An electric charge of 0 C.
-  public static let zero = Measurement(value: 0, unit: UnitType.baseUnit())
-}
-
-extension Measurement where UnitType == UnitEnergy {
-  /// An energy of 0 J.
-  public static let zero = Measurement(value: 0, unit: UnitType.baseUnit())
-}
-
-extension Measurement where UnitType == UnitMass {
-  /// A mass of 0 kg.
-  public static let zero = Measurement(value: 0, unit: UnitType.baseUnit())
+extension Measurement where UnitType: Dimension {
+  /// Converts this `Measurement` into the specified `unit`.
+  ///
+  /// This function differs from that provided by ``Foundation`` in that another `Measurement` is
+  /// not instantiated in case the unit of this one and that to which it should be converted are
+  /// equal.
+  ///
+  /// - Parameter otherUnit: A unit of the same `Dimension`.
+  /// - Returns: The converted `Measurement`.
+  public func _converted(to otherUnit: UnitType) -> Self {
+    guard unit != otherUnit else { return self }
+    return converted(to: otherUnit)
+  }
 }

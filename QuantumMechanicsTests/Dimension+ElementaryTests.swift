@@ -16,23 +16,25 @@
 // ===-------------------------------------------------------------------------------------------===
 
 import Foundation
+import Testing
 
-extension Measurement where UnitType == UnitAngle {
-  /// An angle of 0º.
-  public static let zero = Measurement(value: 0, unit: UnitType.baseUnit())
-}
+@testable import QuantumMechanics
 
-extension Measurement where UnitType == UnitElectricCharge {
-  /// An electric charge of 0 C.
-  public static let zero = Measurement(value: 0, unit: UnitType.baseUnit())
-}
+@Suite("Dimension+Elementary tests")
+struct DimensionElementaryTests {
+  @Test
+  func eIsOnePointSixZeroTwoOneSevenSixSixThreeFourJ() {
+    #expect(
+      Measurement(value: 1, unit: UnitEnergy.electronvolts)._converted(to: .joules).value
+        .isApproximatelyEqual(to: 1.602176634e-19)
+    )
+  }
 
-extension Measurement where UnitType == UnitEnergy {
-  /// An energy of 0 J.
-  public static let zero = Measurement(value: 0, unit: UnitType.baseUnit())
-}
-
-extension Measurement where UnitType == UnitMass {
-  /// A mass of 0 kg.
-  public static let zero = Measurement(value: 0, unit: UnitType.baseUnit())
+  @Test
+  func eVHasSameNumericValueAsE() {
+    #expect(
+      Measurement(value: 1, unit: UnitEnergy.electronvolts).value
+        == Measurement(value: 1, unit: UnitElectricCharge.elementary).value
+    )
+  }
 }

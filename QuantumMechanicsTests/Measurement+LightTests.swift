@@ -16,6 +16,22 @@
 // ===-------------------------------------------------------------------------------------------===
 
 import Foundation
+import Testing
 
-/// The speed of light.
-let c = Measurement(value: 299_792_458, unit: UnitSpeed.metersPerSecond)
+@testable import QuantumMechanics
+
+@Suite("Measurement+Light tests")
+struct MeasurementLightTests {
+  @Test
+  func
+    lightIsTwoHundredAndNinetyNineMillionAndSevenHundredAndNinetyTwoAndFourHundredAndFiftyEightMetersPerSecond()
+  { #expect(UnitSpeed.light.converter.baseUnitValue(fromValue: 1) == 299_792_458) }
+
+  @Test
+  func lightSquaredIsLightSpeedSquared() {
+    #expect(
+      UnitSpeed.lightSquared.converter.baseUnitValue(fromValue: 1)
+        == pow(UnitSpeed.light.converter.baseUnitValue(fromValue: 1), 2)
+    )
+  }
+}
