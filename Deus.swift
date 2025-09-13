@@ -194,18 +194,15 @@ private func withVenv(_ body: () async throws -> Void) async throws {
 /// Generates .swift files based on each .swift.gyb file present in the project.
 private func generateBoilerplate() async throws {
   let suffix = ".swift.gyb"
-  for await var file in fileManager.flatten(at: URL(filePath: srcroot, directoryHint: .isDirectory))
-  {
+  for await var file in fileManager.flatten(at: srcrootURL) {
     var name = file.lastPathComponent
     guard !file.hasDirectoryPath && name.hasSuffix(suffix) && name != suffix else { continue }
-    name.removeSubrange(
-      name.index(name.endIndex, offsetBy: -suffix.count)...name.index(before: name.endIndex)
-    )
+    let directory = file.deletingLastPathComponent().path()
+    name.removeSubrange(name.index(name.endIndex, offsetBy: -suffix.count)...)
     try await run(
       .name("/usr/bin/python3"),
       arguments: [
-        "gyb.py", "--line-directive", "", "-o",
-        "\(file.deletingLastPathComponent().path())/\(name).swift", "\(file.path())"
+        "gyb.py", "--line-directive", "", "-o", "\(directory)/\(name).swift", file.path()
       ],
       workingDirectory: srcrootFilePath,
       output: .standardOutput
