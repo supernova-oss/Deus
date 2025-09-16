@@ -16,9 +16,9 @@
 // ===-------------------------------------------------------------------------------------------===
 
 /// Wrapper for erasing the specific type of a given ``Notation``.
-public class AnyNotation: Notation {
+public final class AnyNotation: Notation {
   public let _terms: [AnyNotation]
-  public private(set) var _flatDescription: String
+  public let _flatDescription: String
 
   required init(_ base: some Notation) {
     _terms = base._terms as? [AnyNotation] ?? base._terms.map(AnyNotation.init)
@@ -46,8 +46,8 @@ extension Array: Notation where Element: Notation {
 }
 
 /// Term constituting a mathematical notation, be it an independent one or one which is part of
-/// another. In "ab² + c", a, b, ² and c are considered notations. Acts as an alternative to the
-/// limited representability in plaintext of mathematical characters and expressions.
+/// another. "ab² + c" is an example of notation. Acts as an alternative to the limited
+/// representability in plaintext of mathematical characters and expressions.
 ///
 /// ## Constraints of notations in plaintext
 ///
@@ -78,19 +78,23 @@ extension Array: Notation where Element: Notation {
 /// E.g., suppose we want to notate the prior expression in an abstract manner:
 ///
 /// ```swift
-/// (("mk" + Sub("B") + "T") / "2" + pi + Pow(reducedPlanckConstant, 2) ^ ("3" / "2")
+/// (("mk" + Sub("B") + "T") / "2" + Pi() + (ReducedPlanck() ^ 2)) ^ ("3" / "2")
 /// ```
 ///
 /// Now, there is no room for suspiscion on whether it was only B that was subscripted. The
-/// expression is notated clearly, although it may be converted into a less precise representation
-/// afterwards.
-public protocol Notation: CustomStringConvertible, Equatable {
-  /// `String` representation for when this ``Notation`` is compound (non-flat).
+/// expression is notated clearly, and can be converted into plaintext (i.e., its ``description``
+/// can be accessed) or LeX afterwards.
+public protocol Notation: CustomStringConvertible, Equatable, Sendable {
+  /// Whether this ``Notation`` contains more than one term or its single term, x, contains only one
+  /// term, which is different from x. Compoundness is the opposite of flatness.
+  var isCompound: Bool { get }
+
+  /// `String` representation for when this ``Notation`` is flat (non-compound).
   ///
   /// - SeeAlso: ``isCompound``
   var _flatDescription: String { get }
 
-  /// `String` representation for when this ``Notation`` is flat (non-compound).
+  /// `String` representation for when this ``Notation`` is compound (non-flat).
   ///
   /// - SeeAlso: ``isCompound``
   var _compoundDescription: String { get }
@@ -103,9 +107,7 @@ public protocol Notation: CustomStringConvertible, Equatable {
 }
 
 extension Notation {
-  /// Whether this ``Notation`` contains more than one term or its single term, x, contains only one
-  /// term, which is different from x. Compoundness is the opposite of flatness.
-  var isCompound: Bool {
+  public var isCompound: Bool {
     guard _terms.count > 0 else { return false }
     guard _terms.count == 1 else { return true }
     let singleTerm = _terms[0]

@@ -25,7 +25,7 @@ public struct Interval: Notation {
 
   /// Indicates the values in the extremity of an ``Interval`` to be included and those which are to
   /// be considered as excluded in the notation.
-  public enum Inclusiveness {
+  public enum Inclusiveness: Sendable {
     /// The first element of the ``Interval`` is notated as included, while the last one is as
     /// excluded.
     case first

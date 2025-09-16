@@ -15,13 +15,15 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-extension Character: Notation {
-  public var _terms: [Self] { [self] }
-  public var _flatDescription: String { self.description }
+import Testing
 
-  /// π.
-  public static var pi: Self { "π" }
+@testable import QuantumMechanics
 
-  /// ħ.
-  public static var reducedPlanck: Self { "ħ" }
+@Suite("Character+Notation tests")
+struct CharacterNotationTests {
+  @Test
+  func piIsπ() { #expect(Character.pi == "π") }
+
+  @Test
+  func reducedPlanckIsħ() { #expect(Character.reducedPlanck == "ħ") }
 }
