@@ -19,11 +19,12 @@ import Testing
 
 @testable import QuantumMechanics
 
-@Suite("Character+Notation tests")
-struct CharacterNotationTests {
+struct NotationTests {
   @Test
-  func piIsπ() { #expect(Character.pi == "π") }
+  func terminatesProgramUponInvalidSyntax() async {
+    await #expect(processExitsWith: .failure) { let _ = `$`("a_") }
+  }
 
   @Test
-  func reducedPlanckIsħ() { #expect(Character.reducedPlanck == "ħ") }
+  func returnsUponValidSyntax() { #expect(`$`("a_b").syntax == "a_b") }
 }

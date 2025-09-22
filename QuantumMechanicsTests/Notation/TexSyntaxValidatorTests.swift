@@ -19,10 +19,18 @@ import Testing
 
 @testable import QuantumMechanics
 
-struct NotationTests {
-  @Test
-  func isFlat() { #expect(!Sub("2").isCompound) }
+struct TexSyntaxValidatorTests {
+  @Test(arguments: ["", " "])
+  func throwsWhenValidatingEmptySyntax(_ syntax: String) {
+    #expect(throws: TexSyntaxError.blank) {
+      try _TexExpressionValidator.validateOrThrow(syntax)
+    }
+  }
 
   @Test
-  func isCompound() { #expect(Sub(Sub("2")).isCompound) }
+  func throwsWhenValidatingSyntaxWithConsecutiveBackslashes() {
+    #expect(throws: TexSyntaxError.blank) {
+      try _TexExpressionValidator.validateOrThrow("\\")
+    }
+  }
 }
