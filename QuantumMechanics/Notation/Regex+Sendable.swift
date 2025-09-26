@@ -15,16 +15,4 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Testing
-
-@testable import QuantumMechanics
-
-struct NotationTests {
-  @Test
-  func terminatesProgramUponInvalidSyntax() async {
-    await #expect(processExitsWith: .failure) { let _ = `$`("a_") }
-  }
-
-  @Test
-  func returnsUponValidSyntax() { #expect(`$`("a_b").expression == "a_b") }
-}
+extension Regex: @unchecked @retroactive Sendable {}

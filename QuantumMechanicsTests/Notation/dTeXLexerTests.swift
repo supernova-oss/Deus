@@ -19,18 +19,30 @@ import Testing
 
 @testable import QuantumMechanics
 
-struct TexSyntaxValidatorTests {
-  @Test(arguments: ["", " "])
-  func throwsWhenValidatingEmptySyntax(_ syntax: String) {
-    #expect(throws: TexSyntaxError.blank) {
-      try _TexExpressionValidator.validateOrThrow(syntax)
-    }
+struct dTeXLexerTests {
+  @Test
+  func tokenizesDescendantExpressionStartDelimiter() {
+    let expression = "{"
+    #expect(
+      dTeXLexer.tokenize(expression) == [
+        .descendantExpressionStartDelimiter(indices: expression.startIndex...expression.startIndex)
+      ]
+    )
   }
 
   @Test
-  func throwsWhenValidatingSyntaxWithConsecutiveBackslashes() {
-    #expect(throws: TexSyntaxError.blank) {
-      try _TexExpressionValidator.validateOrThrow("\\")
-    }
+  func tokenizesDescendantExpressionEndDelimiter() {
+    let expression = "}"
+    #expect(
+      dTeXLexer.tokenize(expression) == [
+        .descendantExpressionEndDelimiter(indices: expression.startIndex...expression.startIndex)
+      ]
+    )
+  }
+
+  @Test
+  func tokenizesIdentifier() {
+    let expression = "\\hbar"
+    #expect(dTeXLexer.tokenize("\\hbar") == [.identifier(expression.dropFirst())])
   }
 }
