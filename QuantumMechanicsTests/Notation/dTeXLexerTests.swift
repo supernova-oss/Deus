@@ -20,29 +20,61 @@ import Testing
 @testable import QuantumMechanics
 
 struct dTeXLexerTests {
-  @Test
-  func tokenizesDescendantExpressionStartDelimiter() {
-    let expression = "{"
+  /// Association between the types of tokenizers and an example of expression matching their
+  /// tokens. Facilitates testing tokenization (extraction of tokens).
+  private enum Tokenization<Expression>: CaseIterable
+  where Expression: StringProtocol, Expression.SubSequence == Substring {
+    /// Type of the tokenizer by which the tokens of the ``expression`` may be extracted.
+    fileprivate var tokenizerType: any _dTeXTokenizer<Expression>.Type {
+      switch self {
+      case .descendantExpressionEndDelimiter:
+        _DescendantExpressionEndDelimiterTokenizer<Expression>.self
+      case .descendantExpressionStartDelimiter:
+        _DescendantExpressionStartDelimiterTokenizer<Expression>.self
+      case .identifier: _IdentifierTokenizer<Expression>.self
+      case .whitespace: _WhitespaceTokenizer<Expression>.self
+      }
+    }
+
+    /// Valid dTeX expression composed only by characters which match exclusively the related
+    /// tokenizer.
+    fileprivate var expression: String {
+      switch self {
+      case .descendantExpressionEndDelimiter: "}"
+      case .descendantExpressionStartDelimiter: "{"
+      case .identifier: "\\hbar"
+      case .whitespace: " "
+      }
+    }
+
+    /// For ``_DescendantExpressionEndDelimiterTokenizer``.
+    case descendantExpressionEndDelimiter
+
+    /// For ``_DescendantExpressionStartDelimiterTokenizer``.
+    case descendantExpressionStartDelimiter
+
+    /// For ``_IdentifierTokenizer``.
+    case identifier
+
+    /// For ``_WhitespaceTokenizer``.
+    case whitespace
+  }
+
+  @Test(arguments: Tokenization<String>.allCases)
+  private func tokenizesSingleTokenExpression(_ tokenization: Tokenization<String>) {
     #expect(
-      dTeXLexer.tokenize(expression) == [
-        .descendantExpressionStartDelimiter(indices: expression.startIndex...expression.startIndex)
-      ]
+      _dTeXLexer.tokenize(tokenization.expression)
+        == tokenization.tokenizerType.tokenize(tokenization.expression)
     )
   }
 
-  @Test
-  func tokenizesDescendantExpressionEndDelimiter() {
-    let expression = "}"
+  @Test(arguments: Tokenization<String>.allCases)
+  private func tokenizesDuplicateTokenExpression(_ tokenization: Tokenization<String>) {
+    let expression = tokenization.expression + tokenization.expression;
     #expect(
-      dTeXLexer.tokenize(expression) == [
-        .descendantExpressionEndDelimiter(indices: expression.startIndex...expression.startIndex)
-      ]
+      _dTeXLexer.tokenize(expression).elementsEqual(
+        tokenization.tokenizerType.tokenize(expression)[..<2]
+      )
     )
-  }
-
-  @Test
-  func tokenizesIdentifier() {
-    let expression = "\\hbar"
-    #expect(dTeXLexer.tokenize("\\hbar") == [.identifier(expression.dropFirst())])
   }
 }

@@ -103,6 +103,6 @@ public struct Notation {
 ///
 /// For a more detailed explanation, refer to the ``Notation`` documentation.
 public func `$`(_ syntax: String) -> Notation {
-  let _ = dTeXLexer.tokenize(syntax)
+  let _ = _dTeXLexer.tokenize(syntax)
   return Notation(syntax: syntax)
 }
