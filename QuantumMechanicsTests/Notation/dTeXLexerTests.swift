@@ -32,17 +32,20 @@ struct dTeXLexerTests {
       case .descendantExpressionStartDelimiter:
         _DescendantExpressionStartDelimiterTokenizer<Expression>.self
       case .identifier: _IdentifierTokenizer<Expression>.self
+      case .operator: _OperatorTokenizer<Expression>.self
       case .whitespace: _WhitespaceTokenizer<Expression>.self
       }
     }
 
-    /// Valid dTeX expression composed only by characters which match exclusively the related
-    /// tokenizer.
+    /// dTeX expression composed only by characters which match exclusively the related tokenizer.
+    /// Will be invalid in case this is of the parameterized kind, since the parameters are not
+    /// present.
     fileprivate var expression: String {
       switch self {
       case .descendantExpressionEndDelimiter: "}"
       case .descendantExpressionStartDelimiter: "{"
       case .identifier: "\\hbar"
+      case .operator: "^"
       case .whitespace: " "
       }
     }
@@ -55,6 +58,9 @@ struct dTeXLexerTests {
 
     /// For ``_IdentifierTokenizer``.
     case identifier
+
+    /// For ``_OperatorTokenizer``.
+    case `operator`
 
     /// For ``_WhitespaceTokenizer``.
     case whitespace
