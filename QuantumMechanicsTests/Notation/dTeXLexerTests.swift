@@ -22,18 +22,17 @@ import Testing
 struct dTeXLexerTests {
   /// Association between the types of tokenizers and an example of expression matching their
   /// tokens. Facilitates testing tokenization (extraction of tokens).
-  private enum Tokenization<Expression>: CaseIterable
-  where Expression: StringProtocol, Expression.SubSequence == Substring {
+  private enum Tokenization<Expression>: CaseIterable where Expression: _dTeXUnparsedExpression {
     /// Type of the tokenizer by which the tokens of the ``expression`` may be extracted.
     fileprivate var tokenizerType: any _dTeXTokenizer<Expression>.Type {
       switch self {
       case .descendantExpressionEndDelimiter:
-        _DescendantExpressionEndDelimiterTokenizer<Expression>.self
+        _dTeXDescendantExpressionEndDelimiterTokenizer<Expression>.self
       case .descendantExpressionStartDelimiter:
-        _DescendantExpressionStartDelimiterTokenizer<Expression>.self
-      case .identifier: _IdentifierTokenizer<Expression>.self
-      case .operator: _OperatorTokenizer<Expression>.self
-      case .whitespace: _WhitespaceTokenizer<Expression>.self
+        _dTeXDescendantExpressionStartDelimiterTokenizer<Expression>.self
+      case .identifier: _dTeXIdentifierTokenizer<Expression>.self
+      case .operator: _dTeXOperatorTokenizer<Expression>.self
+      case .whitespace: _dTeXWhitespaceTokenizer<Expression>.self
       }
     }
 
@@ -70,7 +69,9 @@ struct dTeXLexerTests {
   private func tokenizesSingleTokenExpression(_ tokenization: Tokenization<String>) {
     #expect(
       _dTeXLexer.tokenize(tokenization.expression)
-        == tokenization.tokenizerType.tokenize(tokenization.expression)
+        == tokenization.tokenizerType.tokenize(tokenization.expression).map { token in
+          _AnyDTeXToken(token)
+        }
     )
   }
 
@@ -79,7 +80,7 @@ struct dTeXLexerTests {
     let expression = tokenization.expression + tokenization.expression;
     #expect(
       _dTeXLexer.tokenize(expression).elementsEqual(
-        tokenization.tokenizerType.tokenize(expression)[..<2]
+        tokenization.tokenizerType.tokenize(expression).map { token in _AnyDTeXToken(token) }[..<2]
       )
     )
   }

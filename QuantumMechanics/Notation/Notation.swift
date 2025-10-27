@@ -57,10 +57,10 @@
 /// "features" — called "expression elements" in the source of this lexer, which comprise references
 /// to constants and calls to both functions and operators — are the ones listed in the table below.
 ///
-/// | Constant    | Function       | Operator  |
-/// |-------------|----------------|-----------|
-/// | `\hbar`     | `\frac{a}{b}`  | `{a}^{b}` |
-/// | `\pi`       | `\overline{a}` | `{a}_{b}` |
+/// | Constant    | Function       | Operation  |
+/// |-------------|----------------|------------|
+/// | `\hbar`     | `\frac{a}{b}`  | `{a}^{b}`  |
+/// | `\pi`       | `\overline{a}` | `{a}_{b}`  |
 ///
 /// > Important: Any TeX-specific expression containing elements other than the ones cited above is
 /// considered an invalid dTeX expression.
@@ -86,12 +86,10 @@
 /// An instance of this struct obtained by calling ``$(_:)`` is always guaranteed to contain valid
 /// syntax.
 public struct Notation {
-  /// ``Notatable`` evaluated to this ``Notation``.
-
-  // The parser distinguishes between main and descendant expressions; no need to do so here.
+  /// dTeX expression evaluated to this ``Notation``.
   let expression: String
 
-  fileprivate init(syntax: String) { self.expression = syntax }
+  fileprivate init(expression: String) { self.expression = expression }
 }
 
 /// Instantiates a ``Notation`` from the given dTeX syntax.
@@ -102,7 +100,8 @@ public struct Notation {
 /// incorrect and/or malformed expressions may give rise to incorrect assumptions.
 ///
 /// For a more detailed explanation, refer to the ``Notation`` documentation.
-public func `$`(_ syntax: String) -> Notation {
-  let _ = _dTeXLexer.tokenize(syntax)
-  return Notation(syntax: syntax)
+public func `$`(_ expression: String) -> Notation {
+  let syntax = _dTeXLexer.tokenize(expression)
+  let _ = _dTeXParser.ast(of: syntax)
+  return Notation(expression: expression)
 }

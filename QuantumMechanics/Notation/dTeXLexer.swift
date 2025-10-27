@@ -15,155 +15,120 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
+/// Result of the tokenization of an unparsed expression by the lexer.
+typealias _dTeXSyntax<Expression: _dTeXUnparsedExpression> = [_AnyDTeXToken<Expression>]
+
+extension _dTeXSyntax where Element: _dTeXToken {
+  /// Conjunct textual representation of each token in the syntax.
+  var text: String { map(\.text).joined() }
+}
+
 /// Extractor of tokens of dTeX expressions.
 class _dTeXLexer {
   private init() {}
 
-  /// Extracts the tokens present in the given string, expected to be a main expression in dTeX.
+  /// Extracts the tokens present in the given `expression`.
   ///
   /// Different from TeX, the equation **should not** be surrounded by dollar signs ($) in case
   /// their purpose is to delimit inline math mode, as dTeX already operates only in such mode of
   /// TeX. Including these symbols at the start and/or the end of the string without escaping them
   /// results in an invalid dTeX main expression.
-  static func tokenize<Expression>(_ expression: Expression) -> [_dTeXToken<Expression>]
-  where Expression: StringProtocol, Expression.SubSequence == Substring {
+  static func tokenize<Expression>(_ expression: Expression) -> _dTeXSyntax<Expression>
+  where Expression: _dTeXUnparsedExpression {
     guard !expression.isEmpty else { return [] }
     return
       ([
-        _DescendantExpressionEndDelimiterTokenizer<Expression>.self,
-        _DescendantExpressionStartDelimiterTokenizer<Expression>.self,
-        _IdentifierTokenizer<Expression>.self, _OperatorTokenizer<Expression>.self,
-        _WhitespaceTokenizer<Expression>.self
-      ] as [any _dTeXTokenizer<Expression>.Type]).flatMap({ tokenizer in
-        tokenizer.tokenize(expression)
+        _dTeXDescendantExpressionEndDelimiterTokenizer<Expression>.self,
+        _dTeXDescendantExpressionStartDelimiterTokenizer<Expression>.self,
+        _dTeXIdentifierTokenizer<Expression>.self, _dTeXOperatorTokenizer<Expression>.self,
+        _dTeXWhitespaceTokenizer<Expression>.self
+      ] as [any _dTeXTokenizer<Expression>.Type]).flatMap({ tokenizerType in
+        tokenizerType.tokenize(expression).map { token in _AnyDTeXToken(token) }
       }).sorted()
   }
 }
 
-/// Combination of non-whitespaced characters with semantic meaning within a dTeX expression. They
-/// are present in their raw, uncategorized form in a string and are extracted and converted into
-/// cases of this enum by ``dTeXLexer``.
-enum _dTeXToken<Expression> where Expression: StringProtocol, Expression.SubSequence: Sendable {
-  /// Indices of the portion of the main expression at which the characters matched by this token
-  /// are.
-  var indices: ClosedRange<Expression.Index> {
-    switch self {
-    case .descendantExpressionEndDelimiter(let indices): indices
-    case .descendantExpressionStartDelimiter(let indices): indices
-    case .identifier(let text): text.range
-    case .operator(let text): text.range
-    case .whitespace(let index): index...index
-    }
+/// Wrapper which erases the type of a token.
+struct _AnyDTeXToken<Expression: _dTeXUnparsedExpression>: _dTeXToken {
+  let text: Expression.SubSequence
+
+  init(_ base: any _dTeXToken<Expression>) {
+    self = if let base = base as? Self { base } else { .init(base.text) }
   }
 
-  /// Closing brace (}) delimiting the end of a descendant expression of the main expression.
-  case descendantExpressionEndDelimiter(indices: ClosedRange<Expression.Index>)
-
-  /// Opening brace ({) indicating the beginning of an expression which is a descendant of the main
-  /// expression.
-  case descendantExpressionStartDelimiter(indices: ClosedRange<Expression.Index>)
-
-  /// Unique, language-defined name of an element, composed by a backslash (\) and lowercase
-  /// letters.
-  case identifier(_ text: Expression.SubSequence)
-
-  /// Character which indicates an operation with the expression at the left and the one at the
-  /// right.
-  case `operator`(_ text: Expression.SubSequence)
-
-  /// Whitespace ( ) for separating one element or expression from another.
-  case whitespace(index: Expression.Index)
+  init(_ text: Expression.SubSequence) { self.text = text }
 }
 
-extension _dTeXToken: Comparable {
-  static func < (lhs: Self, rhs: Self) -> Bool { lhs.indices.upperBound < rhs.indices.upperBound }
+extension _AnyDTeXToken: Equatable {
+  static func == (lhs: Self, rhs: Self) -> Bool { lhs.text == rhs.text }
 }
 
-extension _dTeXToken: Equatable where Expression: Equatable {
-  static func == (lhs: Self, rhs: Self) -> Bool {
-    if case .identifier(let lhsText) = lhs, case .identifier(let rhsText) = rhs {
-      lhsText == rhsText
-    } else {
-      lhs.indices == rhs.indices
-    }
+/// Specification of ``_dTeXDescendantExpressionEndDelimiterToken``.
+struct _dTeXDescendantExpressionEndDelimiterTokenizer<Expression>: _dTeXTokenizer
+where Expression: _dTeXUnparsedExpression {
+  static var regex: Regex<Expression.SubSequence> { #/}/# }
+
+  static func token(
+    of text: Expression.SubSequence
+  ) -> _dTeXDescendantExpressionEndDelimiterToken<Expression> { .init(text) }
+}
+
+/// Specification of ``_dTeXDescendantExpressionStartDelimiterToken``.
+struct _dTeXDescendantExpressionStartDelimiterTokenizer<Expression>: _dTeXTokenizer
+where Expression: _dTeXUnparsedExpression {
+  static var regex: Regex<Expression.SubSequence> { #/\{|\(/# }
+
+  static func token(
+    of text: Expression.SubSequence
+  ) -> _dTeXDescendantExpressionStartDelimiterToken<Expression> { .init(text) }
+}
+
+/// Specification ``_dTeXWhitespaceToken``.
+struct _dTeXWhitespaceTokenizer<Expression>: _dTeXTokenizer
+where Expression: _dTeXUnparsedExpression {
+  static var regex: Regex<Expression.SubSequence> { #/\s/# }
+
+  static func token(of text: Expression.SubSequence) -> _dTeXWhitespaceToken<Expression> {
+    .init(text)
   }
 }
 
-extension _dTeXToken: Sendable {}
+/// Specification of ``_dTeXIdentifierToken``.
+struct _dTeXIdentifierTokenizer<Expression>: _dTeXTokenizer
+where Expression: _dTeXUnparsedExpression {
+  static var regex: Regex<Expression.SubSequence> { #/\\[a-z]{3,}/# }
 
-/// Specification of ``_dTeXToken/descendantExpressionEndDelimiter``.
-struct _DescendantExpressionEndDelimiterTokenizer<Expression>: _dTeXTokenizer
-where Expression: StringProtocol, Expression.SubSequence == Substring {
-  let token: _dTeXToken<Expression>
-
-  static var regex: Regex<Substring> { #/}/# }
-
-  static func token(of text: Substring) -> _dTeXToken<Expression> {
-    .descendantExpressionEndDelimiter(indices: text.range)
+  static func token(of text: Expression.SubSequence) -> _dTeXIdentifierToken<Expression> {
+    .init(text.dropFirst())
   }
 }
 
-/// Specificatrion of ``_dTeXToken/descendantExpressionStartDelimiter``.
-struct _DescendantExpressionStartDelimiterTokenizer<Expression>: _dTeXTokenizer
-where Expression: StringProtocol, Expression.SubSequence == Substring {
-  let token: _dTeXToken<Expression>
+/// Specification of ``_dTeXOperatorToken``.
+struct _dTeXOperatorTokenizer<Expression>: _dTeXTokenizer
+where Expression: _dTeXUnparsedExpression {
+  static var regex: Regex<Expression.SubSequence> { #/\+|\*|\^|-|//# }
 
-  static var regex: Regex<Substring> { #/{/# }
-
-  static func token(of text: Substring) -> _dTeXToken<Expression> {
-    .descendantExpressionStartDelimiter(indices: text.range)
+  static func token(of text: Expression.SubSequence) -> _dTeXOperatorToken<Expression> {
+    .init(text)
   }
-}
-
-extension BidirectionalCollection {
-  /// Range of the indices of this collection.
-  var range: ClosedRange<Index> {
-    guard startIndex != endIndex else { return startIndex...endIndex }
-    return startIndex...index(before: endIndex)
-  }
-}
-
-/// Specification ``_dTeXToken/whitespace(index:)``.
-struct _WhitespaceTokenizer<Expression>: _dTeXTokenizer
-where Expression: StringProtocol, Expression.SubSequence == Substring {
-  let token: _dTeXToken<Expression>
-
-  static var regex: Regex<Substring> { #/\s/# }
-
-  static func token(of text: Substring) -> _dTeXToken<Expression> {
-    .whitespace(index: text.startIndex)
-  }
-}
-
-/// Specification of ``_dTeXToken/identifier(_:)``.
-struct _IdentifierTokenizer<Expression>: _dTeXTokenizer
-where Expression: StringProtocol, Expression.SubSequence == Substring {
-  static var regex: Regex<Substring> { #/\\[a-z]{3,}/# }
-
-  static func token(of text: Substring) -> _dTeXToken<Expression> { .identifier(text.dropFirst()) }
-}
-
-/// Specification of ``_dTeXToken/operator(_:)``.
-struct _OperatorTokenizer<Expression>: _dTeXTokenizer
-where Expression: StringProtocol, Expression.SubSequence == Substring {
-  static var regex: Regex<Substring> { #/\+|\*|\^|-|//# }
-
-  static func token(of text: Substring) -> _dTeXToken<Expression> { .operator(text) }
 }
 
 /// Structure responsible for returning tokens of a specific type from sequences of characters of a
 /// dTeX expression.
-protocol _dTeXTokenizer<Expression> where Expression.SubSequence == Substring {
+protocol _dTeXTokenizer<Expression> where Expression: _dTeXUnparsedExpression {
   /// Expression for which this specification of a token is.
   associatedtype Expression: StringProtocol
 
+  /// Token extractable by this tokenizer.
+  associatedtype Token: _dTeXToken<Expression>
+
   /// Regular expression by which this ``_dTeXToken`` is matched.
-  static var regex: Regex<Substring> { get }
+  static var regex: Regex<Expression.SubSequence> { get }
 
   /// Returns the token of the `text`.
   ///
   /// - Parameter text: Matching portion of the expression as it is.
-  static func token(of text: Substring) -> _dTeXToken<Expression>
+  static func token(of text: Expression.SubSequence) -> Token
 }
 
 extension _dTeXTokenizer {
@@ -172,7 +137,92 @@ extension _dTeXTokenizer {
   /// performed by ``_dTeXLexer/tokenize(_:)``.
   ///
   /// - Parameter expression: dTeX expression to tokenize.
-  static func tokenize(_ expression: Expression) -> [_dTeXToken<Expression>] {
+  static func tokenize(_ expression: Expression) -> [Token] {
     expression.matches(of: regex).map { match in token(of: match.output) }
   }
 }
+
+/// Closing brace (}) or parenthesis ()) delimiting the end of a descendant expression of its
+/// ancestor expression.
+struct _dTeXDescendantExpressionEndDelimiterToken<Expression>: _dTeXToken
+where Expression: _dTeXUnparsedExpression {
+  let text: Expression.SubSequence
+
+  init(_ text: Expression.SubSequence) { self.text = text }
+}
+
+/// Opening brace ({) or parenthesis (() indicating the beginning of an expression which is a
+/// descendant of its ancestor expression.
+struct _dTeXDescendantExpressionStartDelimiterToken<Expression>: _dTeXToken
+where Expression: _dTeXUnparsedExpression {
+  let text: Expression.SubSequence
+
+  init(_ text: Expression.SubSequence) { self.text = text }
+}
+
+/// Unique, language-defined name of an element, composed by a backslash (\\) and lowercase letters.
+struct _dTeXIdentifierToken<Expression>: _dTeXToken where Expression: _dTeXUnparsedExpression {
+  let text: Expression.SubSequence
+
+  init(_ text: Expression.SubSequence) { self.text = text }
+}
+
+/// Character which indicates an operation with the expression at the left and the one at the right.
+struct _dTeXOperatorToken<Expression>: _dTeXToken where Expression: _dTeXUnparsedExpression {
+  let text: Expression.SubSequence
+
+  init(_ text: Expression.SubSequence) { self.text = text }
+}
+
+/// Whitespace ( ) for separating one element or expression from another.
+struct _dTeXWhitespaceToken<Expression>: _dTeXToken where Expression: _dTeXUnparsedExpression {
+  let text: Expression.SubSequence
+
+  init(_ text: Expression.SubSequence) { self.text = text }
+}
+
+/// Combination of non-whitespaced characters with semantic meaning within a dTeX expression. They
+/// are present in their raw, uncategorized form in an unparsed expression and are extracted and
+/// converted into implementations of this protocol by the ``_dTeXLexer``.
+protocol _dTeXToken<Expression>: Comparable, Hashable, Sendable
+where Expression.SubSequence: Sendable {
+  associatedtype Expression: _dTeXUnparsedExpression
+
+  /// Representation of this token as it is in the expression.
+  var text: Expression.SubSequence { get }
+
+  /// Instantiates this token, defining the given portion of the expression as its ``text``.
+  ///
+  /// - Parameter text: Representation of this token as it is in the expression.
+  init(_ text: Expression.SubSequence)
+}
+
+extension _dTeXToken {
+  /// Version of this token unassociated to the expression from which it was extracted.
+  var detached: _AnyDTeXToken<String> {
+    if let self = self as? any _dTeXToken<String> { return .init(self) }
+    return .init(.init(text))
+  }
+}
+
+extension _dTeXToken where Self: Comparable {
+  static func < (lhs: Self, rhs: Self) -> Bool { lhs.text.startIndex < rhs.text.startIndex }
+}
+
+extension _dTeXToken where Self: Equatable, Expression: Equatable {
+  static func == (lhs: Self, rhs: Self) -> Bool { lhs.text == rhs.text }
+}
+
+extension _dTeXToken where Self: Hashable {
+  func hash(into hasher: inout Hasher) {
+    hasher.combine(ObjectIdentifier(Self.self))
+    hasher.combine(text)
+  }
+}
+
+extension String: _dTeXUnparsedExpression {}
+
+extension Substring: _dTeXUnparsedExpression {}
+
+/// An unparsed expression written in dTeX.
+protocol _dTeXUnparsedExpression: StringProtocol where SubSequence == Substring {}
