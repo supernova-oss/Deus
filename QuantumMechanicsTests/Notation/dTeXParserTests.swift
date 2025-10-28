@@ -21,23 +21,33 @@ import Testing
 
 struct dTeXParserTests {
   @Test
-  func constantIdentifierInitializationFailsUponUnexpectedTokens() async {
+  func errorsWhenSyntaxIsEmpty() async {
     await #expect(processExitsWith: .failure) {
-      let _ = _dTeXConstantIdentifier<String>.init(
-        detachedSyntax: [.init(_dTeXWhitespaceToken(" "))],
-        attachedSyntax: []
-      )
+      let _ = _dTeXParser.ast(of: [] as _dTeXSyntax<String>)
     }
   }
 
-  @Test(
-    arguments: zip(
-      _dTeXConstantIdentifier<String>.discretion,
-      [_dTeXConstantIdentifier<String>.hbar("hbar"), .pi("pi")]
+  @Suite("Constant identifiers")
+  struct ConstantIdentifierTests {
+    @Test
+    func constantIdentifierInitializationErrorsUponUnexpectedTokens() async {
+      await #expect(processExitsWith: .failure) {
+        let _ = _dTeXConstantIdentifier<String>.init(
+          detachedSyntax: [.init(_dTeXWhitespaceToken(" "))],
+          attachedSyntax: []
+        )
+      }
+    }
+
+    @Test(
+      arguments: zip(
+        _dTeXConstantIdentifier<String>.discretion,
+        [_dTeXConstantIdentifier<String>.hbar("hbar"), .pi("pi")]
+      )
     )
-  )
-  func parses(
-    constantIdentification: _dTeXSyntax<String>,
-    into expression: _dTeXConstantIdentifier<String>
-  ) { #expect(_dTeXConstantIdentifier<String>.find(in: constantIdentification) == [expression]) }
+    func parses(
+      constantIdentification: _dTeXSyntax<String>,
+      into expression: _dTeXConstantIdentifier<String>
+    ) { #expect(_dTeXConstantIdentifier<String>.find(in: constantIdentification) == [expression]) }
+  }
 }

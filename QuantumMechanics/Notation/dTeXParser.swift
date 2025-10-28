@@ -33,9 +33,25 @@ class _dTeXParser {
   /// If this function returns, the output is guaranteed to be the AST of a valid dTeX expression.
   ///
   /// - Parameter syntax: Tokens from an unparsed dTeX expression whose AST will be produced.
-  static func ast<UnparsedExpression>(of syntax: [_AnyDTeXToken<UnparsedExpression>])
-  where UnparsedExpression: _dTeXUnparsedExpression {
+  static func ast<Source>(of syntax: [_AnyDTeXToken<Source>]) -> _AnyDTeXParsedExpression<Source>
+  where Source: _dTeXUnparsedExpression {
+    guard !syntax.isEmpty else { fatalError("Expected an expression.") }
+    return .init(text: syntax.text[...])
   }
+}
+
+/// Wrapper which erases the type of a parsed expression.
+struct _AnyDTeXParsedExpression<Source>: _dTeXParsedExpression
+where Source: _dTeXUnparsedExpression {
+  let text: Source.SubSequence
+
+  static var discretion: [_dTeXSyntax<String>] { _dTeXConstantIdentifier<Source>.discretion }
+
+  init(detachedSyntax: _dTeXSyntax<String>, attachedSyntax: _dTeXSyntax<Source>) {
+    self = .init(text: attachedSyntax.text[...])
+  }
+
+  init(text: Source.SubSequence) { self.text = text }
 }
 
 /// Parsed identifier of a constant, a predefined reference to a symbol that does not receive any
@@ -79,14 +95,14 @@ protocol _dTeXParsedExpression: Equatable, Hashable {
   /// Unparsed expression by which this parsed one originated.
   associatedtype Source: _dTeXUnparsedExpression
 
+  /// Subsequence of the source which matches one of the discrete combinations of this parsed
+  /// expression.
+  var text: Source.SubSequence { get }
+
   /// Bi-dimensional matrix of possible syntaxes extracted from an unparsed expression produced by
   /// the lexer by which this type of parsed expression can be composed. Any other combination is
   /// that of another type of parsed expression or, if not, invalid.
   static var discretion: [_dTeXSyntax<String>] { get }
-
-  /// Subsequence of the source which matches one of the discrete combinations of this parsed
-  /// expression.
-  var text: Source.SubSequence { get }
 
   /// Initializes this type of parsed expression from both versions of the syntax produced by the
   /// lexer: the _attached_ and the _detached_ one.
