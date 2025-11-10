@@ -23,9 +23,9 @@ import Foundation
 /// - SeeAlso: ``UpQuark``
 public struct NegativePion: Equatable, Pion {
   public let symbol = "π⁻"
-  public let quarks: FixedArray<AnyQuarkLike>
+  public let quarks: [AnyQuarkLike]
 
-  fileprivate init(quarks: FixedArray<AnyQuarkLike>) { self.quarks = quarks }
+  fileprivate init(quarks: [AnyQuarkLike]) { self.quarks = quarks }
 
   public func getMass(
     approximatedBy approximator: Approximator<Measurement<UnitMass>>
