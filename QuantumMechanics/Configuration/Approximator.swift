@@ -15,7 +15,7 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-/// Producer of a value which is an approximation to the expected one, based on the derired level of
+/// Producer of a value which is an approximation to the expected one, based on the desired level of
 /// precision. Allows for accounting margins of error for simulating high-fidelity behaviors with
 /// consistency, maintaining the criteria of such approximations.
 public enum Approximator<Approximation: Comparable> {
