@@ -146,16 +146,6 @@
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
-/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		493AD59F2E757A6E00DA3A76 /* Exceptions for "QuantumMechanicsTests" folder in "Compile Sources" phase from "QuantumMechanicsTests" target */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = 49EF5D532DE20D36008AFB31 /* Sources */;
-			membershipExceptions = (
-				DiscretionTests.swift.gyb,
-			);
-		};
-/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		4927F36D2DD25BC400E368D8 /* Deus */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -201,7 +191,6 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				493AD59E2E757A6E00DA3A76 /* Exceptions for "QuantumMechanicsTests" folder in "QuantumMechanicsTests" target */,
-				493AD59F2E757A6E00DA3A76 /* Exceptions for "QuantumMechanicsTests" folder in "Compile Sources" phase from "QuantumMechanicsTests" target */,
 			);
 			path = QuantumMechanicsTests;
 			sourceTree = "<group>";
