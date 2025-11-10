@@ -19,11 +19,17 @@ import Testing
 
 @testable import QuantumMechanics
 
-struct dTeXParserTests {
-  @Test
-  func errorsWhenSyntaxIsEmpty() async {
-    await #expect(processExitsWith: .failure) {
-      let _ = _dTeXParser.ast(of: [] as _dTeXUnparsedExpression<String>)
+struct dTeXTokensMatcherTests {
+  @Suite("Description")
+  struct DescriptionTests {
+    @Test
+    func describesTokenWhoseTypeIsErased() {
+      #expect("\(_dTeXLexemeSubmatcher<String>.anyOf(_AnyDTeXToken<String>.self))" == "any token")
+    }
+
+    @Test
+    func describesRecursion() {
+      #expect("\(_dTeXLexemeSubmatcher<String>.recursion)" == "a recursion")
     }
   }
 }

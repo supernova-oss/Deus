@@ -15,15 +15,7 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Testing
-
-@testable import QuantumMechanics
-
-struct dTeXParserTests {
-  @Test
-  func errorsWhenSyntaxIsEmpty() async {
-    await #expect(processExitsWith: .failure) {
-      let _ = _dTeXParser.ast(of: [] as _dTeXUnparsedExpression<String>)
-    }
-  }
-}
+// Despite the warning on Xcode 26.0.1, `AnyCollection` is not made sendable by Swift — not even
+// when its elements are sendable; therefore, this conformance should be maintained here until the
+// language really provides it.
+extension AnyCollection: @retroactive @unchecked Sendable where Element: Sendable {}

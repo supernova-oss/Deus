@@ -19,11 +19,21 @@ import Testing
 
 @testable import QuantumMechanics
 
-struct dTeXParserTests {
-  @Test
-  func errorsWhenSyntaxIsEmpty() async {
-    await #expect(processExitsWith: .failure) {
-      let _ = _dTeXParser.ast(of: [] as _dTeXUnparsedExpression<String>)
+@Suite("Collection+Index tests")
+struct CollectionIndexTests {
+  @Suite("Absolutization")
+  struct AbsolutizationTests {
+    @Test
+    func absolutizesExistingIndex() {
+      let sentence = "Hello, world!"
+      let word = sentence[
+        sentence.index(
+          sentence.startIndex,
+          offsetBy: 7
+        )...sentence.index(sentence.endIndex, offsetBy: -2)
+      ]
+      #expect(word.abs(word.startIndex) == 0)
+      #expect(word.abs(word.endIndex) == 5)
     }
   }
 }

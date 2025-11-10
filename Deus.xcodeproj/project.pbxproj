@@ -17,6 +17,7 @@
 		498FA27F2E2459DE0058A9C8 /* ObservationKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 498FA26B2E2459DE0058A9C8 /* ObservationKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		498FA2F52E2591E80058A9C8 /* QuantumMechanics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EF5D4F2DE20D36008AFB31 /* QuantumMechanics.framework */; };
 		498FA2F62E2591E80058A9C8 /* QuantumMechanics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 49EF5D4F2DE20D36008AFB31 /* QuantumMechanics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		49E5D7232EB7676700BDF4F6 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 49E5D7222EB7676700BDF4F6 /* Algorithms */; };
 		49EF5D582DE20D36008AFB31 /* QuantumMechanics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EF5D4F2DE20D36008AFB31 /* QuantumMechanics.framework */; };
 		49F1F4102E4E8BF700ABEF15 /* Numerics in Frameworks */ = {isa = PBXBuildFile; productRef = 49F1F40F2E4E8BF700ABEF15 /* Numerics */; };
 /* End PBXBuildFile section */
@@ -144,6 +145,13 @@
 			);
 			target = 49EF5D562DE20D36008AFB31 /* QuantumMechanicsTests */;
 		};
+		49E290192EB8E457007D29FE /* Exceptions for "QuantumMechanics" folder in "QuantumMechanicsTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Notation/Any+TypeErasure.swift",
+			);
+			target = 49EF5D562DE20D36008AFB31 /* QuantumMechanicsTests */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
@@ -194,6 +202,9 @@
 		};
 		49EF5D502DE20D36008AFB31 /* QuantumMechanics */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				49E290192EB8E457007D29FE /* Exceptions for "QuantumMechanics" folder in "QuantumMechanicsTests" target */,
+			);
 			path = QuantumMechanics;
 			sourceTree = "<group>";
 		};
@@ -266,6 +277,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				49E5D7232EB7676700BDF4F6 /* Algorithms in Frameworks */,
 				497244DE2E4A618100481D5B /* Numerics in Frameworks */,
 				497244D82E4A616100481D5B /* Geometry.framework in Frameworks */,
 			);
@@ -541,6 +553,7 @@
 			name = QuantumMechanics;
 			packageProductDependencies = (
 				497244DD2E4A618100481D5B /* Numerics */,
+				49E5D7222EB7676700BDF4F6 /* Algorithms */,
 			);
 			productName = StandardKit;
 			productReference = 49EF5D4F2DE20D36008AFB31 /* QuantumMechanics.framework */;
@@ -620,6 +633,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				497244DC2E4A618100481D5B /* XCRemoteSwiftPackageReference "swift-numerics" */,
+				49E5D7212EB7676700BDF4F6 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 49FD31192DBFC9E2003CEAF9;
@@ -1538,6 +1552,14 @@
 				version = 1.0.3;
 			};
 		};
+		49E5D7212EB7676700BDF4F6 /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-algorithms.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.2.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1545,6 +1567,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 497244DC2E4A618100481D5B /* XCRemoteSwiftPackageReference "swift-numerics" */;
 			productName = Numerics;
+		};
+		49E5D7222EB7676700BDF4F6 /* Algorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 49E5D7212EB7676700BDF4F6 /* XCRemoteSwiftPackageReference "swift-algorithms" */;
+			productName = Algorithms;
 		};
 		49F1F40F2E4E8BF700ABEF15 /* Numerics */ = {
 			isa = XCSwiftPackageProductDependency;
