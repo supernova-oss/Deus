@@ -1,5 +1,5 @@
 // ===-------------------------------------------------------------------------------------------===
-// Copyright © 2025 Deus
+// Copyright © 2025 Supernova. All rights reserved.
 //
 // This file is part of the Deus open-source project.
 //
