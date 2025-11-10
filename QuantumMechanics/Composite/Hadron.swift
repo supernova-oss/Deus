@@ -44,7 +44,7 @@ public protocol Hadron: ColoredParticle {
 
   /// ``Quark``s by which this ``Hadron`` is composed, bound by strong force via the gluon
   /// ``Particle``s.
-  var quarks: FixedArray<AnyQuarkLike> { get }
+  var quarks: [AnyQuarkLike] { get }
 }
 
 extension Hadron {
