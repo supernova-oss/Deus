@@ -21,10 +21,12 @@ import Testing
 
 @Suite("Duration+Strideable tests")
 struct DurationStrideableTests {
+  private static let secondScale = Int128(1e18)
+
   @Test
   func advancesByAttoseconds() {
     #expect(
-      Duration.zero.advanced(by: Duration.secondScaleAsInt128 + 256)
+      Duration.zero.advanced(by: Self.secondScale + 256)
         == .init(secondsComponent: 1, attosecondsComponent: 256)
     )
   }
@@ -45,7 +47,5 @@ struct DurationStrideableTests {
   }
 
   @Test
-  func advancesBySeconds() {
-    #expect(Duration.zero.advanced(by: Duration.secondScaleAsInt128) == .seconds(1))
-  }
+  func advancesBySeconds() { #expect(Duration.zero.advanced(by: Self.secondScale) == .seconds(1)) }
 }
