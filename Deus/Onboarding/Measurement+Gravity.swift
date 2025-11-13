@@ -16,20 +16,21 @@
 // ===-------------------------------------------------------------------------------------------===
 
 import Foundation
-import Geometry
-internal import Numerics
 
-// MARK: - U(1)
-extension Complex<Double> {
-  /// Performs a global transformation on the phase of this quantum state on the unidimensional
-  /// Abelian unit group U(1) (a unit circle) by rotating its phase while maintaining its magnitude.
-  ///
-  /// ## Formula
-  ///
-  /// U(1) = exp(*i* × θ)
-  ///
-  /// - Parameter theta: Angle of the rotation.
-  func u1(by theta: Measurement<UnitAngle>) -> Self {
-    self * .exp(.i * theta.converted(into: .radians).value)
-  }
+/// The gravitational constant *G* in m³ ⋅ kg⁻¹ ⋅ s⁻² as per the
+/// [2022 Committee on Data for Science and Technology (CODATA) recommended values](https://physics.nist.gov/cgi-bin/cuu/Value?bg).
+let newtonianGravitationalConstant = 6.6743e-11
+
+// MARK: - Solar mass
+
+extension UnitMass {
+  /// The solar mass *M☉* in kg.
+  private static let coefficient = 1.988_416e30
+
+  /// The solar mass *M☉*, an approximation to the mass of the Sun, as per the
+  /// [International Astronomical Union (IAU) 2015 Resolution B3](https://iopscience.iop.org/article/10.3847/0004-6256/152/2/41).
+  static let solar = UnitMass(
+    symbol: "M☉",
+    converter: UnitConverterLinear(coefficient: coefficient)
+  )
 }

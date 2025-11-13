@@ -15,7 +15,21 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Foundation
+import Testing
 
-/// The speed of light.
-let c = Measurement(value: 299_792_458, unit: UnitSpeed.metersPerSecond)
+@testable import QuantumMechanics
+
+@Suite("Measurement+Light tests")
+struct MeasurementLightTests {
+  @Test
+  func cIsOneLightSpeed() {
+    #expect(c.value == 1)
+    #expect(c.unit == .light)
+  }
+
+  @Test
+  func cSquaredIsOneLightSpeedSquared() {
+    #expect(cSquared.value == 1)
+    #expect(cSquared.unit == .lightSquared)
+  }
+}

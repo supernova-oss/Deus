@@ -16,20 +16,40 @@
 // ===-------------------------------------------------------------------------------------------===
 
 import Foundation
-import Geometry
-internal import Numerics
 
-// MARK: - U(1)
-extension Complex<Double> {
-  /// Performs a global transformation on the phase of this quantum state on the unidimensional
-  /// Abelian unit group U(1) (a unit circle) by rotating its phase while maintaining its magnitude.
+/// The speed of light.
+///
+/// - SeeAlso: ``cSquared``
+@available(*, deprecated, message: "The speed of light c is now a unit (UnitSpeed.light).")
+public let c = Measurement(value: 1, unit: UnitSpeed.light)
+
+/// The speed of light, squared.
+///
+/// - SeeAlso: ``c``
+@available(
+  *,
+  deprecated,
+  message: "The square of the speed of light is now a unit (UnitSpeed.lightSquared)."
+)
+public let cSquared = Measurement(value: 1, unit: UnitSpeed.lightSquared)
+
+extension UnitSpeed {
+  /// The speed of light *c* in m/s.
+  private static let coefficient = 299_792_458.0
+
+  /// The speed of light *c*.
   ///
-  /// ## Formula
+  /// - SeeAlso: ``lightSquared``
+  public static let light = UnitSpeed(
+    symbol: "c",
+    converter: UnitConverterLinear(coefficient: coefficient)
+  )
+
+  /// The speed of light *c*, squared: *c*².
   ///
-  /// U(1) = exp(*i* × θ)
-  ///
-  /// - Parameter theta: Angle of the rotation.
-  func u1(by theta: Measurement<UnitAngle>) -> Self {
-    self * .exp(.i * theta.converted(into: .radians).value)
-  }
+  /// - SeeAlso: ``light``
+  public static let lightSquared = UnitSpeed(
+    symbol: "c²",
+    converter: UnitConverterLinear(coefficient: coefficient * coefficient)
+  )
 }

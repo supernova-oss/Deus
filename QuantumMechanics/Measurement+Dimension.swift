@@ -16,20 +16,18 @@
 // ===-------------------------------------------------------------------------------------------===
 
 import Foundation
-import Geometry
-internal import Numerics
 
-// MARK: - U(1)
-extension Complex<Double> {
-  /// Performs a global transformation on the phase of this quantum state on the unidimensional
-  /// Abelian unit group U(1) (a unit circle) by rotating its phase while maintaining its magnitude.
+extension Measurement where UnitType: Dimension {
+  /// Converts this `Measurement` into the specified `unit`.
   ///
-  /// ## Formula
+  /// This function differs from that provided by ``Foundation`` in that another `Measurement` is
+  /// not instantiated in case the unit of this one and that to which it should be converted are
+  /// equal.
   ///
-  /// U(1) = exp(*i* × θ)
-  ///
-  /// - Parameter theta: Angle of the rotation.
-  func u1(by theta: Measurement<UnitAngle>) -> Self {
-    self * .exp(.i * theta.converted(into: .radians).value)
+  /// - Parameter otherUnit: A unit of the same `Dimension`.
+  /// - Returns: The converted `Measurement`.
+  public func converted(into otherUnit: UnitType) -> Self {
+    guard unit != otherUnit else { return self }
+    return converted(to: otherUnit)
   }
 }

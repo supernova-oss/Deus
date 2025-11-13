@@ -16,20 +16,16 @@
 // ===-------------------------------------------------------------------------------------------===
 
 import Foundation
-import Geometry
-internal import Numerics
 
-// MARK: - U(1)
-extension Complex<Double> {
-  /// Performs a global transformation on the phase of this quantum state on the unidimensional
-  /// Abelian unit group U(1) (a unit circle) by rotating its phase while maintaining its magnitude.
+extension TimeInterval {
+  /// Initializes a ``TimeInterval`` from the total amount of seconds contained in the given
+  /// `duration`.
   ///
-  /// ## Formula
-  ///
-  /// U(1) = exp(*i* × θ)
-  ///
-  /// - Parameter theta: Angle of the rotation.
-  func u1(by theta: Measurement<UnitAngle>) -> Self {
-    self * .exp(.i * theta.converted(into: .radians).value)
-  }
+  /// - Parameter duration: ``Duration`` from which a ``TimeInterval`` will be initialized.
+  init(_ duration: Duration) { self = Double(duration.attoseconds) / Double(Duration.secondScale) }
+}
+
+extension Duration {
+  /// Amount of attoseconds within 1 second.
+  fileprivate static let secondScale = Int128(1e18)
 }
