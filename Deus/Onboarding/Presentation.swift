@@ -129,8 +129,8 @@ extension GraphicsContext {
   /// black hole. It exists in otherwise empty spacetime, and is uniquely describable by four of
   /// its properties:
   ///
-  /// | Property | Definition                                                                                                                 |
-  /// |----------|----------------------------------------------------------------------------------------------------------------------------|
+  /// | Property         | Definition                                                                                                                 |
+  /// |------------------|----------------------------------------------------------------------------------------------------------------------------|
   /// | Charge           | It is neutrally-charged; no charged particles have crossed its event horizon before `time` or will cross it as `time` → ∞. |
   /// | Angular momentum | Its angular momentum is zero; its event horizon does not rotate around its own axis.                                       |
   /// | Symmetry         | Its event horizon lies on an S² manifold with equidistant neighborhoods.                                                   |
