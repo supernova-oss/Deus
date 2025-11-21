@@ -15,21 +15,6 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Foundation
-
-/// Charge of up-type quarks.
-let twoThirdsOfE = Measurement(value: 2 / 3, unit: UnitElectricCharge.elementary)
-
-/// Charge of down-type quarks.
-let negativeOneThirdOfE = Measurement(value: -1 / 3, unit: UnitElectricCharge.elementary)
-
-/// Base protocol to which ``Quark``s and antiquarks conform.
-public protocol QuarkLike: ColoredParticleLike where ColorLike: SingleColorLike {}
-
-extension QuarkLike where Self: ParticleLike { public var spin: Spin { .half } }
-
-extension Anti: QuarkLike where Counterpart: Quark {}
-
 /// A quark (q) is an elementary fermion ``ColoredParticle`` which is confined, bound to at least
 /// another one by gluon ``Particle``s via strong force. It is the only ``Particle`` in the Standard
 /// Model which experiences each of the four fundamental forces: strong, weak, electromagnetic and
@@ -73,3 +58,10 @@ extension Anti: QuarkLike where Counterpart: Quark {}
 /// - SeeAlso: ``ParticleLike/charge``
 /// - SeeAlso: ``Spin/half``
 public protocol Quark: ColoredParticle, QuarkLike where ColorLike: SingleColor {}
+
+extension Anti: QuarkLike where Counterpart: Quark {}
+
+/// Base protocol to which ``Quark``s and antiquarks conform.
+public protocol QuarkLike: ColoredParticleLike where ColorLike: SingleColorLike {}
+
+extension QuarkLike where Self: ParticleLike { public var spin: Spin { .half } }

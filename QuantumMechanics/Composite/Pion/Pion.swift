@@ -15,13 +15,11 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Foundation
-
 /// Base value for calculating an approximation of the mass of a charged ``Pion``.
-let chargedPionMass = Measurement(value: 139.57039, unit: UnitMass.gigaelectronvolt)
+let chargedPionMass = Mass.gigaelectronvoltsPerLightSpeedSquared(139.57039)
 
 /// Statistical uncertainty for calculating an approximation of the mass of a charged ``Pion``.
-let chargedPionMassStatisticalUncertainty = Measurement(value: 180, unit: UnitMass.electronvolt)
+let chargedPionMassStatisticalUncertainty = Mass.electronvoltsPerLightSpeedSquared(180)
 
 /// ``Meson`` composed by ``Quark``-antiquark pairs, produced most commonly via high-energy
 /// collisions between ``Hadron``s and specific ``Particle``-antiparticle annihilation.

@@ -15,36 +15,20 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Foundation
-
-/// Base value for calculating an approximation of the mass of a ``TopQuark``.
-private let topBaseMass = Measurement(value: 173.21, unit: UnitMass.gigaelectronvolt)
-
-/// Statistical uncertainty for calculating an approximation of the mass of a ``TopQuark``.
-private let topMassStatisticalUncertainty = Measurement(
-  value: 0.51,
-  unit: UnitMass.gigaelectronvolt
-)
-
-/// Systematic uncertainty for calculating an approxiumation to the mass of a ``TopQuark``.
-private let topMassSystematicUncertainty = Measurement(value: 0.7, unit: UnitMass.gigaelectronvolt)
-
 /// Heaviest ``Quark``, with a Lagrangian mass of 173.21 ± 0.51 ± 0.7 GeV/*c*². Decays to a
 /// ``BottomQuark``.
 struct TopQuark<ColorLike: SingleColor>: Quark {
   public let symbol = "t"
-  public let charge = twoThirdsOfE
+  public let charge = ElectricCharge.elementary(2 / 3)
   public let colorLike: ColorLike
 
   public init(colorLike: ColorLike) { self.colorLike = colorLike }
 
-  func getMass(
-    approximatedBy approximator: Approximator<Measurement<UnitMass>>
-  ) -> Measurement<UnitMass> {
+  func getMass(approximatedBy approximator: Approximator<Mass>) -> Mass {
     approximator.approximate(
-      topBaseMass,
-      topMassStatisticalUncertainty,
-      topMassSystematicUncertainty
+      .gigaelectronvoltsPerLightSpeedSquared(173.21),
+      .gigaelectronvoltsPerLightSpeedSquared(0.51),
+      .gigaelectronvoltsPerLightSpeedSquared(0.7)
     )
   }
 }

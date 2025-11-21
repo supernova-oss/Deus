@@ -15,12 +15,10 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Foundation
-
 /// ``ParticleLike`` whose type information has been erased.
 public struct AnyParticleLike: ParticleLike {
   public let spin: Spin
-  public let charge: Measurement<UnitElectricCharge>
+  public let charge: ElectricCharge
   public let symbol: String
 
   /// ``ParticleLike`` based on which this one was initialized.
@@ -42,9 +40,9 @@ public struct AnyParticleLike: ParticleLike {
     }
   }
 
-  public func getMass(
-    approximatedBy approximator: Approximator<Measurement<UnitMass>>
-  ) -> Measurement<UnitMass> { base.getMass(approximatedBy: approximator) }
+  public func getMass(approximatedBy approximator: Approximator<Mass>) -> Mass {
+    base.getMass(approximatedBy: approximator)
+  }
 }
 
 extension AnyParticleLike: Equatable {
@@ -56,7 +54,7 @@ extension AnyParticleLike: Equatable {
 /// ``Particle`` whose type information has been erased.
 public struct AnyParticle: ParticleLike {
   public let spin: Spin
-  public let charge: Measurement<UnitElectricCharge>
+  public let charge: ElectricCharge
   public let symbol: String
 
   /// ``Particle`` based on which this one was initialized.
@@ -80,9 +78,9 @@ public struct AnyParticle: ParticleLike {
     }
   }
 
-  public func getMass(
-    approximatedBy approximator: Approximator<Measurement<UnitMass>>
-  ) -> Measurement<UnitMass> { base.getMass(approximatedBy: approximator) }
+  public func getMass(approximatedBy approximator: Approximator<Mass>) -> Mass {
+    base.getMass(approximatedBy: approximator)
+  }
 }
 
 extension AnyParticle: Equatable {

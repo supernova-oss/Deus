@@ -15,8 +15,6 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Foundation
-
 /// ``Pion`` with a positive ``charge`` (π⁺), resulted from u + d̄.
 ///
 /// - SeeAlso: ``UpQuark``
@@ -27,9 +25,7 @@ public struct PositivePion: Equatable, Pion {
 
   fileprivate init(quarks: [AnyQuarkLike]) { self.quarks = quarks }
 
-  public func getMass(
-    approximatedBy approximator: Approximator<Measurement<UnitMass>>
-  ) -> Measurement<UnitMass> {
+  public func getMass(approximatedBy approximator: Approximator<Mass>) -> Mass {
     approximator.approximate(chargedPionMass, chargedPionMassStatisticalUncertainty, .zero)
   }
 }

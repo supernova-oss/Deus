@@ -27,7 +27,7 @@ struct QuarkLikeTests {
         })
     )
     func chargeOfUpTypeQuarkIsTwoThirdsOfE(_ quarkLike: AnyQuarkLike) {
-      #expect(quarkLike.charge == twoThirdsOfE)
+      #expect(quarkLike.charge == .elementary(2 / 3))
     }
 
     @Test(
@@ -35,7 +35,7 @@ struct QuarkLikeTests {
         })
     )
     func chargeOfDownTypeQuarkIsNegativeOneThirdOfE(_ quarkLike: AnyQuarkLike) {
-      #expect(quarkLike.charge == negativeOneThirdOfE)
+      #expect(quarkLike.charge == .elementary(-1 / 3))
     }
   }
 }

@@ -13,31 +13,22 @@
 //
 // You should have received a copy of the GNU General Public License along with this program. If
 // not, see https://www.gnu.org/licenses.
-// ===-------------------------------------------------------------------------------------------===
-
-import Foundation
-
-/// Base value for calculating an approximation of the mass of a ``UpQuark``.
-private let upBaseMass = Measurement(value: 2.3, unit: UnitMass.megaelectronvolt)
-
-/// Statistical uncertainty for calculating an approximation of the mass of a ``UpQuark``.
-private let upMassStatisticalUncertainty = Measurement(value: 0.7, unit: UnitMass.megaelectronvolt)
-
-/// Systematic uncertainty for calculating an approxiumation to the mass of a ``UpQuark``.
-private let upMassSystematicUncertainty = Measurement(value: 0.5, unit: UnitMass.megaelectronvolt)
+// ===-------------------------------------------------------------------------------------------===I
 
 /// Lightest ``Quark``, with a Lagrangian mass of 2.3 ± 0.7 ± 0.5 MeV/*c*². As per the Standard
 /// Model, cannot decay.
 public struct UpQuark<ColorLike: SingleColor>: Quark {
   public let symbol = "u"
-  public let charge = twoThirdsOfE
+  public let charge = ElectricCharge.elementary(2 / 3)
   public let colorLike: ColorLike
 
   public init(colorLike: ColorLike) { self.colorLike = colorLike }
 
-  public func getMass(
-    approximatedBy approximator: Approximator<Measurement<UnitMass>>
-  ) -> Measurement<UnitMass> {
-    approximator.approximate(upBaseMass, upMassStatisticalUncertainty, upMassSystematicUncertainty)
+  public func getMass(approximatedBy approximator: Approximator<Mass>) -> Mass {
+    approximator.approximate(
+      .megaelectronvoltsPerLightSpeedSquared(2.3),
+      .megaelectronvoltsPerLightSpeedSquared(0.7),
+      .megaelectronvoltsPerLightSpeedSquared(0.5)
+    )
   }
 }

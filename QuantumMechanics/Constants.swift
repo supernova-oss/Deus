@@ -15,7 +15,5 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Foundation
-
 /// The speed of light.
-let c = Measurement(value: 299_792_458, unit: UnitSpeed.metersPerSecond)
+let c = Speed.metersPerSecond(299_792_458)
