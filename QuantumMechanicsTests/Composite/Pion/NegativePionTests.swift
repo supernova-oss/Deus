@@ -30,7 +30,7 @@ struct NegativePionTests {
   }
 
   @Test
-  mutating func chargeIsNegativeOneE() { #expect(negativePion.charge == .elementary(1)) }
+  mutating func chargeIsNegativeOneE() { #expect(negativePion.charge == .elementary(-1)) }
 
   @Test
   mutating func massIsOneHundredAndThirtyNinePointFiftySevenThousandAndThirtyNineGeV() {

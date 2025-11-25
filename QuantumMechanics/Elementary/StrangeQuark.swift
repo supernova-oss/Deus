@@ -18,7 +18,7 @@
 /// Third lightest ``Quark``, with a Lagrangian mass of 95 ± 5 MeV/*c*². Decays to a ``DownQuark``.
 public struct StrangeQuark<ColorLike: SingleColor>: Quark {
   public let symbol = "s"
-  public let charge = ElectricCharge.elementary(2 / 3)
+  public let charge = ElectricCharge.elementary(-1 / 3)
   public let colorLike: ColorLike
 
   public init(colorLike: ColorLike) { self.colorLike = colorLike }

@@ -88,7 +88,7 @@ public struct Mass: Measurement {
   ///
   /// - SeeAlso: ``electronvoltsPerLightSpeedSquared``
   public static let gigaelectronvoltsPerLightSpeedSquared = Measurable<Self>(
-    conversionCoefficient: 1e-6,
+    conversionCoefficient: 1e6,
     symbol: "GeV/c²"
   )
 
@@ -96,7 +96,7 @@ public struct Mass: Measurement {
   ///
   /// - SeeAlso: ``electronvoltsPerLightSpeedSquared``
   public static let megaelectronvoltsPerLightSpeedSquared = Measurable<Self>(
-    conversionCoefficient: 1e-12,
+    conversionCoefficient: 1e12,
     symbol: "MeV/c²"
   )
 
@@ -162,9 +162,18 @@ public struct Speed: Measurement {
 /// measurement may be expressed in various units, the base unit is chosen as that in which the
 /// quantity is represented by the object internally, from which conversions of the measurement from
 /// one unit into another may be performed.
-public protocol Measurement: AdditiveArithmetic, Comparable, CustomStringConvertible, Hashable,
+public protocol Measurement: AdditiveArithmetic, Comparable, CustomStringConvertible,
   UnitConvertible
 {
+  /// Factor by which the value in the base unit is multiplied, resulting in the value in the
+  /// current unit.
+  ///
+  /// Formally, given this value as *x*,
+  ///
+  /// - ``quantityInCurrentUnit`` = ``quantityInBaseUnit`` / *x*; and
+  /// - ``quantityInBaseUnit`` = ``quantityInCurrentUnit`` × *x*.
+  var conversionCoefficient: Double { get }
+
   /// Quantity in the current unit.
   var quantityInCurrentUnit: Double { get }
 
@@ -188,8 +197,8 @@ public protocol Measurement: AdditiveArithmetic, Comparable, CustomStringConvert
 }
 
 extension Measurement {
-  /// Reference to the factory of a ``Measurement`` of this type in a given unit.
-  public typealias Converter = KeyPath<Self.Type, Measurable<Self>>
+  /// Reference to the factory of this type of ``Measurement`` in a given unit.
+  public typealias Unit = KeyPath<Self.Type, Measurable<Self>>
 
   /// Quantity in the base unit.
   public var quantityInBaseUnit: Double { quantityInCurrentUnit * conversionCoefficient }
@@ -201,11 +210,26 @@ extension Measurement {
     return .init(quantityInBaseUnit: -operand.quantityInBaseUnit)
   }
 
-  public func converted(into converter: Converter) -> Self {
-    .init(
-      quantityInBaseUnit: quantityInBaseUnit * Self.self[keyPath: converter].conversionCoefficient
-    )
+  /// Converts this ``Measurement`` into one in another unit.
+  ///
+  /// - Parameter unit: Unit into which this ``Measurement`` will be converted.
+  public func converted(into unit: Unit) -> Self {
+    .init(quantityInBaseUnit: quantityInBaseUnit * Self.self[keyPath: unit].conversionCoefficient)
   }
+
+  /// Formats one of the quantities of this type of ``Measurement``.
+  ///
+  /// - Parameter quantity: The quantity (e.g., ``quantityInCurrentUnit`` or ``quantityInBaseUnit``)
+  ///   to be formatted.
+  static func formatted(quantity: Double) -> String {
+    FloatingPointFormatStyle<Double>(locale: .autoupdatingCurrent).precision(.fractionLength(0...2))
+      .grouping(.automatic).format(quantity)
+  }
+
+  /// Obtains the factory which initializes this type of ``Measurement`` in the given unit.
+  ///
+  /// - Parameter unitRepresentable: Representation of the unit.
+  static func `in`(_ unit: Unit) -> Measurable<Self> { Self.self[keyPath: unit] }
 }
 
 extension Measurement where Self: AdditiveArithmetic {
@@ -235,10 +259,7 @@ extension Measurement where Self: Comparable {
 extension Measurement where Self: CustomStringConvertible {
   /// Describes the unitized value of this ``Measurement`` (e.g., "2 cm").
   public var description: String {
-    let formattedQuantityInCurrentUnit = FloatingPointFormatStyle<Double>(
-      locale: .autoupdatingCurrent
-    ).precision(.fractionLength(2)).grouping(.automatic).format(quantityInCurrentUnit)
-    return "\(formattedQuantityInCurrentUnit) \(symbol)"
+    return "\(Self.formatted(quantity: quantityInCurrentUnit)) \(symbol)"
   }
 }
 
@@ -265,14 +286,9 @@ public struct Measurable<MeasurementType: Measurement>: UnitConvertible {
 
 /// Specifier of a coefficient for converting a value in the base unit into another in the current
 /// one.
-public protocol UnitConvertible: Sendable {
+public protocol UnitConvertible: Hashable, Sendable {
   /// Factor by which the value in the base unit is multiplied, resulting in the value in the
   /// current unit.
-  ///
-  /// Formally, given a ``Measurement`` *m* and this value as *x*,
-  ///
-  /// - `m.quantityInCurrentUnit` = `m.quantityInBaseUnit` / *x*; and
-  /// - `m.quantityInBaseUnit` = `m.quantityInCurrentUnit` × *x*.
   var conversionCoefficient: Double { get }
 
   /// Abbreviated textual representation of the unit as per the SI.

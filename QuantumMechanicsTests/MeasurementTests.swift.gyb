@@ -1,0 +1,168 @@
+%{
+  # ===------------------------------------------------------------------------------------------===
+  # Copyright © 2025 Supernova. All rights reserved.
+  #
+  # This file is part of the Deus open-source project.
+  #
+  # This program is free software: you can redistribute it and/or modify it under the terms of the
+  # GNU General Public License as published by the Free Software Foundation, either version 3 of the
+  # License, or (at your option) any later version.
+  #
+  # This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  # without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+  # the GNU General Public License for more details.
+  #
+  # You should have received a copy of the GNU General Public License along with this program. If
+  # not, see https://www.gnu.org/licenses.
+  # ===------------------------------------------------------------------------------------------===
+
+  import os
+  import re
+
+  measurements = [
+    {
+      'base_unit_symbol': 'rad',
+      'conversion': {'radians': 1},
+      'implementation_type': 'Angle'
+    },
+    {
+      'base_unit_symbol': 'e',
+      'conversion': {'elementary': 1},
+      'implementation_type': 'ElectricCharge'
+    },
+    {
+      'base_unit_symbol': 'kg',
+      'conversion': {
+        'electronvoltsPerLightSpeedSquared': 1,
+        'megaelectronvoltsPerLightSpeedSquared': 1e-12,
+        'gigaelectronvoltsPerLightSpeedSquared': 1e-6
+      },
+      'implementation_type': 'Mass'
+    },
+    {
+      'base_unit_symbol': 'm/s',
+      'conversion': {'metersPerSecond': 1},
+      'implementation_type': 'Speed'
+    }
+  ]
+  """Information about the measurements to be tested. All implementations of the `Measurement`
+  protocol should be included here.
+
+  Each map in the array contains the following key–value pairs (which are mandatory):
+  
+  - `base_unit_symbol`
+    Symbol of the base unit of the measurement. Same as that returned by
+    `UnitConvertible/baseUnitSymbol`.
+  - `conversion`
+    Relation of the name of each unit to the conversion coefficient of such unit. The conversion
+    coefficient is that returned by the `UnitConvertible/conversionCoefficient` property of the
+    measurement.
+  - `implementation_type`
+    Name of the struct to which the map refers and by which the `Measurement` protocol is
+    implemented.
+  """
+
+  def decapitalized(str):
+    """Lower-cases the first character of the given string.
+
+    :param str: The string to be decapitalized.
+    :returns The given string, decapitalized.
+    """
+
+    if not str: return str
+    decapitalized = str[0].lower() + str[1:]
+    return decapitalized
+
+  def partialize(index, access):
+    """Converts a given Swift access from full, prefixed by the name of the enclosing type, into
+    partial, in which such prefix is omitted.
+    
+    These nomenclatures ("full and partial access") do not necessarily reflect that employed by
+    Swift in the documentation or the compiler. They are Deus-specific, and compose yet another
+    type of access: contextual. An array of contextual accesses contains, in order, a full access
+    followed by partial ones.
+
+    :param index: Index of the access in the array.
+    :param access: The access, in Swift, to a property or function of a type.
+    """
+    if index == 0 or access.startswith('.'): return access
+    return '.' + '.'.join(access.split('.', 1)[1:])
+}%
+${os.environ.get('LICENSE_HEADER_SWIFT')}
+
+import Testing
+
+@testable import QuantumMechanics
+
+% for measure_index, measurement in enumerate(measurements):
+  % implementation_type = measurement['implementation_type']
+  % variable_name = decapitalized(implementation_type)
+  % unit_names = measurement['conversion'].keys()
+  % unit_representable_type = 'UnitRepresentable<' + implementation_type + '>'
+  % unit_representables = map(lambda (index, unit_name): ('UnitRepresentable(unit: \\' + implementation_type + '.Type.' if index == 0 else '.init(unit: \.') + unit_name + ')', enumerate(unit_names))
+  % full_unit_accesses = list(map(lambda unit_name: implementation_type + '.' + unit_name, unit_names))
+  % contextual_unit_accesses = [full_unit_accesses[0]] + map(lambda unit_name: '.' + unit_name, unit_names[1:])
+  % unit_representables_expression = '[' + ', '.join(unit_representables) + ']'
+  % measurement_combinations_expression = '[' + ', '.join(map(lambda (key_index, key): ', '.join(map(lambda (value_index, value): '(' + partialize(value_index, key) + '(2), ' + partialize(key_index, value) + '(2))', enumerate(contextual_unit_accesses))), enumerate(contextual_unit_accesses))) + ']'
+  % measurements_expression = '[' + ', '.join(map(lambda unit_name: unit_name + '(2)', contextual_unit_accesses)) + ']'
+fileprivate struct ${implementation_type}Tests {
+  @Test
+  func callingTheInitializerProduces${implementation_type}WhoseQuantityIsInTheBaseUnit() {
+    let ${variable_name} = ${implementation_type}(quantityInBaseUnit: 2)
+    #expect(${variable_name}.quantityInBaseUnit == 2)
+    #expect(${variable_name}.symbol == ${implementation_type}.baseUnitSymbol)
+  }
+
+  @Test
+  func identityIsZeroInBaseUnit() {
+    #expect(${implementation_type}.zero.quantityInCurrentUnit == 0)
+    #expect(${implementation_type}.zero.symbol == ${implementation_type}.baseUnitSymbol)
+  }
+
+  @Test(arguments: ${unit_representables_expression})
+  func negates(in unitRepresentable: ${unit_representable_type}) {
+    #expect(-${implementation_type}.self[keyPath: unitRepresentable.unit](2) == ${implementation_type}.self[keyPath: unitRepresentable.unit](-2))
+  }
+
+  @Test(arguments: ${measurement_combinations_expression})
+  func adds(_ addition: ${implementation_type}, to measurement: ${implementation_type}) {
+    #expect(measurement + addition == .init(quantityInBaseUnit: measurement.quantityInBaseUnit + addition.quantityInBaseUnit))
+  }
+
+  @Test(arguments: ${measurement_combinations_expression})
+  func subtracts(_ subtraction: ${implementation_type}, from measurement: ${implementation_type}) {
+    #expect(measurement - subtraction == .init(quantityInBaseUnit: measurement.quantityInBaseUnit - subtraction.quantityInBaseUnit))
+  }
+
+  @Test(arguments: zip(${measurements_expression}, ${unit_representables_expression}))
+  func converts(_ measurement: ${implementation_type}, into unitRepresentable: ${unit_representable_type}) {
+    let converted = measurement.converted(into: unitRepresentable.unit)
+    #expect(converted.quantityInBaseUnit == converted.quantityInCurrentUnit / measurement.conversionCoefficient)
+  }
+
+  @Test(arguments: ${unit_representables_expression})
+  func isDescribedByQuantityInCurrentUnitAndSymbol(_ unitRepresentable: ${unit_representable_type}) {
+    let ${variable_name} = ${implementation_type}.self[keyPath: unitRepresentable.unit](2)
+    #expect("\(${variable_name})" == "\(${implementation_type}.formatted(quantity: ${variable_name}.quantityInCurrentUnit)) \(${variable_name}.symbol)")
+  }
+}
+
+% end
+/// Representation of an SI unit in which a quantity of a ``Measurement`` may be. Exists merely for
+/// debugging purposes, allowing for displaying the actual name of the unit while testing rather
+/// than the string of the key path.
+private struct UnitRepresentable<MeasurementType> where MeasurementType: Measurement {
+  /// The unit of the specified ``Measurement`` being represented.
+  let unit: MeasurementType.Unit
+}
+
+extension UnitRepresentable: CustomDebugStringConvertible {
+  var debugDescription: String {
+    switch unit {
+% for implementation_type, unit_name in {(measurement['implementation_type'], unit_name) for measurement in measurements for unit_name in measurement['conversion'].keys()}:
+      case _ where unit == \${implementation_type}.Type.${unit_name}: "${unit_name}"
+% end
+      default: "Unknown instance of UnitRepresentable<\(MeasurementType.self)>"
+    }
+  }
+}
