@@ -308,7 +308,8 @@ fileprivate struct SpeedTests {
 /// Representation of an SI unit in which a quantity of a ``Measurement`` may be. Exists merely for
 /// debugging purposes, allowing for displaying the actual name of the unit while testing rather
 /// than the string of the key path.
-private struct UnitRepresentable<MeasurementType> where MeasurementType: Measurement {
+private struct UnitRepresentable<MeasurementType>: @unchecked Sendable
+where MeasurementType: Measurement {
   /// The unit of the specified ``Measurement`` being represented.
   let unit: MeasurementType.Unit
 }
