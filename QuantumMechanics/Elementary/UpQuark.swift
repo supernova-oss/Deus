@@ -13,7 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License along with this program. If
 // not, see https://www.gnu.org/licenses.
-// ===-------------------------------------------------------------------------------------------===I
+// ===-------------------------------------------------------------------------------------------===
 
 /// Lightest ``Quark``, with a Lagrangian mass of 2.3 ± 0.7 ± 0.5 MeV/*c*². As per the Standard
 /// Model, cannot decay.
