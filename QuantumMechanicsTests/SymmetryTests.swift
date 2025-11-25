@@ -15,7 +15,6 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Foundation
 import Numerics
 import Testing
 
@@ -29,19 +28,15 @@ struct SymmetryTests {
       #expect(Complex(2, 4).u1(by: .zero) == Complex(2, 4))
     }
 
-    @Test(
-      arguments: stride(from: 2, to: 64, by: 2).map {
-        Measurement(value: .pi * $0, unit: UnitAngle.radians)
-      }
-    )
-    func fieldIsUntransformedUponFullTurn(of angle: Measurement<UnitAngle>) {
+    @Test(arguments: stride(from: 2, to: 64, by: 2).map { Angle.radians(.pi * $0) })
+    func fieldIsUntransformedUponFullTurn(of angle: Angle) {
       #expect(Complex(2, 4).u1(by: angle).isApproximatelyEqual(to: Complex(2, 4)))
     }
 
     @Test
     func fieldIsTransformedWhenRotatedByNonGroupIdentity() {
       #expect(
-        Complex(2, 4).u1(by: Measurement(value: 2, unit: UnitAngle.radians)).isApproximatelyEqual(
+        Complex(2, 4).u1(by: .radians(2)).isApproximatelyEqual(
           to: Complex(-4.46, 0.15),
           relativeTolerance: 0.01
         )

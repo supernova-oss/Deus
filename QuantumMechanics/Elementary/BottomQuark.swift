@@ -15,26 +15,20 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Foundation
-
-/// Base value for calculating an approximation of the mass of a ``BottomQuark``.
-private let baseMass = Measurement(value: 4.18, unit: UnitMass.gigaelectronvolt)
-
-/// Statistical uncertainty for calculating an approximation of the mass of a ``BottomQuark``.
-private let massStatisticalUncertainty = Measurement(value: 0.03, unit: UnitMass.gigaelectronvolt)
-
 /// Second heaviest ``Quark``, with a Lagrangian mass of 4.18 ± 0.03 GeV/*c*². Decays to a
 /// ``CharmQuark``.
 public struct BottomQuark<ColorLike: SingleColor>: Quark {
   public let symbol = "b"
-  public let charge = negativeOneThirdOfE
+  public let charge = ElectricCharge.elementary(-1 / 3)
   public let colorLike: ColorLike
 
   public init(colorLike: ColorLike) { self.colorLike = colorLike }
 
-  public func getMass(
-    approximatedBy approximator: Approximator<Measurement<UnitMass>>
-  ) -> Measurement<UnitMass> {
-    approximator.approximate(baseMass, massStatisticalUncertainty, .zero)
+  public func getMass(approximatedBy approximator: Approximator<Mass>) -> Mass {
+    approximator.approximate(
+      .gigaelectronvoltsPerLightSpeedSquared(4.18),
+      .gigaelectronvoltsPerLightSpeedSquared(0.03),
+      .zero
+    )
   }
 }

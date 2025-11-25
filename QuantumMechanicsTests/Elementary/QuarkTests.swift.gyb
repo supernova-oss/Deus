@@ -30,7 +30,6 @@
 }%
 ${os.environ.get('LICENSE_HEADER_SWIFT')}
 
-import Foundation
 import Testing
 
 @testable import QuantumMechanics
@@ -43,12 +42,12 @@ import Testing
   % massValue = float(mass[0])
   % massUnit = mass[1]
   % spelledUnitizedMass = ''.join(char for char in inflect.engine().number_to_words(massValue).title() if char.isalpha()) + massUnit.capitalize()
-  % massUnitReference = "UnitMass.megaelectronvolt" if massUnit == 'MeV' else "UnitMass.gigaelectronvolt" if massUnit == "GeV" else "UnitMass.baseUnit()"
+  % massUnitReference = '.megaelectronvoltsPerLightSpeedSquared' if massUnit == 'MeV' else '.gigaelectronvoltsPerLightSpeedSquared' if massUnit == 'GeV' else '.electronvoltsPerLightSpeedSquared'
   % symbol = flavor[0]
 struct ${implementation}Tests {
   ${caseAttribute}
   func baseMassIs${spelledUnitizedMass}(${caseParameter}) {
-    #expect(quark.getMass(approximatedBy: .base) == Measurement(value: ${massValue}, unit: ${massUnitReference}))
+    #expect(quark.getMass(approximatedBy: .base) == ${massUnitReference}(${massValue}))
   }
 
   ${caseAttribute}

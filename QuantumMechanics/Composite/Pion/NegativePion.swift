@@ -15,8 +15,6 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Foundation
-
 /// ``Pion`` with a negative ``charge`` (π⁻), resulted from d + ū.
 ///
 /// - SeeAlso: ``DownQuark``
@@ -27,9 +25,7 @@ public struct NegativePion: Equatable, Pion {
 
   fileprivate init(quarks: [AnyQuarkLike]) { self.quarks = quarks }
 
-  public func getMass(
-    approximatedBy approximator: Approximator<Measurement<UnitMass>>
-  ) -> Measurement<UnitMass> {
+  public func getMass(approximatedBy approximator: Approximator<Mass>) -> Mass {
     approximator.approximate(chargedPionMass, chargedPionMassStatisticalUncertainty, .zero)
   }
 }

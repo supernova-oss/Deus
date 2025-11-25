@@ -15,7 +15,6 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Foundation
 import Testing
 
 @testable import QuantumMechanics
@@ -31,15 +30,13 @@ struct NegativePionTests {
   }
 
   @Test
-  mutating func chargeIsNegativeOneE() {
-    #expect(negativePion.charge == Measurement(value: -1, unit: .elementary))
-  }
+  mutating func chargeIsNegativeOneE() { #expect(negativePion.charge == .elementary(-1)) }
 
   @Test
   mutating func massIsOneHundredAndThirtyNinePointFiftySevenThousandAndThirtyNineGeV() {
     #expect(
       negativePion.getMass(approximatedBy: .base)
-        == Measurement(value: 139.57039, unit: .gigaelectronvolt)
+        == .gigaelectronvoltsPerLightSpeedSquared(139.57039)
     )
   }
 }

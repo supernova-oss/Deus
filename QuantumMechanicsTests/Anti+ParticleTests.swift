@@ -15,16 +15,13 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Foundation
 import Testing
 
 @testable import QuantumMechanics
 
 struct AntiparticleTests {
   @Test
-  func chargeIsOpposite() {
-    #expect(Anti(UpQuark(colorLike: red)).charge == Measurement(value: -2 / 3, unit: .elementary))
-  }
+  func chargeIsOpposite() { #expect(Anti(UpQuark(colorLike: red)).charge == .elementary(-2 / 3)) }
 
   @Test
   func massIsSameAsOfCounterpart() {

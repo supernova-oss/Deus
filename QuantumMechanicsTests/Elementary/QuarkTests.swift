@@ -15,7 +15,6 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Foundation
 import Testing
 
 @testable import QuantumMechanics
@@ -23,10 +22,7 @@ import Testing
 struct UpQuarkTests {
   @Test(arguments: AnySingleColor.discretion.map({ color in UpQuark(colorLike: color) }))
   func baseMassIsTwoPointThreeMev(_ quark: UpQuark<AnySingleColor>) {
-    #expect(
-      quark.getMass(approximatedBy: .base)
-        == Measurement(value: 2.3, unit: UnitMass.megaelectronvolt)
-    )
+    #expect(quark.getMass(approximatedBy: .base) == .megaelectronvoltsPerLightSpeedSquared(2.3))
   }
 
   @Test(arguments: AnySingleColor.discretion.map({ color in UpQuark(colorLike: color) }))
@@ -36,10 +32,7 @@ struct UpQuarkTests {
 struct DownQuarkTests {
   @Test(arguments: AnySingleColor.discretion.map({ color in DownQuark(colorLike: color) }))
   func baseMassIsFourPointEightMev(_ quark: DownQuark<AnySingleColor>) {
-    #expect(
-      quark.getMass(approximatedBy: .base)
-        == Measurement(value: 4.8, unit: UnitMass.megaelectronvolt)
-    )
+    #expect(quark.getMass(approximatedBy: .base) == .megaelectronvoltsPerLightSpeedSquared(4.8))
   }
 
   @Test(arguments: AnySingleColor.discretion.map({ color in DownQuark(colorLike: color) }))
@@ -49,10 +42,7 @@ struct DownQuarkTests {
 struct StrangeQuarkTests {
   @Test(arguments: AnySingleColor.discretion.map({ color in StrangeQuark(colorLike: color) }))
   func baseMassIsNinetyFivePointZeroMev(_ quark: StrangeQuark<AnySingleColor>) {
-    #expect(
-      quark.getMass(approximatedBy: .base)
-        == Measurement(value: 95.0, unit: UnitMass.megaelectronvolt)
-    )
+    #expect(quark.getMass(approximatedBy: .base) == .megaelectronvoltsPerLightSpeedSquared(95.0))
   }
 
   @Test(arguments: AnySingleColor.discretion.map({ color in StrangeQuark(colorLike: color) }))
@@ -62,10 +52,7 @@ struct StrangeQuarkTests {
 struct CharmQuarkTests {
   @Test(arguments: AnySingleColor.discretion.map({ color in CharmQuark(colorLike: color) }))
   func baseMassIsOnePointTwoSevenFiveGev(_ quark: CharmQuark<AnySingleColor>) {
-    #expect(
-      quark.getMass(approximatedBy: .base)
-        == Measurement(value: 1.275, unit: UnitMass.gigaelectronvolt)
-    )
+    #expect(quark.getMass(approximatedBy: .base) == .gigaelectronvoltsPerLightSpeedSquared(1.275))
   }
 
   @Test(arguments: AnySingleColor.discretion.map({ color in CharmQuark(colorLike: color) }))
@@ -75,10 +62,7 @@ struct CharmQuarkTests {
 struct BottomQuarkTests {
   @Test(arguments: AnySingleColor.discretion.map({ color in BottomQuark(colorLike: color) }))
   func baseMassIsFourPointOneEightGev(_ quark: BottomQuark<AnySingleColor>) {
-    #expect(
-      quark.getMass(approximatedBy: .base)
-        == Measurement(value: 4.18, unit: UnitMass.gigaelectronvolt)
-    )
+    #expect(quark.getMass(approximatedBy: .base) == .gigaelectronvoltsPerLightSpeedSquared(4.18))
   }
 
   @Test(arguments: AnySingleColor.discretion.map({ color in BottomQuark(colorLike: color) }))
@@ -88,10 +72,7 @@ struct BottomQuarkTests {
 struct TopQuarkTests {
   @Test(arguments: AnySingleColor.discretion.map({ color in TopQuark(colorLike: color) }))
   func baseMassIsOneHundredAndSeventyThreePointTwoOneGev(_ quark: TopQuark<AnySingleColor>) {
-    #expect(
-      quark.getMass(approximatedBy: .base)
-        == Measurement(value: 173.21, unit: UnitMass.gigaelectronvolt)
-    )
+    #expect(quark.getMass(approximatedBy: .base) == .gigaelectronvoltsPerLightSpeedSquared(173.21))
   }
 
   @Test(arguments: AnySingleColor.discretion.map({ color in TopQuark(colorLike: color) }))

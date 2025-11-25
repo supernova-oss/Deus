@@ -15,8 +15,6 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Foundation
-
 /// ``QuarkLike`` whose flavor information has been erased.
 public struct AnyQuarkLike: Discrete, QuarkLike {
   /// ``Quark`` based on which this one was initialized.
@@ -27,7 +25,7 @@ public struct AnyQuarkLike: Discrete, QuarkLike {
   }
 
   public let spin: Spin
-  public let charge: Measurement<UnitElectricCharge>
+  public let charge: ElectricCharge
   public let symbol: String
   public let colorLike: AnySingleColorLike
 
@@ -49,9 +47,9 @@ public struct AnyQuarkLike: Discrete, QuarkLike {
     }
   }
 
-  public func getMass(
-    approximatedBy approximator: Approximator<Measurement<UnitMass>>
-  ) -> Measurement<UnitMass> { base.getMass(approximatedBy: approximator) }
+  public func getMass(approximatedBy approximator: Approximator<Mass>) -> Mass {
+    base.getMass(approximatedBy: approximator)
+  }
 }
 
 extension AnyQuarkLike: Equatable {
@@ -74,7 +72,7 @@ public struct AnyQuark: Discrete, Quark {
   }.sorted(by: <)
 
   public let spin: Spin
-  public let charge: Measurement<UnitElectricCharge>
+  public let charge: ElectricCharge
   public let symbol: String
   public let colorLike: AnySingleColor
 
@@ -96,9 +94,9 @@ public struct AnyQuark: Discrete, Quark {
     }
   }
 
-  public func getMass(
-    approximatedBy approximator: Approximator<Measurement<UnitMass>>
-  ) -> Measurement<UnitMass> { base.getMass(approximatedBy: approximator) }
+  public func getMass(approximatedBy approximator: Approximator<Mass>) -> Mass {
+    base.getMass(approximatedBy: approximator)
+  }
 }
 
 extension AnyQuark: Equatable {

@@ -15,8 +15,6 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Foundation
-
 /// ``Particle`` composed by two or more ``Quark``s which are bound by strong force. It is the
 /// compositor of nucleons — such as protons and neutrons — and, therefore, the most common
 /// composite ``Particle`` in the universe.
@@ -71,8 +69,10 @@ extension Hadron where Self: ParticleLike {
 }
 
 extension Hadron where Self: ColoredParticleLike {
-  public var charge: Measurement<UnitElectricCharge> {
-    quarks.reduce(.zero) { charge, quark in quark.charge + charge }
+  public var charge: ElectricCharge {
+    var quantityInBaseUnit = 0.0
+    for quark in quarks { quantityInBaseUnit += quark.charge.quantityInBaseUnit }
+    return .init(quantityInBaseUnit: quantityInBaseUnit)
   }
   public var colorLike: ColorLike { white as! ColorLike }
 }
