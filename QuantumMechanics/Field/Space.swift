@@ -55,13 +55,11 @@ public protocol Space {
   ///   - coordinate: The coordinate *q*.
   ///   - velocity: Rate of change *q̇* of the `coordinate` over `time`; its velocity in 1/c².
   ///   - time: Time *t* at which the coordinate is.
-  /// - Returns: A scalar in a Lagrangian density 𝐿, determined by the type of coordinate of this
-  ///   ``Space``.
-  /// - SeeAlso: ``Foundation/UnitSpeed/lightSquared``
-  @differentiable(reverse,wrt: (coordinate, velocity))
-  func lagrangian(
-    coordinate: ConfigurationManifold.Point,
-    velocity: ConfigurationManifold.Point.TangentVector,
+  /// - Returns: A scalar in a Lagrangian density *𝐿*.
+  /// - SeeAlso: ``Speed/light``
+  func lagrangianDensity(
+    coordinate: Coordinate,
+    velocity: Coordinate.TangentVector,
     time: Double
   ) -> LagrangianDensity
 
@@ -89,10 +87,7 @@ extension Space {
   /// - Parameter velocity: Velocity of *q* in 1/c.
   /// - SeeAlso: ``Speed/light``
   public func kineticEnergy(velocity: Coordinate.TangentVector) -> Energy {
-    .init(
-      quantityInBaseUnit: (lorentzFactor(velocity: velocity).quantityInBaseUnit - 1)
-        * mass.quantityInBaseUnit
-    )
+    .joules((lorentzFactor(velocity: velocity).quantityInBaseUnit - 1) * mass.quantityInBaseUnit)
   }
 }
 
@@ -100,8 +95,8 @@ extension Space
 where Coordinate.TangentVector: FloatingPoint, Coordinate.TangentVector.Magnitude == Double {
   public func lorentzFactor(velocity: ConfigurationManifold.Point.TangentVector) -> Energy {
     let lightSpeedInMetersPerSecond = Speed.light(1).quantityInBaseUnit
-    return .init(
-      quantityInBaseUnit: 1
+    return .joules(
+      1
         / (1 - velocity * velocity / lightSpeedInMetersPerSecond * lightSpeedInMetersPerSecond)
         .squareRoot()
     )
