@@ -1,0 +1,3 @@
+[submodule "swift-sh"]
+	path = swift-sh
+	url = https://github.com/mxcl/swift-sh.git

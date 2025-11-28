@@ -29,7 +29,6 @@ jobs:
              -toolchain "$SWIFT_TOOLCHAIN" \
              -scheme Deus \
              -destination 'platform=OS X,arch=${{ matrix.arch }}' \
-             -allowProvisioningUpdates CODE_SIGN_IDENTITY='-' \
              build test &&
              exit ${PIPESTATUS[0]}
     strategy:
