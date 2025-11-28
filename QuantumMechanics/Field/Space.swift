@@ -23,9 +23,9 @@ public protocol Space {
   /// ``Manifold`` at which each configuration of this ``Space`` is.
   associatedtype ConfigurationManifold: Manifold
 
-  /// ``Measurement`` resulted from calculating a ``lagrangian(coordinate:velocity:time:)``. Differs
-  /// between the type of mechanics (i.e., quantum and classical) and interpretations within quantum
-  /// mechanics.
+  /// ``Measurement`` resulted from calculating a ``lagrangianDensity(coordinate:velocity:time:)``.
+  /// Differs between the type of mechanics (i.e., quantum and classical) and interpretations within
+  /// quantum mechanics.
   associatedtype LagrangianDensity: Measurement
 
   /// Type of a coordinate in this ``Space``.
