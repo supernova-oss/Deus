@@ -1,5 +1,5 @@
 // ===-------------------------------------------------------------------------------------------===
-// Copyright © 2025 Supernova. All rights reserved.
+// Copyright © 2025 Deus
 //
 // This file is part of the Deus open-source project.
 //
@@ -21,6 +21,4 @@ public func derivative<X: Differentiable>(of f: (_ x: X) -> X) -> X { fatalError
 ///
 /// The limit of a function is the value to which it equals as it approaches a value within the
 /// domain of such function.
-public func limit<X: Differentiable>(of f: (_ x: X) -> X) -> X? {
-  nil
-}
+public func limit<X: Differentiable>(of f: (_ x: X) -> X) -> X? { nil }

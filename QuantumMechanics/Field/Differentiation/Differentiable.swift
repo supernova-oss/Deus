@@ -1,5 +1,5 @@
 // ===-------------------------------------------------------------------------------------------===
-// Copyright © 2025 Supernova. All rights reserved.
+// Copyright © 2025 Deus
 //
 // This file is part of the Deus open-source project.
 //
@@ -31,8 +31,8 @@ public protocol Differentiable {
 
   /// Advances the manifold by the given tangent offset `n`.
   ///
-  /// - Parameter advancement: Offset by which this ``Differentiable`` will be moved.
-  mutating func advance(by advancement: TangentVector)
+  /// - Parameter n: Offset by which this ``Differentiable`` will be moved.
+  mutating func advance(by n: TangentVector)
 }
 
 extension Differentiable where TangentVector == Self {

@@ -15,6 +15,9 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
+import Foundation
+internal import Numerics
+
 /// *n*-dimensional, locally-Euclidean topological space whose neighborhoods by which each of its
 /// points is contained are homeomorphic subsets of ℝ*ⁿ*, denoting a resemblance of such
 /// neighborhoods to an Euclidean space.
