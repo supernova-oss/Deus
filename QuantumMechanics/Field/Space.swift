@@ -34,12 +34,6 @@ public protocol Space {
   /// Sum of the mass of every configuration within this ``Space``.
   var mass: Mass { get }
 
-  // TODO: Ideally, `lagrangian(coordinate:velocity:time:)` and `potentialEnergy(coordinate:time:)`
-  // would return an instance of `Measurement` of `UnitEnergy` and `UnitAction` respectively, where
-  // `UnitAction` represents eV/eV⁻¹ in particle physics or J/s in classical mechanics. However,
-  // SourceKitService crashes when such type is extended to conform to `Differentiable` as of Swift
-  // 6.2-snapshot-2025-08-21.
-
   /// Calculates the Lagrangian density *𝐿* over the given coordinate and moment in time.
   ///
   /// The Lagrangian is a smooth, scalar function on the tangent bundle (the union of every tangent
@@ -55,7 +49,7 @@ public protocol Space {
   ///   - coordinate: The coordinate *q*.
   ///   - velocity: Rate of change *q̇* of the `coordinate` over `time`; its velocity in 1/c².
   ///   - time: Time *t* at which the coordinate is.
-  /// - Returns: A scalar in a Lagrangian density *𝐿*.
+  /// - Returns: A unitized scalar in a Lagrangian density *𝐿*.
   /// - SeeAlso: ``Speed/light``
   func lagrangianDensity(
     coordinate: Coordinate,
