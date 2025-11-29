@@ -15,6 +15,9 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
+#if canImport(_Differentiation)
+import _Differentiation
+
 /// A "space" is a Deus-specific combination of a configuration space *Q* on a ``Manifold`` *M*; a
 /// Lagrangian phase space *TQ*, tangent to *Q*, containing pairs of coordinates *q* and velocities
 /// *q̇*; and a Hamiltonian phase space _T_*_Q_, a set of (*qⁱ*, *pᵢ*) cotagent to *Q*, associating
@@ -96,3 +99,4 @@ where Coordinate.TangentVector: FloatingPoint, Coordinate.TangentVector.Magnitud
     )
   }
 }
+#endif

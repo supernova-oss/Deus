@@ -15,6 +15,8 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
+#if canImport(_Differentiation)
+import _Differentiation
 import Foundation
 internal import Numerics
 
@@ -25,3 +27,4 @@ public protocol Manifold {
   /// Type of a point *p* in this ``Manifold``.
   associatedtype Point: Differentiable
 }
+#endif
