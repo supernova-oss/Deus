@@ -1,5 +1,5 @@
 // ===-------------------------------------------------------------------------------------------===
-// Copyright © 2025 Deus
+// Copyright © 2025 Supernova. All rights reserved.
 //
 // This file is part of the Deus open-source project.
 //
@@ -15,10 +15,36 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-public func derivative<X: Differentiable>(of f: (_ x: X) -> X) -> X { fatalError() }
+#if canImport(_Differentiation)
+import _Differentiation
 
-/// Finds the limit of the given function.
-///
-/// The limit of a function is the value to which it equals as it approaches a value within the
-/// domain of such function.
-public func limit<X: Differentiable>(of f: (_ x: X) -> X) -> X? { nil }
+extension Angle: Differentiable {
+  public typealias TangentVector = Self
+
+  public mutating func move(by offset: Self) { self += offset }
+}
+
+extension ElectricCharge: Differentiable {
+  public typealias TangentVector = Self
+
+  public mutating func move(by offset: Self) { self += offset }
+}
+
+extension Energy: Differentiable {
+  public typealias TangentVector = Self
+
+  public mutating func move(by offset: Self) { self += offset }
+}
+
+extension Mass: Differentiable {
+  public typealias TangentVector = Self
+
+  public mutating func move(by offset: Self) { self += offset }
+}
+
+extension Speed: Differentiable {
+  public typealias TangentVector = Self
+
+  public mutating func move(by offset: Self) { self += offset }
+}
+#endif

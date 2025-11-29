@@ -152,7 +152,8 @@ private func writePreCommitHook() async throws {
     .name("/bin/chmod"),
     arguments: ["+x", preCommitURL.path()],
     workingDirectory: srcrootFilePath,
-    output: .standardOutput
+    output: .standardOutput,
+    error: .standardError
   )
 }
 
@@ -169,26 +170,30 @@ private func withVenv(_ body: () async throws -> Void) async throws {
     .name("/usr/bin/python3"),
     arguments: ["-m", "venv", ".venv"],
     workingDirectory: srcrootFilePath,
-    output: .standardOutput
+    output: .standardOutput,
+    error: .standardError
   )
   try await run(
     .name("\(srcroot)/.venv/bin/pip"),
-    arguments: ["install", "pip", "--upgrade"],
+    arguments: ["install", "-r", "requirements.txt"],
     workingDirectory: srcrootFilePath,
-    output: .standardOutput
+    output: .standardOutput,
+    error: .standardError
   )
   try await run(
     .name("\(srcroot)/.venv/bin/pip"),
-    arguments: ["install", "inflect"],
+    arguments: ["install", "."],
     workingDirectory: srcrootFilePath,
-    output: .standardOutput
+    output: .standardOutput,
+    error: .standardError
   )
   try await body()
   try await run(
     .name("/bin/rm"),
     arguments: ["-rf", ".venv"],
     workingDirectory: srcrootFilePath,
-    output: .standardOutput
+    output: .standardOutput,
+    error: .standardError
   )
 }
 
@@ -212,10 +217,11 @@ private func generateBoilerplate() async throws {
     gybFileName.removeSubrange(gybFileNameSuffixStartIndex...)
     let swiftFileURL = URL(filePath: "\(directory)\(gybFileName).swift")
     try await run(
-      .name("/usr/bin/python3"),
+      .name("\(srcroot)/.venv/bin/python3"),
       arguments: ["gyb.py", "--line-directive", "", "-o", swiftFileURL.path(), gybFileURL.path()],
       workingDirectory: srcrootFilePath,
-      output: .standardOutput
+      output: .standardOutput,
+      error: .standardError
     )
     try formatter.format(at: swiftFileURL)
   }
