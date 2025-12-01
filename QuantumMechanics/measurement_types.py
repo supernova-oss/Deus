@@ -16,6 +16,8 @@
 # see https://www.gnu.org/licenses.
 # ===--------------------------------------------------------------------------------------------===
 
+_e = 1.602176634e-19
+
 class Conversion:
   def __init__(self, measurable_name: str, coefficient: float):
     self.measurable_name = measurable_name
@@ -42,12 +44,12 @@ def all_measurement_types() -> list[Measurement]:
     Measurement(
       implementation_name='ElectricCharge',
       base_unit_symbol='e',
-      conversions=[Conversion('elementary', 1)]
+      conversions=[Conversion('elementary', _e), Conversion('coulombs', 1)]
     ),
     Measurement(
       implementation_name='Energy',
       base_unit_symbol='J',
-      conversions=[Conversion('joules', 1), Conversion('electronvolts', 0)]
+      conversions=[Conversion('joules', 1), Conversion('electronvolts', _e)]
     ),
     Measurement(
       implementation_name='Mass',
