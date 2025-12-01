@@ -148,8 +148,8 @@
 		498F54242EDB2CFF00FB4D53 /* Exceptions for "QuantumMechanics" folder in "QuantumMechanics" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				measurement_types.py,
 				"Measurement+Differentiable.swift.gyb",
-				MeasurementTypes.py,
 			);
 			target = 49EF5D4E2DE20D36008AFB31 /* QuantumMechanics */;
 		};

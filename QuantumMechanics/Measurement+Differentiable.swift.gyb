@@ -16,12 +16,12 @@
   # not, see https://www.gnu.org/licenses.
   # ===------------------------------------------------------------------------------------------===
 
+  from os import environ
   from QuantumMechanics import all_measurement_types
-  import os
 
   all_measurement_types = all_measurement_types()
 }%
-${os.environ.get('LICENSE_HEADER_SWIFT')}
+${environ.get('LICENSE_HEADER_SWIFT')}
 
 #if canImport(_Differentiation)
 import _Differentiation
