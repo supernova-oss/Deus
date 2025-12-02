@@ -16,54 +16,21 @@
 # see https://www.gnu.org/licenses.
 # ===--------------------------------------------------------------------------------------------===
 
-_e = 1.602176634e-19
-
-class Conversion:
-  def __init__(self, measurable_name: str, coefficient: float):
-    self.measurable_name = measurable_name
-    self.coefficient = coefficient
-
-class Measurement:
-  def __init__(
-    self,
-    identifier: str,
-    base_unit_symbol: str,
-    conversions: list[Conversion]
-  ):
+class MeasurementType:
+  def __init__(self, identifier: str, measurables: list[str]):
     self.identifier = identifier
-    self.base_unit_symbol = base_unit_symbol
-    self.conversions = conversions
+    self.measurables = measurables
 
-def all_measurement_types() -> list[Measurement]:
+def all_measurement_types() -> list[MeasurementType]:
   return [
-    Measurement(
-      identifier='Angle',
-      base_unit_symbol='rad',
-      conversions=[Conversion('radians', 1)]
-    ),
-    Measurement(
-      identifier='ElectricCharge',
-      base_unit_symbol='e',
-      conversions=[Conversion('elementary', _e), Conversion('coulombs', 1)]
-    ),
-    Measurement(
-      identifier='Energy',
-      base_unit_symbol='J',
-      conversions=[Conversion('joules', 1), Conversion('electronvolts', _e)]
-    ),
-    Measurement(
-      identifier='Mass',
-      base_unit_symbol='kg',
-      conversions=[
-        Conversion('electronvoltsPerLightSpeedSquared', 1.78266192e-36),
-        Conversion('gigaelectronvoltsPerLightSpeedSquared', 1.78266192e-27),
-        Conversion('kilograms', 1),
-        Conversion('megaelectronvoltsPerLightSpeedSquared', 1.78266192e-30)
-      ]
-    ),
-    Measurement(
-      identifier='Speed',
-      base_unit_symbol='m/s',
-      conversions=[Conversion('metersPerSecond', 1), Conversion('light', 299792458)]
-    )
+    MeasurementType('Angle', ['radians']),
+    MeasurementType('ElectricCharge', ['elementary', 'coulombs']),
+    MeasurementType('Energy', ['joules', 'electronvolts']),
+    MeasurementType('Mass', [
+      'electronvoltsPerLightSpeedSquared',
+      'gigaelectronvoltsPerLightSpeedSquared',
+      'kilograms',
+      'megaelectronvoltsPerLightSpeedSquared'
+    ]),
+    MeasurementType('Speed', ['metersPerSecond', 'light'])
   ]
