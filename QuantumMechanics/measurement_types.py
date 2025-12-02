@@ -26,33 +26,33 @@ class Conversion:
 class Measurement:
   def __init__(
     self,
-    implementation_name: str,
+    identifier: str,
     base_unit_symbol: str,
     conversions: list[Conversion]
   ):
-    self.implementation_name = implementation_name
+    self.identifier = identifier
     self.base_unit_symbol = base_unit_symbol
     self.conversions = conversions
 
 def all_measurement_types() -> list[Measurement]:
   return [
     Measurement(
-      implementation_name='Angle',
+      identifier='Angle',
       base_unit_symbol='rad',
       conversions=[Conversion('radians', 1)]
     ),
     Measurement(
-      implementation_name='ElectricCharge',
+      identifier='ElectricCharge',
       base_unit_symbol='e',
       conversions=[Conversion('elementary', _e), Conversion('coulombs', 1)]
     ),
     Measurement(
-      implementation_name='Energy',
+      identifier='Energy',
       base_unit_symbol='J',
       conversions=[Conversion('joules', 1), Conversion('electronvolts', _e)]
     ),
     Measurement(
-      implementation_name='Mass',
+      identifier='Mass',
       base_unit_symbol='kg',
       conversions=[
         Conversion('electronvoltsPerLightSpeedSquared', 1.78266192e-36),
@@ -62,7 +62,7 @@ def all_measurement_types() -> list[Measurement]:
       ]
     ),
     Measurement(
-      implementation_name='Speed',
+      identifier='Speed',
       base_unit_symbol='m/s',
       conversions=[Conversion('metersPerSecond', 1), Conversion('light', 299792458)]
     )
