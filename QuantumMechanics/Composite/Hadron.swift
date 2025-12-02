@@ -72,7 +72,7 @@ extension Hadron where Self: ColoredParticleLike {
   public var charge: ElectricCharge {
     var quantityInBaseUnit = 0.0
     for quark in quarks { quantityInBaseUnit += quark.charge.quantityInBaseUnit }
-    return .init(quantityInBaseUnit: quantityInBaseUnit)
+    return .init(integerLiteral: quantityInBaseUnit)
   }
   public var colorLike: ColorLike { white as! ColorLike }
 }

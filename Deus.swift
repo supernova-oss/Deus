@@ -51,13 +51,10 @@ private func exportSrcroot() throws {
 /// Deus, according to the file into which it is intended to be written. Implies that the maximum
 /// length of a column is of 100 characters, formatting the headers accordingly.
 ///
-/// +-------------+------------------------+
 /// | File        | Variable               |
-/// +-------------+------------------------+
+/// |-------------|------------------------|
 /// | .sh         | `LICENSE_HEADER_SH`    |
-/// +-------------+------------------------+
 /// | .swift      | `LICENSE_HEADER_SWIFT` |
-/// +-------------+------------------------+
 private func exportLicenseHeaders() {
   let year = Calendar(identifier: .gregorian).dateComponents([.year], from: Date.now).year!
   setenv(
@@ -128,6 +125,26 @@ private func requireenv(_ name: String) -> String {
 
 // MARK: - Git
 
+/// State of a file in Git which determines whether it is in the staging area (index), with the
+/// presence of such file in it denoting that it will be included in next commit until the file is
+/// unstaged.
+private enum GitStagingAreaPresence {
+  /// Flags for [`git-diff`](https://git-scm.com/docs/git-diff) according to this marker of presence
+  /// of files in the staging area.
+  var diffingFlags: [String] {
+    switch self {
+    case .unstaged: []
+    case .staged: ["--staged"]
+    }
+  }
+
+  /// The file is not in the staging area and will not be included in the next commit.
+  case unstaged
+
+  /// The file is in the staging area and will be included in the next commit.
+  case staged
+}
+
 try await writePreCommitHook()
 
 /// Writes a hook which formats all .swift files according to .swift-format, located at the
@@ -152,11 +169,102 @@ private func writePreCommitHook() async throws {
     .name("/bin/chmod"),
     arguments: ["+x", preCommitURL.path()],
     workingDirectory: srcrootFilePath,
-    output: .standardOutput
+    output: .standardOutput,
+    error: .standardError
+  )
+}
+
+/// Obtains the URLs of the files which have been modified since the last commit and are either in
+/// the staging area (that is: to be commited) or those which will not be added in the next commit.
+/// The sorting is defined by [`git-diff`](https://git-scm.com/docs/git-diff).
+///
+/// - Parameter stagingAreaPresence: Presence of the files whose URLs will be obtained in the
+///   staging area.
+private func modifiedFileURLs(
+  ofFilesWhichAre stagingAreaPresence: GitStagingAreaPresence
+) async throws -> Set<URL> {
+  guard
+    let modifiedFileURLsAsStrings = try await run(
+      .name("/usr/bin/git"),
+      arguments: .init(["diff", "--name-only"] + stagingAreaPresence.diffingFlags),
+      workingDirectory: srcrootFilePath,
+      output: .string(limit: .max),
+      error: .standardError
+    ).standardOutput?.split(separator: #/\n|\s-{2}\s/#)
+  else { return [] }
+  return Set(
+    Array(
+      unsafeUninitializedCapacity: modifiedFileURLsAsStrings.count,
+      initializingWith: { pointer, initializedCount in
+        guard var currentBaseAddress = pointer.baseAddress else { return }
+        for modifiedFileURLAsString in modifiedFileURLsAsStrings {
+          defer { currentBaseAddress = currentBaseAddress.successor() }
+          guard !modifiedFileURLAsString.isEmpty else { continue }
+          currentBaseAddress.initialize(
+            to: .init(
+              filePath: .init(modifiedFileURLAsString),
+              directoryHint: .notDirectory,
+              relativeTo: srcrootURL
+            )
+          )
+          initializedCount += 1
+        }
+      }
+    )
   )
 }
 
 // MARK: - GYB
+
+/// URL of every file which has been modified since the last commit, including both those in the
+/// staging area and those unstaged.
+private var allModifiedFileURLs: Set<URL> {
+  get async throws {
+    do {
+      async let unstagedModifiedFileURLs = try modifiedFileURLs(ofFilesWhichAre: .unstaged)
+      async let stagedModifiedFileURLs = try modifiedFileURLs(ofFilesWhichAre: .staged)
+      return await unstagedModifiedFileURLs.union(stagedModifiedFileURLs)
+    } catch { throw error }
+  }
+}
+
+/// URL of the templates whose Swift files which would have been generated from them are not
+/// present. Their absence may be the result of manual deletion.
+private var unpairedTemplateURLs: Set<URL> {
+  get async throws {
+    guard
+      let templateFileURLsAsStrings = try await run(
+        .name("/usr/bin/find"),
+        arguments: [".", "-name", "*.swift.gyb", "-type", "f"],
+        workingDirectory: srcrootFilePath,
+        output: .string(limit: .max),
+        error: .standardError
+      ).standardOutput?.split(separator: #/\n/#)
+    else { return [] }
+    return .init(
+      Array(
+        unsafeUninitializedCapacity: templateFileURLsAsStrings.count,
+        initializingWith: { pointer, initializedCount in
+          guard var currentAddress = pointer.baseAddress else { return }
+          for var templateFileURLAsString in templateFileURLsAsStrings {
+            defer { currentAddress = currentAddress.successor() }
+            guard !templateFileURLAsString.isEmpty else { continue }
+            templateFileURLAsString.trimPrefix("./")
+            let templateFileURL = URL(
+              filePath: .init(templateFileURLAsString),
+              directoryHint: .notDirectory,
+              relativeTo: srcrootURL
+            )
+            let generatedFileURL = generatedFileURL(fromTemplateAt: templateFileURL)
+            guard !fileManager.fileExists(atPath: generatedFileURL.path()) else { continue }
+            currentAddress.initialize(to: templateFileURL)
+            initializedCount += 1
+          }
+        }
+      )
+    )
+  }
+}
 
 try await withVenv(generateBoilerplate)
 
@@ -169,27 +277,31 @@ private func withVenv(_ body: () async throws -> Void) async throws {
     .name("/usr/bin/python3"),
     arguments: ["-m", "venv", ".venv"],
     workingDirectory: srcrootFilePath,
-    output: .standardOutput
+    output: .standardOutput,
+    error: .standardError
   )
-  try await run(
-    .name("\(srcroot)/.venv/bin/pip"),
-    arguments: ["install", "pip", "--upgrade"],
-    workingDirectory: srcrootFilePath,
-    output: .standardOutput
-  )
-  try await run(
-    .name("\(srcroot)/.venv/bin/pip"),
-    arguments: ["install", "inflect"],
-    workingDirectory: srcrootFilePath,
-    output: .standardOutput
-  )
+  try await withThrowingTaskGroup { taskGroup in
+    taskGroup.addTaskUnlessCancelled {
+      try await run(
+        .name("\(srcroot)/.venv/bin/pip"),
+        arguments: ["install", "-r", "requirements.txt"],
+        workingDirectory: srcrootFilePath,
+        output: .standardOutput,
+        error: .standardError
+      )
+    }
+    taskGroup.addTaskUnlessCancelled {
+      try await run(
+        .name("\(srcroot)/.venv/bin/pip"),
+        arguments: ["install", "."],
+        workingDirectory: srcrootFilePath,
+        output: .standardOutput,
+        error: .standardError
+      )
+    }
+    try await taskGroup.next()
+  }
   try await body()
-  try await run(
-    .name("/bin/rm"),
-    arguments: ["-rf", ".venv"],
-    workingDirectory: srcrootFilePath,
-    output: .standardOutput
-  )
 }
 
 /// Generates .swift files based on each .swift.gyb file present in the project.
@@ -197,28 +309,50 @@ private func generateBoilerplate() async throws {
   let formatter = SwiftFormatter(
     configuration: try .init(contentsOf: srcrootURL.appending(path: ".swift-format"))
   )
-  let gybFileNameSuffix = ".swift.gyb"
-  for await var gybFileURL in fileManager.flatten(at: srcrootURL) {
-    var gybFileName = gybFileURL.lastPathComponent
-    guard
-      !gybFileURL.hasDirectoryPath && gybFileName.hasSuffix(gybFileNameSuffix)
-        && gybFileName != gybFileNameSuffix
-    else { continue }
-    let directory = gybFileURL.deletingLastPathComponent().path()
-    let gybFileNameSuffixStartIndex = gybFileName.index(
-      gybFileName.endIndex,
-      offsetBy: -gybFileNameSuffix.count
-    )
-    gybFileName.removeSubrange(gybFileNameSuffixStartIndex...)
-    let swiftFileURL = URL(filePath: "\(directory)\(gybFileName).swift")
-    try await run(
-      .name("/usr/bin/python3"),
-      arguments: ["gyb.py", "--line-directive", "", "-o", swiftFileURL.path(), gybFileURL.path()],
-      workingDirectory: srcrootFilePath,
-      output: .standardOutput
-    )
-    try formatter.format(at: swiftFileURL)
+  var potentialTemplateURLs = try await unpairedTemplateURLs
+  potentialTemplateURLs.formUnion(allModifiedFileURLs)
+  try await withThrowingTaskGroup { taskGroup in
+    for templateURL in potentialTemplateURLs {
+      guard
+        unpairedTemplateURLs.contains(templateURL)
+          || templateURL.lastPathComponent.hasSuffix(".swift.gyb")
+      else { continue }
+      taskGroup.addTaskUnlessCancelled {
+        let generatedFileURL = generatedFileURL(fromTemplateAt: templateURL)
+        try await run(
+          .name("\(srcroot)/.venv/bin/python3"),
+          arguments: [
+            "gyb.py", "--line-directive", "", "-o", generatedFileURL.path(), templateURL.path()
+          ],
+          workingDirectory: srcrootFilePath,
+          output: .standardOutput,
+          error: .standardError
+        )
+        try formatter.format(at: generatedFileURL)
+      }
+    }
+    try await taskGroup.next()
   }
+}
+
+/// Produces the URL of a Swift file which either will be or has been generated for the template
+/// at the given URL. Guaranteeing that the `templateURL` is the URL of a template is a
+/// responsibility of the caller; calling this function with a URL which does not meet such criteria
+/// may produce a nonsensical URL.
+///
+/// - Parameter templateURL: URL of the `.swift.gyb` file from which the Swift file at the returned
+///   URL may be or has been generated.
+private func generatedFileURL(fromTemplateAt templateURL: URL) -> URL {
+  var templateName = templateURL.lastPathComponent
+
+  // Given the URL of a template, the last four characters of the name are of the ".gyb" substring
+  // of the ".swift.gyb" suffix.
+  templateName.removeLast(4)
+
+  return templateURL.deletingLastPathComponent().appending(
+    path: templateName,
+    directoryHint: .notDirectory
+  )
 }
 
 extension SwiftFormatter {
@@ -229,33 +363,5 @@ extension SwiftFormatter {
     var output = ""
     try format(contentsOf: fileURL, to: &output)
     try output.write(to: fileURL, atomically: true, encoding: .utf8)
-  }
-}
-
-extension FileManager {
-  /// Collects the `URL` of each regular file and directory at the given `url` recursively.
-  ///
-  /// - Parameter url: `URL` of the directory whose contents' `URL`s will be flattened.
-  /// - Returns: The `URL` of every file at the given `url`, its subdirectories, theirs and so on.
-  ///   In case the given `url` is that of a regular file instead of a directory, it will be
-  ///   singly returned.
-  fileprivate func flatten(at url: URL) -> AsyncStream<URL> {
-    guard url.hasDirectoryPath else {
-      return .init { continuation in
-        continuation.yield(url)
-        continuation.finish()
-      }
-    }
-    guard let enumerator = enumerator(at: url, includingPropertiesForKeys: nil) else {
-      return .init { continuation in continuation.finish() }
-    }
-    return .init { continuation in
-      Task {
-        while let unflattenedURL = enumerator.nextObject() as? URL {
-          for await flattenedURL in flatten(at: unflattenedURL) { continuation.yield(flattenedURL) }
-        }
-        continuation.finish()
-      }
-    }
   }
 }
