@@ -27,7 +27,8 @@ ${environ.get('LICENSE_HEADER_SWIFT')}
 import _Differentiation
 
 % for index, measurement in enumerate(all_measurement_types):
-extension ${measurement.implementation_name}: Differentiable {
+  % Self = measurement.identifier
+extension ${Self}: Differentiable {
   public typealias TangentVector = Self
 
   public mutating func move(by offset: Self) {
