@@ -17,11 +17,12 @@
   # ===------------------------------------------------------------------------------------------===
 
   from os import environ
-  from QuantumMechanics import all_measurement_types
+  from reflection import licensing
+  from reflection import quantum_mechanics
 
-  all_measurement_types = all_measurement_types()
+  all_measurement_types = quantum_mechanics.all_measurement_types()
 }%
-${environ.get('LICENSE_HEADER_SWIFT')}
+${licensing.header()}
 
 #if canImport(_Differentiation)
 import _Differentiation
