@@ -125,6 +125,18 @@ private func requireenv(_ name: String) -> String {
 
 // MARK: - Git
 
+/// URL of every file which has been modified since the last commit, including both those in the
+/// staging area and those unstaged.
+private var allModifiedFileURLs: Set<URL> {
+  get async throws {
+    do {
+      async let unstagedModifiedFileURLs = try modifiedFileURLs(ofFilesWhichAre: .unstaged)
+      async let stagedModifiedFileURLs = try modifiedFileURLs(ofFilesWhichAre: .staged)
+      return await unstagedModifiedFileURLs.union(stagedModifiedFileURLs)
+    } catch { throw error }
+  }
+}
+
 /// State of a file in Git which determines whether it is in the staging area (index), with the
 /// presence of such file in it denoting that it will be included in next commit until the file is
 /// unstaged.
@@ -216,18 +228,6 @@ private func modifiedFileURLs(
 
 // MARK: - GYB
 
-/// URL of every file which has been modified since the last commit, including both those in the
-/// staging area and those unstaged.
-private var allModifiedFileURLs: Set<URL> {
-  get async throws {
-    do {
-      async let unstagedModifiedFileURLs = try modifiedFileURLs(ofFilesWhichAre: .unstaged)
-      async let stagedModifiedFileURLs = try modifiedFileURLs(ofFilesWhichAre: .staged)
-      return await unstagedModifiedFileURLs.union(stagedModifiedFileURLs)
-    } catch { throw error }
-  }
-}
-
 /// URL of the templates whose Swift files which would have been generated from them are not
 /// present. Their absence may be the result of manual deletion.
 private var unpairedTemplateURLs: Set<URL> {
@@ -269,7 +269,9 @@ private var unpairedTemplateURLs: Set<URL> {
 try await withVenv(generateBoilerplate)
 
 /// Configures the Python virtual environment (venv) for the given `body`, deconfiguring it
-/// afterwards.
+/// afterwards. Upon execution of the `body`, all Python tools in the `tooling` directory at the
+/// root of the project will have been built and installed, and are available to be used by other
+/// Python files.
 ///
 /// - Parameter body: Lambda to be executed while the venv is configured.
 private func withVenv(_ body: () async throws -> Void) async throws {
@@ -280,26 +282,83 @@ private func withVenv(_ body: () async throws -> Void) async throws {
     output: .standardOutput,
     error: .standardError
   )
-  try await withThrowingTaskGroup { taskGroup in
-    taskGroup.addTaskUnlessCancelled {
-      try await run(
-        .name("\(srcroot)/.venv/bin/pip"),
-        arguments: ["install", "-r", "requirements.txt"],
-        workingDirectory: srcrootFilePath,
-        output: .standardOutput,
-        error: .standardError
-      )
+  async let _ = try await run(
+    .name("\(srcroot)/.venv/bin/pip"),
+    arguments: ["install", "-r", "requirements.txt"],
+    workingDirectory: srcrootFilePath,
+    output: .standardOutput,
+    error: .standardError
+  )
+  try await run(
+    .name("\(srcroot)/.venv/bin/pip"),
+    arguments: ["install", "."],
+    workingDirectory: srcrootFilePath,
+    output: .standardOutput,
+    error: .standardError
+  )
+  guard
+    var targetPackagesDirectoryPath = try await run(
+      .name("/usr/bin/find"),
+      arguments: [".venv/lib", "-maxdepth", "2", "-path", "*/site-packages", "-type", "d"],
+      workingDirectory: srcrootFilePath,
+      output: .string(limit: .max),
+      error: .standardError
+    ).standardOutput, !targetPackagesDirectoryPath.isEmpty
+  else { return }
+  targetPackagesDirectoryPath.removeLast()
+  let targetPackagesDirectoryURL = srcrootURL.appending(
+    path: targetPackagesDirectoryPath,
+    directoryHint: .isDirectory
+  )
+  var initialPackagesDirectoryURL = targetPackagesDirectoryURL.appending(
+    path: "tooling",
+    directoryHint: .isDirectory
+  )
+  if var packageFilePaths = try await run(
+    .name("/usr/bin/find"),
+    arguments: [
+      initialPackagesDirectoryURL.relativePath, "-maxdepth", "1", "-mindepth", "1", "-type", "d"
+    ],
+    workingDirectory: srcrootFilePath,
+    output: .string(limit: .max),
+    error: .standardError
+  ).standardOutput?.components(separatedBy: .newlines) {
+    packageFilePaths.removeLast()
+    guard !packageFilePaths.isEmpty else { return }
+    try await withThrowingTaskGroup { taskGroup in
+      for packageFilePath in packageFilePaths {
+        taskGroup.addTask {
+          let packageFileURL = srcrootURL.appending(
+            path: packageFilePath,
+            directoryHint: .isDirectory
+          )
+          try await run(
+            .name("/bin/rm"),
+            arguments: [
+              "-r",
+              targetPackagesDirectoryURL.appending(path: packageFileURL.lastPathComponent).path()
+            ],
+            workingDirectory: srcrootFilePath,
+            output: .standardOutput,
+            error: .standardError
+          )
+          try await run(
+            .name("/bin/mv"),
+            arguments: [packageFilePath, targetPackagesDirectoryPath],
+            workingDirectory: srcrootFilePath,
+            output: .standardOutput,
+            error: .standardError
+          )
+          try await run(
+            .name("/bin/rm"),
+            arguments: ["-r", initialPackagesDirectoryURL.path()],
+            workingDirectory: srcrootFilePath,
+            output: .standardOutput,
+            error: .standardError
+          )
+        }
+      }
     }
-    taskGroup.addTaskUnlessCancelled {
-      try await run(
-        .name("\(srcroot)/.venv/bin/pip"),
-        arguments: ["install", "."],
-        workingDirectory: srcrootFilePath,
-        output: .standardOutput,
-        error: .standardError
-      )
-    }
-    try await taskGroup.next()
   }
   try await body()
 }
@@ -309,7 +368,8 @@ private func generateBoilerplate() async throws {
   let formatter = SwiftFormatter(
     configuration: try .init(contentsOf: srcrootURL.appending(path: ".swift-format"))
   )
-  var potentialTemplateURLs = try await unpairedTemplateURLs
+  let unpairedTemplateURLs = try await unpairedTemplateURLs
+  var potentialTemplateURLs = unpairedTemplateURLs
   potentialTemplateURLs.formUnion(allModifiedFileURLs)
   try await withThrowingTaskGroup { taskGroup in
     for templateURL in potentialTemplateURLs {
@@ -317,7 +377,7 @@ private func generateBoilerplate() async throws {
         unpairedTemplateURLs.contains(templateURL)
           || templateURL.lastPathComponent.hasSuffix(".swift.gyb")
       else { continue }
-      taskGroup.addTaskUnlessCancelled {
+      taskGroup.addTask {
         let generatedFileURL = generatedFileURL(fromTemplateAt: templateURL)
         try await run(
           .name("\(srcroot)/.venv/bin/python3"),
@@ -331,14 +391,13 @@ private func generateBoilerplate() async throws {
         try formatter.format(at: generatedFileURL)
       }
     }
-    try await taskGroup.next()
   }
 }
 
-/// Produces the URL of a Swift file which either will be or has been generated for the template
-/// at the given URL. Guaranteeing that the `templateURL` is the URL of a template is a
-/// responsibility of the caller; calling this function with a URL which does not meet such criteria
-/// may produce a nonsensical URL.
+/// Produces the URL of a Swift file which either will be or has been generated for the template at
+/// the given URL. Guaranteeing that the `templateURL` is the URL of a template is a responsibility
+/// of the caller; calling this function with a URL which does not meet such criteria may produce a
+/// nonsensical URL.
 ///
 /// - Parameter templateURL: URL of the `.swift.gyb` file from which the Swift file at the returned
 ///   URL may be or has been generated.

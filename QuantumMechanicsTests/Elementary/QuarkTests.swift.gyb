@@ -16,9 +16,10 @@
   # not, see https://www.gnu.org/licenses.
   # ===------------------------------------------------------------------------------------------===
 
-  import inflect
-  import os
+  from inflect import engine as inflect
+  from reflection import licensing
 
+  inflect = inflect()
   quarks = {
     'up': '2.3 MeV',
     'down': '4.8 MeV',
@@ -28,7 +29,7 @@
     'top': '173.21 GeV'
   }
 }%
-${os.environ.get('LICENSE_HEADER_SWIFT')}
+${licensing.header()}
 
 import Testing
 
@@ -41,7 +42,7 @@ import Testing
   % mass = mass.split(' ')
   % massValue = float(mass[0])
   % massUnit = mass[1]
-  % spelledUnitizedMass = ''.join(char for char in inflect.engine().number_to_words(massValue).title() if char.isalpha()) + massUnit.capitalize()
+  % spelledUnitizedMass = ''.join(char for char in inflect.number_to_words(massValue).title() if char.isalpha()) + massUnit.capitalize()
   % massUnitReference = '.megaelectronvoltsPerLightSpeedSquared' if massUnit == 'MeV' else '.gigaelectronvoltsPerLightSpeedSquared' if massUnit == 'GeV' else '.electronvoltsPerLightSpeedSquared'
   % symbol = flavor[0]
 struct ${implementation}Tests {

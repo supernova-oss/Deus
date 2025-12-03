@@ -18,6 +18,7 @@
 
   from os import environ
   from QuantumMechanics import all_measurement_types
+  from reflection import licensing
 
   all_measurement_types = all_measurement_types()
 
@@ -47,7 +48,7 @@
     if index == 0 or access.startswith('.'): return access
     return '.' + '.'.join(access.split('.', 1)[1:])
 }%
-${environ.get('LICENSE_HEADER_SWIFT')}
+${licensing.header()}
 
 @testable import QuantumMechanics
 import Testing
