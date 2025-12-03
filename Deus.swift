@@ -37,7 +37,33 @@ private nonisolated var srcrootFilePath: FilePath { .init(srcroot) }
 private nonisolated var srcrootURL: URL { .init(filePath: srcroot, directoryHint: .isDirectory) }
 
 try exportSrcroot()
-exportLicenseHeaders()
+setenv(
+  "LICENSE_HEADER_SH",
+  """
+  # \
+  ===--------------------------------------------------------------------------------------------===
+  # Copyright © \(year) Supernova. All rights reserved.
+  #
+  # This file is part of the Deus open-source project.
+  #
+  # This program is free software: you can redistribute it and/or modify it under the terms of the \
+  GNU
+  # General Public License as published by the Free Software Foundation, either version 3 of the
+  # License, or (at your option) any later version.
+  #
+  # This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; \
+  without
+  # even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  # General Public License for more details.
+  #
+  # You should have received a copy of the GNU General Public License along with this program. If \
+  not,
+  # see https://www.gnu.org/licenses.
+  # \
+  ===--------------------------------------------------------------------------------------------===
+  """,
+  1
+)
 
 /// Exports an environment variable, `SRCROOT`, containing the root directory of the project. Such
 /// variable already gets exported by Xcode by default; it is only actually exported by this
@@ -45,72 +71,6 @@ exportLicenseHeaders()
 private func exportSrcroot() throws {
   guard ProcessInfo.processInfo.environment["SRCROOT"] == nil else { return }
   setenv("SRCROOT", fileManager.currentDirectoryPath, 0)
-}
-
-/// Exports variations of the license header which must be present in each user-generated file of
-/// Deus, according to the file into which it is intended to be written. Implies that the maximum
-/// length of a column is of 100 characters, formatting the headers accordingly.
-///
-/// | File        | Variable               |
-/// |-------------|------------------------|
-/// | .sh         | `LICENSE_HEADER_SH`    |
-/// | .swift      | `LICENSE_HEADER_SWIFT` |
-private func exportLicenseHeaders() {
-  let year = Calendar(identifier: .gregorian).dateComponents([.year], from: Date.now).year!
-  setenv(
-    "LICENSE_HEADER_SH",
-    """
-    # \
-    ===--------------------------------------------------------------------------------------------===
-    # Copyright © \(year) Supernova. All rights reserved.
-    #
-    # This file is part of the Deus open-source project.
-    #
-    # This program is free software: you can redistribute it and/or modify it under the terms of \
-    the GNU
-    # General Public License as published by the Free Software Foundation, either version 3 of the
-    # License, or (at your option) any later version.
-    #
-    # This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; \
-    without
-    # even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-    # General Public License for more details.
-    #
-    # You should have received a copy of the GNU General Public License along with this program. \
-    If not,
-    # see https://www.gnu.org/licenses.
-    # \
-    ===--------------------------------------------------------------------------------------------===
-    """,
-    1
-  )
-  setenv(
-    "LICENSE_HEADER_SWIFT",
-    """
-    // \
-    ===-------------------------------------------------------------------------------------------===
-    // Copyright © \(year) Supernova. All rights reserved.
-    //
-    // This file is part of the Deus open-source project.
-    //
-    // This program is free software: you can redistribute it and/or modify it under the terms of \
-    the
-    // GNU General Public License as published by the Free Software Foundation, either version 3 \
-    of the
-    // License, or (at your option) any later version.
-    //
-    // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; \
-    without
-    // even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-    // General Public License for more details.
-    //
-    // You should have received a copy of the GNU General Public License along with this program. If
-    // not, see https://www.gnu.org/licenses.
-    // \
-    ===-------------------------------------------------------------------------------------------===
-    """,
-    1
-  )
 }
 
 /// Asserts that an environment variable with the given `name` has been exported, returning its
