@@ -17,11 +17,17 @@
 # ===--------------------------------------------------------------------------------------------===
 
 class MeasurementType:
+  """Mirror of an implementation of the `Measurement` Swift type."""
+
   def __init__(self, identifier: str, measurables: list[str]):
     self.identifier = identifier
+    """Name of the struct or class implementing the protocol."""
+
     self.measurables = measurables
+    """Names of the static `Measurable` properties of the Swift type."""
 
 def all_measurement_types() -> list[MeasurementType]:
+  """Produces a list of mirrors of every implementation of the `Measurement` Swift type."""
   return [
     MeasurementType('Angle', ['radians']),
     MeasurementType('ElectricCharge', ['elementary']),

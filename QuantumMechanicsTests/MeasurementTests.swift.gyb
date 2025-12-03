@@ -17,16 +17,16 @@
   # ===------------------------------------------------------------------------------------------===
 
   from os import environ
-  from QuantumMechanics import all_measurement_types
   from reflection import licensing
+  from reflection import quantum_mechanics
 
-  all_measurement_types = all_measurement_types()
+  all_measurement_types = quantum_mechanics.all_measurement_types()
 
   def decapitalized(str):
     """Lower-cases the first character of the given string.
 
-    :param str: The string to be decapitalized.
-    :returns The given string, decapitalized.
+    Keyword arguments:
+      str -- The string to be decapitalized.
     """
 
     if not str: return str
@@ -42,8 +42,9 @@
     of access: contextual. An array of contextual accesses contains, in order, a full access
     followed by partial ones.
 
-    :param index: Index of the access in the array.
-    :param access: The access, in Swift, to a property or function of a type.
+    Keyword arguments:
+      index -- Index of the access in the array.
+      access -- The access, in Swift, to a property or function of a type.
     """
     if index == 0 or access.startswith('.'): return access
     return '.' + '.'.join(access.split('.', 1)[1:])
