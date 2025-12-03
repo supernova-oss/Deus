@@ -16,6 +16,4 @@
 # see https://www.gnu.org/licenses.
 # ===--------------------------------------------------------------------------------------------===
 
-from .measurement_types import all_measurement_types
-
-__all__ = ['all_measurement_types']
+from .measurement_types import all_measurement_types as all_measurement_types

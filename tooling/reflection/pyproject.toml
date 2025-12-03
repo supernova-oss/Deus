@@ -1,4 +1,3 @@
-# coding: utf-8
 # ===--------------------------------------------------------------------------------------------===
 # Copyright © 2025 Supernova. All rights reserved.
 #
@@ -16,19 +15,8 @@
 # see https://www.gnu.org/licenses.
 # ===--------------------------------------------------------------------------------------------===
 
-class MeasurementType:
-  def __init__(self, identifier: str, measurables: list[str]):
-    self.identifier = identifier
-    self.measurables = measurables
-
-def all_measurement_types() -> list[MeasurementType]:
-  return [
-    MeasurementType('Angle', ['radians']),
-    MeasurementType('ElectricCharge', ['elementary']),
-    MeasurementType('Mass', [
-      'electronvoltsPerLightSpeedSquared',
-      'gigaelectronvoltsPerLightSpeedSquared',
-      'megaelectronvoltsPerLightSpeedSquared'
-    ]),
-    MeasurementType('Speed', ['metersPerSecond'])
-  ]
+[project]
+authors = [{ name = 'Supernova' }]
+description = 'Mirror types and structures of Swift types declared accross frameworks of Deus.'
+name = 'reflection'
+version = '1.0.0'

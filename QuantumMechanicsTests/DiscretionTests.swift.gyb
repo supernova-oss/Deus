@@ -16,7 +16,7 @@
   # not, see https://www.gnu.org/licenses.
   # ===------------------------------------------------------------------------------------------===
 
-  import os
+  from reflection import licensing
 
   """Specifies each `Discrete`-conforming type that has an equatable wrapper by which such type gets
   erased and, also, how to create their instances to be passed in as parameters of the test cases.
@@ -78,7 +78,7 @@
       for index, inclusive_base in enumerate(inclusive_bases)
     ]
 }%
-${os.environ.get('LICENSE_HEADER_SWIFT')}
+${licensing.header()}
 
 import Testing
 
