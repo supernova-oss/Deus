@@ -117,6 +117,7 @@ fileprivate struct ${Self}Tests {
     #expect(converted.quantityInBaseUnit == initial.quantityInBaseUnit)
     #expect(converted.symbol == ${Self}.in(unitRepresentable.unit).symbol)
   }
+  #endif
 }
 
 % end
