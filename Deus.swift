@@ -42,7 +42,9 @@ setenv(
   """
   # \
   ===--------------------------------------------------------------------------------------------===
-  # Copyright © \(year) Supernova. All rights reserved.
+  # Copyright © \
+  \(Calendar(identifier: .gregorian).dateComponents([.year], from: Date.now).year ?? 2025) \
+  Supernova. All rights reserved.   
   #
   # This file is part of the Deus open-source project.
   #
