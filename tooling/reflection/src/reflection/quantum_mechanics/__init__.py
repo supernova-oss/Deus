@@ -1,3 +1,4 @@
+# coding: utf-8
 # ===--------------------------------------------------------------------------------------------===
 # Copyright © 2025 Supernova. All rights reserved.
 #
@@ -15,24 +16,4 @@
 # see https://www.gnu.org/licenses.
 # ===--------------------------------------------------------------------------------------------===
 
-[build-system]
-build-backend = 'setuptools.build_meta'
-requires = ['setuptools==80.9.0']
-
-[project]
-authors = [{ name = 'Supernova' }]
-description = 'A simulator of the Big Bang.'
-name = 'deus'
-version = '1.0.0'
-
-[tool.setuptools.packages.find]
-exclude = [
-  'Deus',
-  'Geometry',
-  'GeometryTests',
-  'ObservationKit',
-  'ObservationKitTests',
-  'QuantumMechanicsTests',
-  'RelativityKit',
-  'RelativityKitTests'
-]
+from .measurement_types import all_measurement_types

@@ -164,7 +164,7 @@ private func modifiedFileURLs(
       workingDirectory: srcrootFilePath,
       output: .string(limit: .max),
       error: .standardError
-    ).standardOutput?.split(separator: #/\n|\s-{2}\s/#)
+    ).standardOutput?.components(separatedBy: .newlines)
   else { return [] }
   return Set(
     Array(
@@ -195,35 +195,25 @@ private func modifiedFileURLs(
 private var unpairedTemplateURLs: Set<URL> {
   get async throws {
     guard
-      let templateFileURLsAsStrings = try await run(
+      let templateURLsAsStrings = try await run(
         .name("/usr/bin/find"),
         arguments: [".", "-name", "*.swift.gyb", "-type", "f"],
         workingDirectory: srcrootFilePath,
         output: .string(limit: .max),
         error: .standardError
-      ).standardOutput?.split(separator: #/\n/#)
+      ).standardOutput?.components(separatedBy: .newlines)
     else { return [] }
     return .init(
-      Array(
-        unsafeUninitializedCapacity: templateFileURLsAsStrings.count,
-        initializingWith: { pointer, initializedCount in
-          guard var currentAddress = pointer.baseAddress else { return }
-          for var templateFileURLAsString in templateFileURLsAsStrings {
-            defer { currentAddress = currentAddress.successor() }
-            guard !templateFileURLAsString.isEmpty else { continue }
-            templateFileURLAsString.trimPrefix("./")
-            let templateFileURL = URL(
-              filePath: .init(templateFileURLAsString),
-              directoryHint: .notDirectory,
-              relativeTo: srcrootURL
-            )
-            let generatedFileURL = generatedFileURL(fromTemplateAt: templateFileURL)
-            guard !fileManager.fileExists(atPath: generatedFileURL.path()) else { continue }
-            currentAddress.initialize(to: templateFileURL)
-            initializedCount += 1
-          }
-        }
-      )
+      templateURLsAsStrings.compactMap { templateURLAsString in
+        let templateURL = URL(
+          filePath: templateURLAsString,
+          directoryHint: .notDirectory,
+          relativeTo: srcrootURL
+        )
+        let generatedFileURL = generatedFileURL(fromTemplateAt: templateURL)
+        guard !fileManager.fileExists(atPath: generatedFileURL.path()) else { return nil }
+        return templateURL
+      }
     )
   }
 }
@@ -239,88 +229,39 @@ try await withVenv(generateBoilerplate)
 private func withVenv(_ body: () async throws -> Void) async throws {
   try await run(
     .name("/usr/bin/python3"),
-    arguments: ["-m", "venv", ".venv"],
-    workingDirectory: srcrootFilePath,
-    output: .standardOutput,
-    error: .standardError
-  )
-  async let _ = try await run(
-    .name("\(srcroot)/.venv/bin/pip"),
-    arguments: ["install", "-r", "requirements.txt"],
-    workingDirectory: srcrootFilePath,
-    output: .standardOutput,
-    error: .standardError
-  )
-  try await run(
-    .name("\(srcroot)/.venv/bin/pip"),
-    arguments: ["install", "."],
+    arguments: ["-m", "venv", "tooling/.venv"],
     workingDirectory: srcrootFilePath,
     output: .standardOutput,
     error: .standardError
   )
   guard
-    var targetPackagesDirectoryPath = try await run(
-      .name("/usr/bin/find"),
-      arguments: [".venv/lib", "-maxdepth", "2", "-path", "*/site-packages", "-type", "d"],
-      workingDirectory: srcrootFilePath,
-      output: .string(limit: .max),
-      error: .standardError
-    ).standardOutput, !targetPackagesDirectoryPath.isEmpty
+    let enumerator = fileManager.enumerator(
+      at: URL(filePath: "tooling", directoryHint: .isDirectory, relativeTo: srcrootURL),
+      includingPropertiesForKeys: [.pathKey],
+      options: [.producesRelativePathURLs, .skipsHiddenFiles, .skipsSubdirectoryDescendants]
+    )
   else { return }
-  targetPackagesDirectoryPath.removeLast()
-  let targetPackagesDirectoryURL = srcrootURL.appending(
-    path: targetPackagesDirectoryPath,
-    directoryHint: .isDirectory
-  )
-  var initialPackagesDirectoryURL = targetPackagesDirectoryURL.appending(
-    path: "tooling",
-    directoryHint: .isDirectory
-  )
-  if var packageFilePaths = try await run(
-    .name("/usr/bin/find"),
-    arguments: [
-      initialPackagesDirectoryURL.relativePath, "-maxdepth", "1", "-mindepth", "1", "-type", "d"
-    ],
-    workingDirectory: srcrootFilePath,
-    output: .string(limit: .max),
-    error: .standardError
-  ).standardOutput?.components(separatedBy: .newlines) {
-    packageFilePaths.removeLast()
-    guard !packageFilePaths.isEmpty else { return }
-    try await withThrowingTaskGroup { taskGroup in
-      for packageFilePath in packageFilePaths {
-        taskGroup.addTask {
-          let packageFileURL = srcrootURL.appending(
-            path: packageFilePath,
-            directoryHint: .isDirectory
-          )
-          try await run(
-            .name("/bin/rm"),
-            arguments: [
-              "-r",
-              targetPackagesDirectoryURL.appending(path: packageFileURL.lastPathComponent).path()
-            ],
-            workingDirectory: srcrootFilePath,
-            output: .standardOutput,
-            error: .standardError
-          )
-          try await run(
-            .name("/bin/mv"),
-            arguments: [packageFilePath, targetPackagesDirectoryPath],
-            workingDirectory: srcrootFilePath,
-            output: .standardOutput,
-            error: .standardError
-          )
-          try await run(
-            .name("/bin/rm"),
-            arguments: ["-r", initialPackagesDirectoryURL.path()],
-            workingDirectory: srcrootFilePath,
-            output: .standardOutput,
-            error: .standardError
-          )
-        }
+  try await withThrowingTaskGroup { taskGroup in
+    for case let packageURL as URL in enumerator {
+      guard packageURL.hasDirectoryPath else { continue }
+      taskGroup.addTask(name: "Installation of `\(packageURL.lastPathComponent)` Python package") {
+        try await run(
+          .name("\(srcroot)/tooling/.venv/bin/pip"),
+          arguments: ["install", "-r", "./tooling/\(packageURL.relativePath)/requirements.txt"],
+          workingDirectory: srcrootFilePath,
+          output: .standardOutput,
+          error: .standardError
+        )
+        try await run(
+          .name("\(srcroot)/tooling/.venv/bin/pip"),
+          arguments: ["install", "./tooling/\(packageURL.relativePath)"],
+          workingDirectory: srcrootFilePath,
+          output: .standardOutput,
+          error: .standardError
+        )
       }
     }
+    try await taskGroup.waitForAll()
   }
   try await body()
 }
@@ -342,9 +283,10 @@ private func generateBoilerplate() async throws {
       taskGroup.addTask {
         let generatedFileURL = generatedFileURL(fromTemplateAt: templateURL)
         try await run(
-          .name("\(srcroot)/.venv/bin/python3"),
+          .name("\(srcroot)/tooling/.venv/bin/python3"),
           arguments: [
-            "gyb.py", "--line-directive", "", "-o", generatedFileURL.path(), templateURL.path()
+            "tooling/gyb.py", "--line-directive", "", "-o", generatedFileURL.relativePath,
+            templateURL.path()
           ],
           workingDirectory: srcrootFilePath,
           output: .standardOutput,
@@ -353,6 +295,7 @@ private func generateBoilerplate() async throws {
         try formatter.format(at: generatedFileURL)
       }
     }
+    try await taskGroup.waitForAll()
   }
 }
 
