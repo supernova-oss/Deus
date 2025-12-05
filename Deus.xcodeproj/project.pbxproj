@@ -124,12 +124,10 @@
 		4921F2692DD4ECA900393B6F /* Deus.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Deus.xctestplan; sourceTree = "<group>"; };
 		4921F3192DD54F0B00393B6F /* .swift-format */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".swift-format"; sourceTree = "<group>"; };
 		4927F36C2DD25BC400E368D8 /* Deus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Deus.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		49388E032E5DE086004C134B /* Deus.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Deus.xctestplan; sourceTree = "<group>"; };
 		494EFBF92DDF36B100C66063 /* RelativityKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RelativityKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		494EFC012DDF36B200C66063 /* RelativityKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RelativityKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4960AB482DDCE34E00EB1410 /* Geometry.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Geometry.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4960AB502DDCE34E00EB1410 /* GeometryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GeometryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		4960F2542DDF38D3002EF7C0 /* Deus.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Deus.xctestplan; sourceTree = "<group>"; };
 		496813642E4643BA00B22450 /* ObservationKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ObservationKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		498FA26B2E2459DE0058A9C8 /* ObservationKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ObservationKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		49EF5D4F2DE20D36008AFB31 /* QuantumMechanics.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = QuantumMechanics.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -282,10 +280,8 @@
 		49FD31192DBFC9E2003CEAF9 = {
 			isa = PBXGroup;
 			children = (
-				49388E032E5DE086004C134B /* Deus.xctestplan */,
-				4960F2542DDF38D3002EF7C0 /* Deus.xctestplan */,
-				4921F3192DD54F0B00393B6F /* .swift-format */,
 				4921F2692DD4ECA900393B6F /* Deus.xctestplan */,
+				4921F3192DD54F0B00393B6F /* .swift-format */,
 				4927F36C2DD25BC400E368D8 /* Deus.app */,
 				4927F36D2DD25BC400E368D8 /* Deus */,
 				4960AB482DDCE34E00EB1410 /* Geometry.framework */,
