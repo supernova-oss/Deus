@@ -124,6 +124,7 @@
 		4921F2692DD4ECA900393B6F /* Deus.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Deus.xctestplan; sourceTree = "<group>"; };
 		4921F3192DD54F0B00393B6F /* .swift-format */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".swift-format"; sourceTree = "<group>"; };
 		4927F36C2DD25BC400E368D8 /* Deus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Deus.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		492A77552EE2EBD500BDB7D1 /* on-build */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = "on-build"; sourceTree = "<group>"; };
 		494EFBF92DDF36B100C66063 /* RelativityKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RelativityKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		494EFC012DDF36B200C66063 /* RelativityKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RelativityKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4960AB482DDCE34E00EB1410 /* Geometry.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Geometry.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -280,6 +281,7 @@
 		49FD31192DBFC9E2003CEAF9 = {
 			isa = PBXGroup;
 			children = (
+				492A77552EE2EBD500BDB7D1 /* on-build */,
 				4921F2692DD4ECA900393B6F /* Deus.xctestplan */,
 				4921F3192DD54F0B00393B6F /* .swift-format */,
 				4927F36C2DD25BC400E368D8 /* Deus.app */,
@@ -693,6 +695,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		49F1F62E2E4EB24800ABEF15 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -707,7 +710,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\nbrew install swift-sh\nchmod +x Deus.swift\n./Deus.swift\n";
+			shellScript = "cd on-build && swift run && cd ..\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
