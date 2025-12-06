@@ -38,17 +38,13 @@ extension Step {
   func modifiedFileURLs(
     _ stagingAreaPresence: StagingAreaPresence
   ) async throws(StepError) -> Set<URL> {
-    guard
-      let differences = try await spawnSubprocess(
-        for: .git,
-        ["diff", "--name-only"] + stagingAreaPresence.differentiationFlags,
-        forwardingOutputTo: .string(limit: .max)
-      )
-    else { throw .missing(executable: .git) }
-    var modifiedFilePaths = differences.components(separatedBy: .newlines)
+    var modifiedFilePaths = try await spawnSubprocessAndCapture(
+      .git,
+      ["diff", "--name-only"] + stagingAreaPresence.differentiationFlags
+    ).components(separatedBy: .newlines)
     modifiedFilePaths.removeLast()
     return .init(
-      try modifiedFilePaths.map({ (modifiedFilePath: String) throws(StepError) -> URL in
+      modifiedFilePaths.map({ modifiedFilePath in
         .init(filePath: modifiedFilePath, directoryHint: .notDirectory, relativeTo: projectURL)
       })
     )

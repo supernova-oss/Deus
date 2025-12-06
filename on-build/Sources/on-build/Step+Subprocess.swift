@@ -34,13 +34,34 @@ extension Executable {
 extension Step {
   /// Spawns a subprocess and executes the given executable, passing the given arguments in and with
   /// the ``projectURL`` as the working directory. The output is forwarded to the standard output
-  /// and ignored by this overload of the ``spawnSubprocess(for:_:forwardingOutputTo:)`` function.
+  /// and ignored; to capture it, call ``spawnSubprocessAndCapture(_:_:)``.
   ///
   /// - Parameters:
   ///   - executable: The executable to execute.
   ///   - arguments: The arguments to pass to the executable.
-  func spawnSubprocess(for executable: Executable, _ arguments: [String]) async throws(StepError) {
-    try await spawnSubprocess(for: executable, arguments, forwardingOutputTo: .standardOutput)
+  func spawnSubprocess(_ executable: Executable, _ arguments: [String]) async throws(StepError) {
+    try await spawnSubprocess(executable, arguments, forwardingOutputTo: .standardOutput)
+  }
+
+  /// Spawns a subprocess and executes the given executable, passing the given arguments in and with
+  /// the ``projectURL`` as the working directory. The output is captured and returned by this
+  /// function; to forward it to the standard output, call ``spawnSubprocess(_:_:)``.
+  ///
+  /// - Parameters:
+  ///   - executable: The executable to execute.
+  ///   - arguments: The arguments to pass to the executable.
+  func spawnSubprocessAndCapture(
+    _ executable: Executable,
+    _ arguments: [String]
+  ) async throws(StepError) -> String {
+    guard
+      let output = try await spawnSubprocess(
+        executable,
+        arguments,
+        forwardingOutputTo: .string(limit: .max)
+      )
+    else { throw .unexpectedOutput(executable: executable, arguments: arguments, output: nil) }
+    return output
   }
 
   /// Spawns a subprocess and executes the given executable, passing the given arguments in and with
@@ -50,8 +71,8 @@ extension Step {
   ///   - executable: The executable to execute.
   ///   - arguments: The arguments to pass to the executable.
   ///   - output: The method to use for redirecting the standard output.
-  func spawnSubprocess<Output>(
-    for executable: Executable,
+  private func spawnSubprocess<Output>(
+    _ executable: Executable,
     _ arguments: [String],
     forwardingOutputTo output: Output
   ) async throws(StepError) -> Output.OutputType where Output: OutputProtocol {

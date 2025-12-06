@@ -114,7 +114,7 @@ enum StepError {
   ///   - arguments: Arguments passed into the `executable`.
   ///   - output: The unexpected output.
   /// - SeeAlso: ``Step/spawnSubprocess(for:_:forwardingOutputTo:)``
-  case unexpectedOutput(executable: Executable, arguments: [String], output: String)
+  case unexpectedOutput(executable: Executable, arguments: [String], output: String?)
 }
 
 extension StepError: CustomStringConvertible {

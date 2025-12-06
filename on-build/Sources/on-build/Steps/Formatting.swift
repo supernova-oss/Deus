@@ -69,6 +69,6 @@ struct Formatting: Step {
 
       """.write(to: preCommitURL, atomically: true, encoding: .utf8)
     } catch { throw .unallowed(.write, fileURL: preCommitURL) }
-    try await spawnSubprocess(for: .chmod, ["+x", preCommitURL.path()])
+    try await spawnSubprocess(.chmod, ["+x", preCommitURL.path()])
   }
 }

@@ -31,13 +31,9 @@ struct BoilerplateGeneration: Step {
   private var unpairedTemplateURLs: Set<URL> {
     get async throws(StepError) {
       let arguments = [".", "-name", "*.swift.gyb", "-type", "f"]
-      guard
-        let found = try? await spawnSubprocess(
-          for: .find,
-          arguments,
-          forwardingOutputTo: .string(limit: .max)
-        )
-      else { throw .missing(executable: .git) }
+      guard let found = try? await spawnSubprocessAndCapture(.find, arguments) else {
+        throw .missing(executable: .git)
+      }
       var templateURLsAsStrings = found.components(separatedBy: .newlines)
       templateURLsAsStrings.removeLast()
       return .init(
@@ -77,7 +73,7 @@ struct BoilerplateGeneration: Step {
   }
 
   func run() async throws(StepError) {
-    try await spawnSubprocess(for: .python3, ["-m", "venv", "tooling/.venv"])
+    try await spawnSubprocess(.python3, ["-m", "venv", "tooling/.venv"])
     try await installPythonPackages()
     try await generateBoilerplate()
   }
@@ -104,11 +100,11 @@ struct BoilerplateGeneration: Step {
             let packagePathRelativeToProjectDirectory =
               "tooling/\(packageURLRelativeToToolingDirectory.relativePath)"
             try await spawnSubprocess(
-              for: pip,
+              pip,
               ["install", "-r", "\(packagePathRelativeToProjectDirectory)/requirements.txt"]
             )
             try await spawnSubprocess(
-              for: pip,
+              pip,
               ["install", "./\(packagePathRelativeToProjectDirectory)"]
             )
           }
@@ -134,7 +130,7 @@ struct BoilerplateGeneration: Step {
           taskGroup.addTask {
             let generatedFileURL = generatedFileURL(fromTemplateAtPath: templateURL.relativePath)
             try await spawnSubprocess(
-              for: .name("\(projectURL.path())/tooling/.venv/bin/python3"),
+              .name("\(projectURL.path())/tooling/.venv/bin/python3"),
               [
                 "tooling/gyb.py", "--line-directive", "", "-o", generatedFileURL.relativePath,
                 templateURL.path()
