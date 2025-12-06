@@ -38,11 +38,10 @@ extension Step {
   func modifiedFileURLs(
     _ stagingAreaPresence: StagingAreaPresence
   ) async throws(StepError) -> Set<URL> {
-    let arguments = Arguments(["diff", "--name-only"] + stagingAreaPresence.differentiationFlags)
     guard
       let differences = try await spawnSubprocess(
         for: .git,
-        arguments,
+        ["diff", "--name-only"] + stagingAreaPresence.differentiationFlags,
         forwardingOutputTo: .string(limit: .max)
       )
     else { throw .missing(executable: .git) }

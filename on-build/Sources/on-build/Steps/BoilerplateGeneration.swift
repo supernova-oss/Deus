@@ -30,7 +30,7 @@ struct BoilerplateGeneration: Step {
   /// present. Their absence may be the result of prior manual deletion.
   private var unpairedTemplateURLs: Set<URL> {
     get async throws(StepError) {
-      let arguments: Arguments = [".", "-name", "*.swift.gyb", "-type", "f"]
+      let arguments = [".", "-name", "*.swift.gyb", "-type", "f"]
       guard
         let found = try? await spawnSubprocess(
           for: .find,

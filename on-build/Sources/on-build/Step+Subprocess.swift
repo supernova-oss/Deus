@@ -39,7 +39,7 @@ extension Step {
   /// - Parameters:
   ///   - executable: The executable to execute.
   ///   - arguments: The arguments to pass to the executable.
-  func spawnSubprocess(for executable: Executable, _ arguments: Arguments) async throws(StepError) {
+  func spawnSubprocess(for executable: Executable, _ arguments: [String]) async throws(StepError) {
     try await spawnSubprocess(for: executable, arguments, forwardingOutputTo: .standardOutput)
   }
 
@@ -52,13 +52,13 @@ extension Step {
   ///   - output: The method to use for redirecting the standard output.
   func spawnSubprocess<Output>(
     for executable: Executable,
-    _ arguments: Arguments,
+    _ arguments: [String],
     forwardingOutputTo output: Output
   ) async throws(StepError) -> Output.OutputType where Output: OutputProtocol {
     guard
       let result = try? await Subprocess.run(
         executable,
-        arguments: arguments,
+        arguments: .init(arguments),
         workingDirectory: .init(projectURL),
         output: output,
         error: .string(limit: .max)

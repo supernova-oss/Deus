@@ -91,7 +91,7 @@ enum StepError {
   ///   - arguments: Arguments passed into the `executable`.
   ///   - message: Contents output to the standard error by the executable.
   /// - SeeAlso: ``Step/spawnSubprocess(for:_:forwardingOutputTo:)``
-  case failure(executable: Executable, arguments: Arguments, message: String?)
+  case failure(executable: Executable, arguments: [String], message: String?)
 
   /// An essential executable included by default in the operating system (e.g., `/bin/sh` or
   /// `/usr/bin/find`) or which has been compiled previously has not been found.
@@ -114,7 +114,7 @@ enum StepError {
   ///   - arguments: Arguments passed into the `executable`.
   ///   - output: The unexpected output.
   /// - SeeAlso: ``Step/spawnSubprocess(for:_:forwardingOutputTo:)``
-  case unexpectedOutput(executable: Executable, arguments: Arguments, output: String)
+  case unexpectedOutput(executable: Executable, arguments: [String], output: String)
 }
 
 extension StepError: CustomStringConvertible {
