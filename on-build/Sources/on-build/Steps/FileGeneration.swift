@@ -37,7 +37,7 @@ struct FileGeneration: Step {
       var templateURLsAsStrings = found.components(separatedBy: .newlines)
       templateURLsAsStrings.removeLast()
       return .init(
-        try unsafeCallWithErrorCast(to: StepError.self) {
+        try unsafeCallWithTypedThrowsCast(to: StepError.self) {
           try templateURLsAsStrings.compactMap({ (templatePath: String) throws -> URL? in
             guard fileManager.fileExists(atPath: "\(projectURL.path())/\(templatePath)") else {
               throw StepError.unexpectedOutput(
@@ -91,7 +91,7 @@ struct FileGeneration: Step {
       )
     else { return }
     let pip = Executable.name("\(projectURL.path())/tooling/.venv/bin/pip")
-    try await unsafeCallWithErrorCast(to: StepError.self) {
+    try await unsafeCallWithTypedThrowsCast(to: StepError.self) {
       try await withThrowingTaskGroup { taskGroup in
         for case let packageURLRelativeToToolingDirectory as URL in AnySequence(enumerator) {
           guard packageURLRelativeToToolingDirectory.hasDirectoryPath else { continue }
@@ -121,7 +121,7 @@ struct FileGeneration: Step {
     var potentialTemplateURLs = unpairedTemplateURLs
     potentialTemplateURLs.formUnion(try await modifiedFileURLs)
     let formatConfigurationURL = projectURL.appending(path: ".swift-format")
-    try await unsafeCallWithErrorCast(to: StepError.self) {
+    try await unsafeCallWithTypedThrowsCast(to: StepError.self) {
       try await withThrowingTaskGroup { taskGroup in
         for templateURL in potentialTemplateURLs {
           guard

@@ -23,7 +23,7 @@
 /// - Parameters:
 ///   - errorType: The only type of error throwable by the `closure` (unchecked).
 ///   - closure: Closure to be cast to `() async throws(ErrorType) -> Result` and called.
-func unsafeCallWithErrorCast<ErrorType, Result>(
+func unsafeCallWithTypedThrowsCast<ErrorType, Result>(
   to errorType: ErrorType.Type,
   _ closure: @escaping () throws -> Result
 ) throws(ErrorType) -> Result where ErrorType: Error {
@@ -38,7 +38,7 @@ func unsafeCallWithErrorCast<ErrorType, Result>(
 /// - Parameters:
 ///   - errorType: The only type of error throwable by the `closure` (unchecked).
 ///   - closure: Closure to be cast to `() async throws(ErrorType) -> Result` and called.
-func unsafeCallWithErrorCast<ErrorType, Result>(
+func unsafeCallWithTypedThrowsCast<ErrorType, Result>(
   to errorType: ErrorType.Type,
   _ closure: @escaping () async throws -> Result
 ) async throws(ErrorType) -> Result where ErrorType: Error {
