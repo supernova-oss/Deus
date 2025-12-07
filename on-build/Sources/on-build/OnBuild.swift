@@ -26,7 +26,7 @@ struct OnBuild {
     let fileManager = FileManager.default
     var projectURL = URL(filePath: FileManager.default.currentDirectoryPath)
     projectURL.deleteLastPathComponent()
-    try await BoilerplateGeneration(fileManager: fileManager, projectURL: projectURL).run()
+    try await FileGeneration(fileManager: fileManager, projectURL: projectURL).run()
     try await Formatting(fileManager: fileManager, projectURL: projectURL).run()
   }
 }

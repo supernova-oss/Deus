@@ -22,7 +22,7 @@ import System
 
 /// ``Step`` in which Swift files are generated for their respective templates (files primarily
 /// identified by a `.swift.gyb` extension).
-struct BoilerplateGeneration: Step {
+struct FileGeneration: Step {
   let _fileManagerBox: _FileManagerBox
   let projectURL: URL
 
