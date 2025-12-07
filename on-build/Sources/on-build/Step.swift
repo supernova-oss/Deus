@@ -90,7 +90,7 @@ enum StepError {
   ///   - executable: Executable which has been executed.
   ///   - arguments: Arguments passed into the `executable`.
   ///   - message: Contents output to the standard error by the executable.
-  /// - SeeAlso: ``Step/spawnSubprocess(for:_:forwardingOutputTo:)``
+  /// - SeeAlso: ``Step/spawnSubprocess(_:_:)``
   case failure(executable: Executable, arguments: [String], message: String?)
 
   /// An essential executable included by default in the operating system (e.g., `/bin/sh` or
@@ -114,7 +114,7 @@ enum StepError {
   ///   - arguments: Arguments passed into the `executable`.
   ///   - output: The unexpected output.
   ///   - reason: Motive because of which the `output` was unexpected.
-  /// - SeeAlso: ``Step/spawnSubprocess(for:_:forwardingOutputTo:)``
+  /// - SeeAlso: ``Step/spawnSubprocess(_:_:)``
   case unexpectedOutput(
     executable: Executable,
     arguments: [String],
