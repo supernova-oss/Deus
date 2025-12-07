@@ -75,7 +75,7 @@ struct BoilerplateGeneration: Step {
   func run() async throws(StepError) {
     try await spawnSubprocess(.python3, ["-m", "venv", "tooling/.venv"])
     try await installPythonPackages()
-    try await generateBoilerplate()
+    try await generateFilesFromTemplates()
   }
 
   /// Installs each Python package in the `tooling` directory at the root of the project which are
@@ -115,7 +115,7 @@ struct BoilerplateGeneration: Step {
   }
 
   /// Generates Swift files based on each template present in the project.
-  private func generateBoilerplate() async throws(StepError) {
+  private func generateFilesFromTemplates() async throws(StepError) {
     let unpairedTemplateURLs = try await unpairedTemplateURLs
     var potentialTemplateURLs = unpairedTemplateURLs
     potentialTemplateURLs.formUnion(try await modifiedFileURLs)
@@ -129,22 +129,46 @@ struct BoilerplateGeneration: Step {
           else { continue }
           taskGroup.addTask {
             let generatedFileURL = generatedFileURL(fromTemplateAtPath: templateURL.relativePath)
-            try await spawnSubprocess(
-              .name("\(projectURL.path())/tooling/.venv/bin/python3"),
-              [
-                "tooling/gyb.py", "--line-directive", "", "-o", generatedFileURL.relativePath,
-                templateURL.path()
-              ]
-            )
-            guard let formatConfiguration = try? Configuration(contentsOf: formatConfigurationURL)
-            else { throw StepError.unallowed(.read, fileURL: formatConfigurationURL) }
-            do {
-              try SwiftFormatter(configuration: formatConfiguration).format(at: generatedFileURL)
-            } catch { throw StepError.unallowed(.write, fileURL: generatedFileURL) }
+            try await generateFile(from: templateURL, at: generatedFileURL)
+            try await format(at: generatedFileURL, withConfigurationAt: formatConfigurationURL)
           }
         }
         try await taskGroup.waitForAll()
       }
+    }
+  }
+
+  /// Generates a file from a template.
+  ///
+  /// - Parameters:
+  ///   - templateURL: URL of the `.swift.gyb` file from which the file should be generated.
+  ///   - generatedFileURL: URL of the file to be generated. Expected to be the result of calling
+  ///     ``generatedFileURL(fromTemplateAtPath:)``.
+  private func generateFile(from templateURL: URL, at generatedFileURL: URL) async throws(StepError)
+  {
+    try await spawnSubprocess(
+      .name("\(projectURL.path())/tooling/.venv/bin/python3"),
+      [
+        "tooling/gyb.py", "--line-directive", "", "-o", generatedFileURL.relativePath,
+        templateURL.path()
+      ]
+    )
+  }
+
+  /// Rewrites the Swift file at the given URL.
+  ///
+  /// - Parameters:
+  ///   - fileURL: URL of the Swift file to be formatted.
+  ///   - configurationURL: URL of the formatting configuration file.
+  private func format(
+    at fileURL: URL,
+    withConfigurationAt configurationURL: URL
+  ) async throws(StepError) {
+    guard let formatConfiguration = try? Configuration(contentsOf: configurationURL) else {
+      throw StepError.unallowed(.read, fileURL: configurationURL)
+    }
+    do { try SwiftFormatter(configuration: formatConfiguration).format(at: fileURL) } catch {
+      throw StepError.unallowed(.write, fileURL: fileURL)
     }
   }
 
