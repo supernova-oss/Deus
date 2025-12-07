@@ -113,21 +113,46 @@ enum StepError {
   ///   - executable: Executable run by the subprocess.
   ///   - arguments: Arguments passed into the `executable`.
   ///   - output: The unexpected output.
+  ///   - reason: Motive because of which the `output` was unexpected.
   /// - SeeAlso: ``Step/spawnSubprocess(for:_:forwardingOutputTo:)``
-  case unexpectedOutput(executable: Executable, arguments: [String], output: String?)
+  case unexpectedOutput(
+    executable: Executable,
+    arguments: [String],
+    output: String? = nil,
+    reason: String? = nil
+  )
 }
 
 extension StepError: CustomStringConvertible {
   var description: String {
     switch self {
     case .failure(let executable, let arguments, let message):
-      message ?? "An error occurred while executing `\(executable) \(arguments)`."
-    case .missing(let executable): "Required executable \(executable) not found."
+      return message ?? "An error occurred while executing "
+        + "`\(describe(executionRequestOf: executable, with: arguments))`."
+    case .missing(let executable): return "Required executable \(executable) not found."
     case .unallowed(let modificationKind, let fileURL):
-      "Cannot \(modificationKind.lexemeInBaseForm) \(fileURL)."
-    case .unexpectedOutput(let executable, let arguments, let output):
-      "`\(executable) \(arguments)` yielded an unexpected output: \"\(output)\"."
+      return "Cannot \(modificationKind.lexemeInBaseForm) \(fileURL)."
+    case .unexpectedOutput(let executable, let arguments, let output, let reason):
+      var description =
+        "`\(describe(executionRequestOf: executable, with: arguments))` yielded an unexpected "
+      if let output { description += "output (\(output))" } else { description += "empty output" }
+      description += "."
+      if let reason { description += " \(reason)" }
+      return description
     }
+  }
+
+  /// Converts the request to execute an executable into a string.
+  ///
+  /// - Parameters:
+  ///   - executable: Executable whose execution was requested.
+  ///   - arguments: Arguments passed into the `executable`.
+  private func describe(
+    executionRequestOf executable: Executable,
+    with arguments: [String]
+  ) -> String {
+    guard !arguments.isEmpty else { return executable.description }
+    return "\(executable) \(arguments.joined(separator: ", "))"
   }
 }
 

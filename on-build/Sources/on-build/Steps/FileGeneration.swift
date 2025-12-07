@@ -43,7 +43,8 @@ struct FileGeneration: Step {
               throw StepError.unexpectedOutput(
                 executable: .git,
                 arguments: arguments,
-                output: found
+                output: templatePath,
+                reason: "The file does not exist."
               )
             }
             let generatedFileURL = generatedFileURL(fromTemplateAtPath: templatePath)

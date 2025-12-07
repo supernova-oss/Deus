@@ -60,7 +60,7 @@ extension Step {
         arguments,
         forwardingOutputTo: .string(limit: .max)
       )
-    else { throw .unexpectedOutput(executable: executable, arguments: arguments, output: nil) }
+    else { throw .unexpectedOutput(executable: executable, arguments: arguments) }
     return output
   }
 
