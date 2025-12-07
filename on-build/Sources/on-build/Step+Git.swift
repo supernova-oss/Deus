@@ -16,7 +16,6 @@
 // ===-------------------------------------------------------------------------------------------===
 
 import Foundation
-import Subprocess
 
 extension Step {
   /// URLs of files which have been modified since the last commit, including both those in the

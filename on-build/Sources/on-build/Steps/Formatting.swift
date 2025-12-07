@@ -16,7 +16,6 @@
 // ===-------------------------------------------------------------------------------------------===
 
 import Foundation
-import Subprocess
 
 /// ``Step`` in which a Git hook for formatting all Swift files before each commit is written.
 struct Formatting: Step {
