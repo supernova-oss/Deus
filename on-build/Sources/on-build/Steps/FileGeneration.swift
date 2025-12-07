@@ -156,7 +156,8 @@ struct FileGeneration: Step {
     )
   }
 
-  /// Rewrites the Swift file at the given URL.
+  /// Rewrites the Swift file at the given URL, formatting it according to the configuration file at
+  /// the specified URL.
   ///
   /// - Parameters:
   ///   - fileURL: URL of the Swift file to be formatted.
