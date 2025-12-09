@@ -18,36 +18,13 @@
 import Foundation
 import Geometry
 
-/// Listener of lapses of time of a ``Clock``.
-public protocol TimeLapseListener: AnyObject {
-  /// Callback called after a lapse of time of the `clock`.
-  ///
-  /// - Parameters:
-  ///   - clock: ``Clock`` whose time has elapsed.
-  ///   - start: Time from which the `clock` is being advanced.
-  ///   - previous: Time prior to the current one.
-  ///
-  ///     The time of a ``Clock`` elapses 1 ms per tick. However, the lapse may also have been the
-  ///     result of an advancement; in such a scenario, it could have been advanced immediately
-  ///     instead of linearly, and, therefore, the difference between both times might not be of
-  ///     only 1 ms.
-  ///
-  ///     It will be `nil` if this is the first lapse of time of the `clock` and, in this case,
-  ///     the current time *may* be zero depending on whether the `clock` has been restarted. If the
-  ///     `clock` is resuming, it will be the amount of time elapsed at the moment it was paused.
-  ///   - end: Target, final time towards which the time of the ``Clock`` is elapsing.
-  func timeDidElapse(
-    on clock: Clock,
-    from start: Duration,
-    after previous: Duration?,
-    towards end: Duration
-  ) async
-}
-
 /// Closure whose signature matches that of the
 /// ``TimeLapseListener/timeDidElapse(on:from:after:towards:)`` callback.
 public typealias TimeDidElapse = (Clock, _ start: Duration, _ previous: Duration?, _ end: Duration)
   async -> Void
+
+/// Closure which is executed whenever a ``Clock`` is started.
+typealias ClockDidStart = () -> Void
 
 /// Coordinates the passage of time in a simulated universe, allowing for the movement of bodies and
 /// other time-based changes to their properties (such as temperature, size, direction, velocity,
@@ -119,7 +96,7 @@ public actor Clock {
     case virtual
 
     /// Denotes that a ``Clock`` should elapse its time automatically when started or immediately if
-    /// it is currently uninterrupted, via the the mechanisms specific to the underlying operating
+    /// it is currently uninterrupted, via the mechanisms specific to the underlying operating
     /// system.
     case wall
 
@@ -153,7 +130,7 @@ public actor Clock {
       case .wall:
         clock.addStartListener(listening: .once) {
           let timer = Timer(
-            timeInterval: 0.00001,
+            timeInterval: 0.000001,
             repeats: true,
             block: { _ in
               Task { await clock.advanceTimeUnconditionally(by: .subticks(1), spacing: .extreme) }
@@ -215,9 +192,8 @@ public actor Clock {
     self.mode = mode
   }
 
-  /// Initiates the passage of time. From the moment this function is called, this ``Clock`` starts
-  /// ticking on a per-millisecond basis and, upon each of its ticks, the added listeners are
-  /// notified.
+  /// Initiates the passage of time. From the moment this function is called, this ``Clock`` can
+  /// tick on a per-millisecond basis and, upon each of its ticks, the added listeners are notified.
   ///
   /// Calling this function consecutively is a no-op. In case it is called after this ``Clock`` was
   /// paused, the pessage of time is resumed from where it left off; if it was reset, the time is
@@ -355,6 +331,32 @@ public actor Clock {
   }
 }
 
+/// Listener of lapses of time of a ``Clock``.
+public protocol TimeLapseListener: AnyObject {
+  /// Callback called after a lapse of time of the `clock`.
+  ///
+  /// - Parameters:
+  ///   - clock: ``Clock`` whose time has elapsed.
+  ///   - start: Time from which the `clock` is being advanced.
+  ///   - previous: Time prior to the current one.
+  ///
+  ///     The time of a ``Clock`` elapses 1 ms per tick. However, the lapse may also have been the
+  ///     result of an advancement; in such a scenario, it could have been advanced immediately
+  ///     instead of linearly, and, therefore, the difference between both times might not be of
+  ///     only 1 ms.
+  ///
+  ///     It will be `nil` if this is the first lapse of time of the `clock` and, in this case, the
+  ///     current time *may* be zero depending on whether the `clock` has been restarted. If the
+  ///     `clock` is resuming, it will be the amount of time elapsed at the moment it was paused.
+  ///   - end: Target, final time towards which the time of the ``Clock`` is elapsing.
+  func timeDidElapse(
+    on clock: Clock,
+    from start: Duration,
+    after previous: Duration?,
+    towards end: Duration
+  ) async
+}
+
 /// ``TimeLapseListener`` by which an instance of a conforming class can be wrapped in order to be
 /// added and listen to the lapses of time of a ``Clock``. A randomly generated ID is assigned to it
 /// upo instantiation, which allows for both ensuring that it is added to a ``Clock`` only once and
@@ -387,9 +389,6 @@ private actor AnyTimeLapseListener: TimeLapseListener, Identifiable {
     towards end: Duration
   ) async { await timeDidElapse(clock, start, previous, end) }
 }
-
-/// Closure which is executed whenever a ``Clock`` is started.
-typealias ClockDidStart = () -> Void
 
 /// `Identifiable` listener which is notified of starts of a ``Clock``.
 private final class ClockStartListener: Identifiable, Hashable {
