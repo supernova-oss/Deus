@@ -41,7 +41,7 @@ actor ClockTests {
     try await withClock { clock in
       await clock.setMode(.wall)
       try await Task.sleep(for: .microseconds(2))
-      #expect((Duration.zero...(.tick * 2)).contains(await clock.elapsedTime))
+      #expect((Duration.microseconds(1)...(.microseconds(2))).contains(await clock.elapsedTime))
     }
   }
 
