@@ -15,6 +15,7 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
+#if canImport(_Differentiation)
 import Testing
 
 @testable import QuantumMechanics
@@ -57,3 +58,4 @@ private struct RealLine: Space {
 private struct UnidimensionalManifold {}
 
 extension UnidimensionalManifold: Manifold { public typealias Point = Double }
+#endif
