@@ -1,9 +1,9 @@
 name: Test
 on:
   push:
-    branches: [ "main" ]
+    branches: [ 'main' ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ 'main' ]
 jobs:
   test:
     runs-on: macos-26
@@ -11,15 +11,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Select Xcode
-        run: sudo xcode-select -switch /Applications/Xcode_26.1.1.app/Contents/Developer
+        run: sudo xcode-select -switch /Applications/Xcode_26.2.app/Contents/Developer
       - name: Test
         run: |
-             mkdir build && xcodebuild \
-             -scheme Deus \
-             -destination 'platform=OS X,arch=${{ matrix.arch }}' \
-             -allowProvisioningUpdates CODE_SIGN_IDENTITY='-' \
-             build test &&
-             exit ${PIPESTATUS[0]}
+             mkdir build
+             xcodebuild                                                                        \
+               -allowProvisioningUpdates                                                       \
+               -destination 'platform=OS X,arch=${{ matrix.arch }}'                            \
+               -resultBundlePath ResultBundle_${{ github.run_id }}_${{ matrix.arch }}.xcresult \
+               -scheme Deus                                                                    \
+               -verbose                                                                        \
+               CODE_SIGN_IDENTITY='-'                                                          \
+               build test
+      - name: Export result
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: ResultBundle_${{ github.run_id }}_${{ matrix.arch }}.xcresult
+          path: ResultBundle_${{ github.run_id }}_${{ matrix.arch }}.xcresult
     strategy:
       matrix:
         arch: [x86_64, arm64]
