@@ -26,9 +26,6 @@ jobs:
              # linker is included in macOS by default, so we create a symbolic link to it in the
              # toolchain.
              ln -s /usr/bin/ld "$toolchain_path"/usr/bin/ld
-
-             echo 'ld -version_details outputs:'
-             echo $(/Users/runner/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-2025-12-15-a.xctoolchain/usr/bin/ld -version_details)
       - name: Select Xcode
         run: sudo xcode-select -switch /Applications/Xcode_26.1.1.app/Contents/Developer
       - name: Test
