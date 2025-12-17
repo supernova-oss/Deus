@@ -18,7 +18,28 @@ jobs:
              ~/.swiftly/bin/swiftly init --assume-yes
              ~/.swiftly/bin/swiftly install --assume-yes --verbose "$version"
              build_date="${version: -10}"
-             echo SWIFT_TOOLCHAIN_PATH=~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain >> $GITHUB_ENV
+             toolchain_path=~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
+             echo SWIFT_TOOLCHAIN_PATH=toolchain_path >> $GITHUB_ENV
+
+             # This is weird: neither the current development snapshot nor posterior ones as of
+             # December 17, 2025 include the GNU linker (ld), which is required for compiling. ld is
+             # included in macOS by default at /usr/bin/ld, but cannot be copied into the toolchain
+             # because of System Integrity Protection (SIP). As a workaround, the sources of
+             # binutils are downloaded and compiled; ld is made a part of the toolchain; and its
+             # source is removed afterward.
+             cd ~/Downloads
+             binutils_directory_name=binutils-2.45.1
+             curl                                                                 \
+               https://ftp.gnu.org/gnu/binutils/"$binutils_directory_name".tar.xz \
+                 --output "$binutils_directory_name"
+             tar -xzf "$binutils_directory_name".tar.xz
+             cd "$binutils_directory_name"/ld
+             brew install gcc@15
+             export CC=gcc-15
+             ./configure
+             make install
+             sudo mv -f /usr/local/bin/ld "$toolchain_path"/usr/bin
+             rm -fr ~/Downloads/"$binutils_directory_name"
       - name: Select Xcode
         run: sudo xcode-select -switch /Applications/Xcode_26.1.1.app/Contents/Developer
       - name: Test
