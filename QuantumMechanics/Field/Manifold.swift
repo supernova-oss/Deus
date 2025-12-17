@@ -1,4 +1,3 @@
-// swift-tools-version: 6.2
 // ===-------------------------------------------------------------------------------------------===
 // Copyright © 2025 Supernova. All rights reserved.
 //
@@ -16,16 +15,16 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import PackageDescription
+#if canImport(_Differentiation)
+import _Differentiation
+import Foundation
+internal import Numerics
 
-let package = Package(
-  name: "on-build",
-  platforms: [.macOS(.v15)],
-  dependencies: [.package(url: "https://github.com/swiftlang/swift-subprocess", exact: "0.2.1")],
-  targets: [
-    .executableTarget(
-      name: "on-build",
-      dependencies: [.product(name: "Subprocess", package: "swift-subprocess")]
-    )
-  ]
-)
+/// *n*-dimensional, locally-Euclidean topological space whose neighborhoods by which each of its
+/// points is contained are homeomorphic subsets of ℝ*ⁿ*, denoting a resemblance of such
+/// neighborhoods to an Euclidean space.
+public protocol Manifold {
+  /// Type of a point *p* in this ``Manifold``.
+  associatedtype Point: Differentiable
+}
+#endif

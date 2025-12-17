@@ -123,6 +123,7 @@
 /* Begin PBXFileReference section */
 		4921F2692DD4ECA900393B6F /* Deus.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Deus.xctestplan; sourceTree = "<group>"; };
 		4921F3192DD54F0B00393B6F /* .swift-format */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".swift-format"; sourceTree = "<group>"; };
+		49267D662EF1DA6C00FFA7AD /* .swift-version */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".swift-version"; sourceTree = "<group>"; };
 		4927F36C2DD25BC400E368D8 /* Deus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Deus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		492A77552EE2EBD500BDB7D1 /* on-build */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = "on-build"; sourceTree = "<group>"; };
 		494EFBF92DDF36B100C66063 /* RelativityKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RelativityKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -140,8 +141,17 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				DiscretionTests.swift.gyb,
+				Elementary/QuarkTests.swift.gyb,
+				MeasurementTests.swift.gyb,
 			);
 			target = 49EF5D562DE20D36008AFB31 /* QuantumMechanicsTests */;
+		};
+		498F54242EDB2CFF00FB4D53 /* Exceptions for "QuantumMechanics" folder in "QuantumMechanics" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Measurement+Differentiable.swift.gyb",
+			);
+			target = 49EF5D4E2DE20D36008AFB31 /* QuantumMechanics */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -183,6 +193,9 @@
 		};
 		49EF5D502DE20D36008AFB31 /* QuantumMechanics */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				498F54242EDB2CFF00FB4D53 /* Exceptions for "QuantumMechanics" folder in "QuantumMechanics" target */,
+			);
 			path = QuantumMechanics;
 			sourceTree = "<group>";
 		};
@@ -281,6 +294,7 @@
 		49FD31192DBFC9E2003CEAF9 = {
 			isa = PBXGroup;
 			children = (
+				49267D662EF1DA6C00FFA7AD /* .swift-version */,
 				492A77552EE2EBD500BDB7D1 /* on-build */,
 				4921F2692DD4ECA900393B6F /* Deus.xctestplan */,
 				4921F3192DD54F0B00393B6F /* .swift-format */,
