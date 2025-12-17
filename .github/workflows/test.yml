@@ -36,7 +36,7 @@ jobs:
              cd "$binutils_directory_name"
              export CC=gcc-15
              ./configure
-             make install
+             make install || true
              sudo mv -f /usr/local/bin/ld "$toolchain_path"/usr/bin
              rm -fr ~/Downloads/"$binutils_directory_name"
       - name: Select Xcode
