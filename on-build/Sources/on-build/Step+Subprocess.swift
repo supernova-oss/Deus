@@ -15,7 +15,9 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
+import Foundation
 import Subprocess
+import System
 
 extension Executable {
   /// Executable at `/bin/chmod`.
@@ -29,6 +31,24 @@ extension Executable {
 
   /// Executable at `/usr/bin/python3`.
   static let python3 = Self.name("/usr/bin/python3")
+
+  /// Executable at `usr/bin/swift-format`, relative to the directory of the Swift toolchain.
+  static var swiftFormat: Self {
+    get async throws(StepError) {
+      let swiftly = Self.name("\(URL.homeDirectory.path)/.swiftly/bin/swiftly")
+      let arguments = ["use", "--print-location"]
+      guard
+        var toolchainPath = try await _spawnSubprocess(
+          from: nil,
+          swiftly,
+          arguments,
+          forwardingOutputTo: .string(limit: .max)
+        )
+      else { throw .unexpectedOutput(executable: swiftly, arguments: arguments) }
+      toolchainPath.removeLast()
+      return .name("\(toolchainPath)/usr/bin/swift-format")
+    }
+  }
 }
 
 extension Step {
@@ -40,7 +60,12 @@ extension Step {
   ///   - executable: The executable to execute.
   ///   - arguments: The arguments to pass to the executable.
   func spawnSubprocess(_ executable: Executable, _ arguments: [String]) async throws(StepError) {
-    try await spawnSubprocess(executable, arguments, forwardingOutputTo: .standardOutput)
+    try await _spawnSubprocess(
+      from: .init(projectURL),
+      executable,
+      arguments,
+      forwardingOutputTo: .standardOutput
+    )
   }
 
   /// Spawns a subprocess and executes the given executable, passing the given arguments in and with
@@ -55,7 +80,8 @@ extension Step {
     _ arguments: [String]
   ) async throws(StepError) -> String {
     guard
-      let output = try await spawnSubprocess(
+      let output = try await _spawnSubprocess(
+        from: .init(projectURL),
         executable,
         arguments,
         forwardingOutputTo: .string(limit: .max)
@@ -63,36 +89,39 @@ extension Step {
     else { throw .unexpectedOutput(executable: executable, arguments: arguments) }
     return output
   }
+}
 
-  /// Spawns a subprocess and executes the given executable, passing the given arguments in and with
-  /// the ``projectURL`` as the working directory.
-  ///
-  /// - Parameters:
-  ///   - executable: The executable to execute.
-  ///   - arguments: The arguments to pass to the executable.
-  ///   - output: The method to use for redirecting the standard output.
-  private func spawnSubprocess<Output>(
-    _ executable: Executable,
-    _ arguments: [String],
-    forwardingOutputTo output: Output
-  ) async throws(StepError) -> Output.OutputType where Output: OutputProtocol {
-    guard
-      let result = try? await Subprocess.run(
-        executable,
-        arguments: .init(arguments),
-        workingDirectory: .init(projectURL),
-        output: output,
-        error: .string(limit: .max)
-      )
-    else { throw .missing(executable: executable) }
-    switch result.terminationStatus {
-    case .exited(let code):
-      guard code == 0 else {
-        throw .failure(executable: executable, arguments: arguments, message: result.standardError)
-      }
-    case .unhandledException(_):
+/// Spawns a subprocess and executes the given executable, passing the given arguments in and with
+/// the ``projectURL`` as the working directory.
+///
+/// - Parameters:
+///   - workingDirectory: Directory to which every path is relative, from which the executable will
+///     be executed.
+///   - executable: The executable to execute.
+///   - arguments: The arguments to pass to the executable.
+///   - output: The method to use for redirecting the standard output.
+private func _spawnSubprocess<Output>(
+  from workingDirectory: FilePath?,
+  _ executable: Executable,
+  _ arguments: [String],
+  forwardingOutputTo output: Output
+) async throws(StepError) -> Output.OutputType where Output: OutputProtocol {
+  guard
+    let result = try? await Subprocess.run(
+      executable,
+      arguments: .init(arguments),
+      workingDirectory: workingDirectory,
+      output: output,
+      error: .string(limit: .max)
+    )
+  else { throw .missing(executable: executable) }
+  switch result.terminationStatus {
+  case .exited(let code):
+    guard code == 0 else {
       throw .failure(executable: executable, arguments: arguments, message: result.standardError)
     }
-    return result.standardOutput
+  case .unhandledException(_):
+    throw .failure(executable: executable, arguments: arguments, message: result.standardError)
   }
+  return result.standardOutput
 }

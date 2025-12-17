@@ -10,11 +10,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Configure Swift toolchain
+        run: |
+             curl -O https://download.swift.org/swiftly/darwin/swiftly.pkg
+             installer -pkg swiftly.pkg -target CurrentUserHomeDirectory
+             version=$(cat .swift-version | xargs)
+             ~/.swiftly/bin/swiftly init --assume-yes
+             ~/.swiftly/bin/swiftly install --assume-yes --verbose "$version"
+             build_date="${version: -10}"
+             echo SWIFT_TOOLCHAIN_PATH=~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain >> $GITHUB_ENV
       - name: Select Xcode
         run: sudo xcode-select -switch /Applications/Xcode_26.2.app/Contents/Developer
       - name: Test
         run: |
+             source ~/.swiftly/env.sh
+             hash -r
              mkdir build
+             export TOOLCHAINS=$(defaults read ${{ env.SWIFT_TOOLCHAIN_PATH }}/Info CFBundleIdentifier)
              xcodebuild                                                                        \
                -allowProvisioningUpdates                                                       \
                -destination 'platform=OS X,arch=${{ matrix.arch }}'                            \

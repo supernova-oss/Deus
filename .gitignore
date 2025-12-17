@@ -1,5 +1,7 @@
 .build/
-/tooling/.venv
+/tooling/.venv/
 QuantumMechanics/Measurement+Differentiable.swift
+QuantumMechanicsTests/DiscretionTests.swift
+QuantumMechanicsTests/Elementary/QuarkTests.swift
 QuantumMechanicsTests/MeasurementTests.swift
 xcuserdata/
