@@ -34,7 +34,6 @@ jobs:
                  --output "$binutils_directory_name".tar.xz
              tar -vxzf "$binutils_directory_name".tar.xz
              cd "$binutils_directory_name"/ld
-             brew install gcc@15
              export CC=gcc-15
              ./configure
              make install
