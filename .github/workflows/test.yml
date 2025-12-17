@@ -15,7 +15,7 @@ jobs:
              curl -O https://download.swift.org/swiftly/darwin/swiftly.pkg
              installer -pkg swiftly.pkg -target CurrentUserHomeDirectory
              version=$(cat .swift-version | xargs)
-             ~/.swiftly/bin/swiftly init --assume-yes
+             ~/.swiftly/bin/swiftly init --assume-yes --skip-install
              ~/.swiftly/bin/swiftly install --assume-yes --verbose "$version"
              build_date="${version: -10}"
              toolchain_path=~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
