@@ -21,17 +21,11 @@ import PackageDescription
 let package = Package(
   name: "on-build",
   platforms: [.macOS(.v15)],
-  dependencies: [
-    .package(url: "https://github.com/swiftlang/swift-subprocess", exact: "0.2.1"),
-    .package(url: "https://github.com/swiftlang/swift-format", exact: "602.0.0")
-  ],
+  dependencies: [.package(url: "https://github.com/swiftlang/swift-subprocess", exact: "0.2.1")],
   targets: [
     .executableTarget(
       name: "on-build",
-      dependencies: [
-        .product(name: "Subprocess", package: "swift-subprocess"),
-        .product(name: "SwiftFormat", package: "swift-format")
-      ]
+      dependencies: [.product(name: "Subprocess", package: "swift-subprocess")]
     )
   ]
 )

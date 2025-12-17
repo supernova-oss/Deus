@@ -17,7 +17,6 @@
 
 import Foundation
 import Subprocess
-import SwiftFormat
 import System
 
 /// ``Step`` in which Swift files are generated for their respective templates (files primarily
@@ -60,6 +59,7 @@ struct FileGeneration: Step {
     }
   }
 
+  /// ``projectURL`` as a `FilePath`.
   private let projectFilePath: FilePath
 
   /// Names of the directories of Python packages under the `tooling` directory at the root of the
@@ -120,7 +120,6 @@ struct FileGeneration: Step {
     let unpairedTemplateURLs = try await unpairedTemplateURLs
     var potentialTemplateURLs = unpairedTemplateURLs
     potentialTemplateURLs.formUnion(try await modifiedFileURLs)
-    let formatConfigurationURL = projectURL.appending(path: ".swift-format")
     try await unsafeCallWithTypedThrowsCast(to: StepError.self) {
       try await withThrowingTaskGroup { taskGroup in
         for templateURL in potentialTemplateURLs {
@@ -131,7 +130,7 @@ struct FileGeneration: Step {
           taskGroup.addTask {
             let generatedFileURL = generatedFileURL(fromTemplateAtPath: templateURL.relativePath)
             try await generateFile(from: templateURL, at: generatedFileURL)
-            try await format(at: generatedFileURL, withConfigurationAt: formatConfigurationURL)
+            try await formatFile(at: generatedFileURL)
           }
         }
         try await taskGroup.waitForAll()
@@ -157,21 +156,14 @@ struct FileGeneration: Step {
   }
 
   /// Rewrites the Swift file at the given URL, formatting it according to the configuration file at
-  /// the specified URL.
+  /// the root of the project.
   ///
   /// - Parameters:
   ///   - fileURL: URL of the Swift file to be formatted.
-  ///   - configurationURL: URL of the formatting configuration file.
-  private func format(
-    at fileURL: URL,
-    withConfigurationAt configurationURL: URL
-  ) async throws(StepError) {
-    guard let formatConfiguration = try? Configuration(contentsOf: configurationURL) else {
-      throw StepError.unallowed(.read, fileURL: configurationURL)
-    }
-    do { try SwiftFormatter(configuration: formatConfiguration).format(at: fileURL) } catch {
-      throw StepError.unallowed(.write, fileURL: fileURL)
-    }
+  private func formatFile(at fileURL: URL) async throws(StepError) {
+    let commonArguments = ["--parallel", "--recursive"]
+    try await spawnSubprocess(.swiftFormat, ["--in-place"] + commonArguments + ["."])
+    try await spawnSubprocess(.swiftFormat, ["lint"] + commonArguments + ["--strict", "."])
   }
 
   /// Produces the URL of a Swift file, relative to the ``projectURL``, which either will be or has
@@ -199,16 +191,5 @@ struct FileGeneration: Step {
       directoryHint: .notDirectory,
       relativeTo: projectURL
     )
-  }
-}
-
-extension SwiftFormatter {
-  /// Formats the file at given `URL` according to the specified configuration.
-  ///
-  /// - Parameter fileURL: `URL` of the .swift file to be formatted.
-  fileprivate func format(at fileURL: URL) throws {
-    var output = ""
-    try format(contentsOf: fileURL, to: &output)
-    try output.write(to: fileURL, atomically: true, encoding: .utf8)
   }
 }

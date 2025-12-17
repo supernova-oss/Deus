@@ -10,16 +10,37 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Configure Swift toolchain
+        run: |
+             curl -O https://download.swift.org/swiftly/darwin/swiftly.pkg
+             installer -pkg swiftly.pkg -target CurrentUserHomeDirectory
+             version=$(cat .swift-version | xargs)
+             ~/.swiftly/bin/swiftly init --assume-yes
+             ~/.swiftly/bin/swiftly install --assume-yes --verbose "$version"
+             build_date="${version: -10}"
+             echo SWIFT_TOOLCHAIN_PATH=~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain >> $GITHUB_ENV
       - name: Select Xcode
         run: sudo xcode-select -switch /Applications/Xcode_26.1.1.app/Contents/Developer
       - name: Test
         run: |
-             mkdir build && xcodebuild \
-             -scheme Deus \
-             -destination 'platform=OS X,arch=${{ matrix.arch }}' \
-             -allowProvisioningUpdates CODE_SIGN_IDENTITY='-' \
-             build test &&
-             exit ${PIPESTATUS[0]}
+             source ~/.swiftly/env.sh
+             hash -r
+             mkdir build
+             export TOOLCHAINS=$(defaults read ${{ env.SWIFT_TOOLCHAIN_PATH }}/Info CFBundleIdentifier)
+             xcodebuild                                                                        \
+               -allowProvisioningUpdates                                                       \
+               -destination 'platform=OS X,arch=${{ matrix.arch }}'                            \
+               -resultBundlePath ResultBundle_${{ github.run_id }}_${{ matrix.arch }}.xcresult \
+               -scheme Deus                                                                    \
+               -verbose                                                                        \
+               CODE_SIGN_IDENTITY='-'                                                          \
+               build test
+      - name: Export result
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: ResultBundle_${{ github.run_id }}_${{ matrix.arch }}.xcresult
+          path: ResultBundle_${{ github.run_id }}_${{ matrix.arch }}.xcresult
     strategy:
       matrix:
         arch: [x86_64, arm64]
