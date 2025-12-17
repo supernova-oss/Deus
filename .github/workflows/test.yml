@@ -19,10 +19,10 @@ jobs:
              ~/.swiftly/bin/swiftly install --assume-yes --verbose "$version"
              build_date="${version: -10}"
              toolchain_path=~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
-             echo SWIFT_TOOLCHAIN_PATH=$toolchain_path >> $GITHUB_ENV
+             echo SWIFT_TOOLCHAIN_ID=$(defaults read "$toolchain_path"/Info CFBundleIdentifier) >> $GITHUB_ENV
 
              # This is weird: neither the current development snapshot nor posterior ones as of
-             # December 17, 2025 include the GNU linker, which is required for compiling. such
+             # December 17, 2025 include the GNU linker, which is required for compiling. Such
              # linker is included in macOS by default, so we create a symbolic link to it in the
              # toolchain.
              ln -s /usr/bin/ld "$toolchain_path"/usr/bin/ld
@@ -31,7 +31,7 @@ jobs:
       - name: Test
         run: |
              mkdir build
-             export TOOLCHAINS=$(defaults read ${{ env.SWIFT_TOOLCHAIN_PATH }}/Info CFBundleIdentifier)
+             export TOOLCHAINS=${{ env.SWIFT_TOOLCHAIN_ID }}
              xcodebuild                                                                        \
                -allowProvisioningUpdates                                                       \
                -destination 'platform=OS X,arch=${{ matrix.arch }}'                            \
