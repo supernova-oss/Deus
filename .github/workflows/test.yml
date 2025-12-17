@@ -31,7 +31,7 @@ jobs:
              binutils_directory_name=binutils-2.45.1
              curl                                                                 \
                https://ftp.gnu.org/gnu/binutils/"$binutils_directory_name".tar.xz \
-                 --output "$binutils_directory_name"
+                 --output "$binutils_directory_name".tar.xz
              tar -vxzf "$binutils_directory_name".tar.xz
              cd "$binutils_directory_name"/ld
              brew install gcc@15
