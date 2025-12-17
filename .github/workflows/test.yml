@@ -33,7 +33,7 @@ jobs:
                https://ftp.gnu.org/gnu/binutils/"$binutils_directory_name".tar.xz \
                  --output "$binutils_directory_name".tar.xz
              tar -xzf "$binutils_directory_name".tar.xz
-             cd "$binutils_directory_name"/ld
+             cd "$binutils_directory_name"
              export CC=gcc-15
              ./configure
              make install
