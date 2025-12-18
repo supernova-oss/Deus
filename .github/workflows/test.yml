@@ -20,7 +20,7 @@ jobs:
              ~/.swiftly/bin/swiftly init --assume-yes --skip-install
              ~/.swiftly/bin/swiftly install --assume-yes --verbose "$version"
              build_date="${version: -10}"
-             local toolchain_path=~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
+             toolchain_path=~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
              echo SWIFT_TOOLCHAIN_ID=$(defaults read "$toolchain_path"/Info CFBundleIdentifier) >> $GITHUB_ENV
 
              # Because dealing with development snapshots has been cumbersome, we ensure as much as
