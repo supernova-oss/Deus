@@ -33,13 +33,11 @@ jobs:
                "$toolchain_path"
              assert_eq                                                                 \
                "$(swift --version)"                                                    \
-               "$(cat << END
-             swift-driver version: 1.127.14.1
+               "swift-driver version: 1.127.14.1
              Apple Swift version 6.3-dev (LLVM 36e07716208ae15, Swift 7b214378007870f)
              Target: arm64-apple-macosx26.0
-             Build config: +assertions
-             END)"
-             assert_eq "$(xcode-select print-path)" /Users/runner/../.."$SELECTED_XCODE"
+             Build config: +assertions"
+             assert_eq "$(xcode-select --print-path)" "/Users/runner/../..$SELECTED_XCODE"
              assert_eq "$(xcrun --find swift)" "$toolchain_path"/usr/bin/swift
       - name: Select Xcode
         run: sudo xcode-select -switch "$SELECTED_XCODE"
