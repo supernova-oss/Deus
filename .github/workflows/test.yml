@@ -28,7 +28,7 @@ jobs:
              # hassle, see https://github.com/supernova-oss/Deus/pull/44 and
              # https://github.com/supernova-oss/Deus/pull/58.
              source "$GITHUB_WORKSPACE"/tooling/assert.sh
-             assert_eq $(swiftly use --print-location | head -n 1) "$toolchain_path"
+             assert_eq $(~/.swiftly/bin/swiftly use --print-location | head -n 1) "$toolchain_path"
              assert_eq                                                                     \
                $(swift --version | head -n 1)                                              \
                "Apple Swift version 6.3-dev (LLVM 36e07716208ae15, Swift 7b214378007870f)"
