@@ -34,45 +34,52 @@ jobs:
              # As a workaround, we "intercept" calls to ld, outputting the details of its version
              # which are expected by the caller when the `version_details` flag is passed in;
              # otherwise, the call is forwarded to the ld included in macOS.
-             cat > "$toolchain_path"/usr/bin/ld << OUTER_EOF
-             #!/bin/sh
-
-             if [ "$1" = '-version_details' ]; then
-               cat << INNER_EOF
-             {
-               "version": "1221.4",
-               "architectures": [
-                 "armv6",
-                 "armv6m",
-                 "arm64",
-                 "arm64_32",
-                 "arm64e",
-                 "armv7",
-                 "armv7s",
-                 "armv7em",
-                 "armv7k",
-                 "armv7m",
-                 "armv8.1m.main",
-                 "armv8m.main",
-                 "i386",
-                 "x86_64",
-                 "x86_64h"
-               ],
-               "lto": {
-                 "runtime_api_version": 29,
-                 "static_api_version": 29,
-                 "version_string": "LLVM version 17.0.0"
-               },
-               "tapi": {
-                 "version": "17.0.0",
-                 "version_string": "Apple TAPI version 17.0.0 (tapi-1700.3.8)"
+             cat > "$toolchain_path"/usr/bin/ld.c << EOF
+             #include <stdio.h>
+             #include <string.h>
+             #include <unistd.h>
+ 
+             int main(int argc, char **argv) {
+               if (!strcmp(argv[1], "-version_details")) {
+                 printf(
+                   "{\n"
+                   "  \"version\": \"1221.4\",\n"
+                   "  \"architectures\": [\n"
+                   "    \"armv6\",\n"
+                   "    \"armv6m\",\n"
+                   "    \"arm64\",\n"
+                   "    \"arm64_32\",\n"
+                   "    \"arm64e\",\n"
+                   "    \"armv7\",\n"
+                   "    \"armv7s\",\n"
+                   "    \"armv7em\",\n"
+                   "    \"armv7k\",\n"
+                   "    \"armv7m\",\n"
+                   "    \"armv8.1m.main\",\n"
+                   "    \"armv8m.main\",\n"
+                   "    \"i386\",\n"
+                   "    \"x86_64\",\n"
+                   "    \"x86_64h\",\n"
+                   "  ],\n"
+                   "  \"lto\": {\n"
+                   "    \"runtime_api_version\": 29,\n"
+                   "    \"static_api_version\": 29,\n"
+                   "    \"version_string\": \"LLVM version 17.0.0\"\n"
+                   "  },\n"
+                   "  \"tapi\": {\n"
+                   "    \"version\": \"17.0.0\",\n"
+                   "    \"version_string\": \"Apple TAPI version 17.0.0 (tapi-1700.3.8)\"\n"
+                   "  }\n"
+                   "}\n"
+                 );
+               } else {
+                 execv("/usr/bin/ld", &argv[1]);
                }
+               return 0;
              }
-             INNER_EOF
-             else
-               exec /usr/bin/ld "$@"
-             fi
-             OUTER_EOF
+             EOF
+             clang ld.c -o ld
+             rm "$toolchain_path"/usr/bin/ld.c
       - name: Select Xcode
         run: sudo xcode-select -switch /Applications/Xcode_26.1.1.app/Contents/Developer
       - name: Test
