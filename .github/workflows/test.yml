@@ -78,7 +78,7 @@ jobs:
                return 0;
              }
              EOF
-             clang "$toolchain_path"/usr/bin/ld.c -o "$toolchain_path"/usr/bin/ld
+             clang "$toolchain_path"/usr/bin/ld.c -o "$toolchain_path"/usr/bin/ld -v
              rm "$toolchain_path"/usr/bin/ld.c
       - name: Select Xcode
         run: sudo xcode-select -switch /Applications/Xcode_26.1.1.app/Contents/Developer
