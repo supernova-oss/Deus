@@ -21,24 +21,26 @@ jobs:
              ~/.swiftly/bin/swiftly install --assume-yes --verbose "$version"
              build_date="${version: -10}"
              toolchain_path=~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
-             echo SWIFT_TOOLCHAIN_ID=$(defaults read "$toolchain_path"/Info CFBundleIdentifier) >> $GITHUB_ENV
+             echo SWIFT_TOOLCHAIN_ID="$(defaults read "$toolchain_path"/Info CFBundleIdentifier)" >> $GITHUB_ENV
 
              # Because dealing with development snapshots has been cumbersome, we ensure as much as
              # possible that the toolchain being used is the installed one. For reference on the
              # hassle, see https://github.com/supernova-oss/Deus/pull/44 and
              # https://github.com/supernova-oss/Deus/pull/58.
              source "$GITHUB_WORKSPACE"/tooling/assert.sh
-             assert_eq $(~/.swiftly/bin/swiftly use --print-location | head -n 1) "$toolchain_path"
+             assert_eq                                                      \
+               "$(~/.swiftly/bin/swiftly use --print-location | head -n 1)" \
+               "$toolchain_path"
              assert_eq                                                                  \
-               $(swift --version)                                                       \
-               $(cat << EOF
+               "$(swift --version)"                                                     \
+               "$(cat << END
              swift-driver version: 1.127.14.1
              Apple Swift version 6.3-dev (LLVM 36e07716208ae15, Swift 7b214378007870f)"
              Target: arm64-apple-macosx26.0
              Build config: +assertions
-             EOF)
-             assert_eq $(xcode-select print-path) /Users/runner/../.."$SELECTED_XCODE"
-             assert_eq $(xcrun --find swift) "$toolchain_path"/usr/bin/swift
+             END)"
+             assert_eq "$(xcode-select print-path)" /Users/runner/../.."$SELECTED_XCODE"
+             assert_eq "$(xcrun --find swift)" "$toolchain_path"/usr/bin/swift
       - name: Select Xcode
         run: sudo xcode-select -switch "$SELECTED_XCODE"
       - name: Test
