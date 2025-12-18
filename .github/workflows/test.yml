@@ -85,6 +85,7 @@ jobs:
       - name: Test
         run: |
              mkdir build
+             export CC=clang
              export TOOLCHAINS=${{ env.SWIFT_TOOLCHAIN_ID }}
              xcodebuild                                                                        \
                -allowProvisioningUpdates                                                       \
