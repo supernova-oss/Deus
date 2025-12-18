@@ -1,4 +1,6 @@
 name: Test
+env:
+  SELECTED_XCODE: '/Applications/Xcode_26.2.app/Contents/Developer'
 on:
   push:
     branches: [ 'main' ]
@@ -18,10 +20,22 @@ jobs:
              ~/.swiftly/bin/swiftly init --assume-yes --skip-install
              ~/.swiftly/bin/swiftly install --assume-yes --verbose "$version"
              build_date="${version: -10}"
-             toolchain_path=~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
+             local toolchain_path=~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
              echo SWIFT_TOOLCHAIN_ID=$(defaults read "$toolchain_path"/Info CFBundleIdentifier) >> $GITHUB_ENV
+
+             # Because dealing with development snapshots has been cumbersome, we ensure as much as
+             # possible that the toolchain being used is the installed one. For reference on the
+             # hassle, see https://github.com/supernova-oss/Deus/pull/44 and
+             # https://github.com/supernova-oss/Deus/pull/58.
+             source ../../tooling/assert.sh
+             assert_eq $(swiftly use --print-location | head -n 1) "$toolchain_path"
+             assert_eq                                                                     \
+               $(swift --version | head -n 1)                                              \
+               "Apple Swift version 6.3-dev (LLVM 36e07716208ae15, Swift 7b214378007870f)"
+             assert_eq $(xcode-select print-path) /Users/runner/../.."$SELECTED_XCODE"
+             assert_eq $(xcrun --find swift) "$toolchain_path"/usr/bin/swift
       - name: Select Xcode
-        run: sudo xcode-select -switch /Applications/Xcode_26.1.1.app/Contents/Developer
+        run: sudo xcode-select -switch "$SELECTED_XCODE"
       - name: Test
         run: |
              mkdir build
