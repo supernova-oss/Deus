@@ -35,7 +35,7 @@ jobs:
              # which are expected by the caller when the `version_details` flag is passed in;
              # otherwise, the call is forwarded to the ld included in macOS.
              cat > "$toolchain_path"/usr/bin/ld << OUTER_EOF
-             !#/bin/sh
+             #!/bin/sh
 
              if [ "$1" = '-version_details' ]; then
                cat << INNER_EOF
