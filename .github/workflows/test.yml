@@ -1,9 +1,9 @@
 name: Test
 on:
   push:
-    branches: [ "main" ]
+    branches: [ 'main' ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ 'main' ]
 jobs:
   test:
     runs-on: macos-26
@@ -70,7 +70,7 @@ jobs:
              }
              INNER_EOF
              else
-               source /usr/bin/ld "$@"
+               exec /usr/bin/ld "$@"
              fi
              OUTER_EOF
       - name: Select Xcode
