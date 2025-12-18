@@ -712,7 +712,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd on-build && swift run --toolchain \"$(xcode-select --print-path)\"/Toolchains/XcodeDefault.xctoolchain && cd ..\n";
+			shellScript = "cd on-build && xcrun --run swift run && cd ..\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
