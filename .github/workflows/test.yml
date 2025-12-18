@@ -20,12 +20,6 @@ jobs:
              build_date="${version: -10}"
              toolchain_path=~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
              echo SWIFT_TOOLCHAIN_ID=$(defaults read "$toolchain_path"/Info CFBundleIdentifier) >> $GITHUB_ENV
-
-             # This is weird: neither the current development snapshot nor posterior ones as of
-             # December 17, 2025 include the GNU linker (ld), which is required for compiling Swift
-             # sources. As a workaround, an ld symbolic link to /usr/bin/lld — the LLVM linker — is
-             # created in the toolchain.
-             ln -s "$toolchain_path"/usr/bin/lld "$toolchain_path"/usr/bin/ld
       - name: Select Xcode
         run: sudo xcode-select -switch /Applications/Xcode_26.1.1.app/Contents/Developer
       - name: Test
