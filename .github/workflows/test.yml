@@ -19,9 +19,9 @@ jobs:
              ~/.swiftly/bin/swiftly install --assume-yes --verbose "$version"
              build_date="${version: -10}"
              toolchain_path=~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
-             echo SWIFT_TOOLCHAIN_ID=$(defaults read "$toolchain_path"/Info CFBundleIdentifier) >> $GITHUB_ENV
+             echo SWIFT_TOOLCHAIN_ID="$(defaults read "$toolchain_path"/Info CFBundleIdentifier)" >> $GITHUB_ENV
       - name: Select Xcode
-        run: sudo xcode-select -switch /Applications/Xcode_26.1.1.app/Contents/Developer
+        run: sudo xcode-select -switch /Applications/Xcode_26.2.app/Contents/Developer
       - name: Test
         run: |
              mkdir build
