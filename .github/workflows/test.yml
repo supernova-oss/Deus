@@ -22,10 +22,57 @@ jobs:
              echo SWIFT_TOOLCHAIN_ID=$(defaults read "$toolchain_path"/Info CFBundleIdentifier) >> $GITHUB_ENV
 
              # This is weird: neither the current development snapshot nor posterior ones as of
-             # December 17, 2025 include the GNU linker, which is required for compiling. Such
-             # linker is included in macOS by default, so we create a symbolic link to it in the
-             # toolchain.
-             ln -s /usr/bin/ld "$toolchain_path"/usr/bin/ld
+             # December 17, 2025 include the GNU linker (ld), which is required for compiling Swift
+             # sources.
+             #
+             # And, for some reason unknown by me, ld outputs the details of its version
+             # successfully *before* `swift build` is called (by `swift run`), but yields an empty
+             # string when `swift build` calls it.
+             #
+             # https://github.com/swiftlang/swift-build/blob/ff02f8db335e41af9ccdc15896a94c667d31288b/Sources/SWBCore/SpecImplementations/Tools/LinkerTools.swift#L1916-L1920
+             #
+             # As a workaround, we "intercept" calls to ld, outputting the details of its version
+             # which are expected by the caller when the `version_details` flag is passed in;
+             # otherwise, the call is forwarded to the ld included in macOS.
+             cat > "$toolchain_path"/ld << OUTER_EOF
+             !#/bin/sh
+
+             if [ "$1" = '-version_details' ]; then
+               cat << INNER_EOF
+             {
+               "version": "1221.4",
+               "architectures": [
+                 "armv6",
+                 "armv6m",
+                 "arm64",
+                 "arm64_32",
+                 "arm64e",
+                 "armv7",
+                 "armv7s",
+                 "armv7em",
+                 "armv7k",
+                 "armv7m",
+                 "armv8.1m.main",
+                 "armv8m.main",
+                 "i386",
+                 "x86_64",
+                 "x86_64h"
+               ],
+               "lto": {
+                 "runtime_api_version": 29,
+                 "static_api_version": 29,
+                 "version_string": "LLVM version 17.0.0"
+               },
+               "tapi": {
+                 "version": "17.0.0",
+                 "version_string": "Apple TAPI version 17.0.0 (tapi-1700.3.8)"
+               }
+             }
+             INNER_EOF
+             else
+               source /usr/bin/ld "$@"
+             fi
+             OUTER_EOF
       - name: Select Xcode
         run: sudo xcode-select -switch /Applications/Xcode_26.1.1.app/Contents/Developer
       - name: Test
