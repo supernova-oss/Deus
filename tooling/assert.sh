@@ -20,7 +20,8 @@
 
 # Deus-specific changes:
 #
-# - Compliance to POSIX; and
+# - Compliance to POSIX;
+# - removal of array equality and inequality asserters; and
 # - replacement of header comment describing the program by the MIT license notice.
 
 if command -v tput &>/dev/null && tty -s; then
@@ -90,63 +91,6 @@ assert_false() {
 
   assert_eq false "$actual" "$msg"
   return "$?"
-}
-
-assert_array_eq() {
-
-  declare -a expected=("${!1-}")
-  # echo "AAE ${expected[@]}"
-
-  declare -a actual=("${!2}")
-  # echo "AAE ${actual[@]}"
-
-  local msg="${3-}"
-
-  local return_code=0
-  if [ ! "${#expected[@]}" = "${#actual[@]}" ]; then
-    return_code=1
-  fi
-
-  local i
-  for (( i=1; i < ${#expected[@]} + 1; i+=1 )); do
-    if [ ! "${expected[$i-1]}" = "${actual[$i-1]}" ]; then
-      return_code=1
-      break
-    fi
-  done
-
-  if [ "$return_code" = 1 ]; then
-    [ "${#msg}" -gt 0 ] && log_failure "(${expected[*]}) != (${actual[*]}) :: $msg" || true
-  fi
-
-  return "$return_code"
-}
-
-assert_array_not_eq() {
-
-  declare -a expected=("${!1-}")
-  declare -a actual=("${!2}")
-
-  local msg="${3-}"
-
-  local return_code=1
-  if [ ! "${#expected[@]}" = "${#actual[@]}" ]; then
-    return_code=0
-  fi
-
-  local i
-  for (( i=1; i < ${#expected[@]} + 1; i+=1 )); do
-    if [ ! "${expected[$i-1]}" = "${actual[$i-1]}" ]; then
-      return_code=0
-      break
-    fi
-  done
-
-  if [ "$return_code" = 1 ]; then
-    [ "${#msg}" -gt 0 ] && log_failure "(${expected[*]}) == (${actual[*]}) :: $msg" || true
-  fi
-
-  return "$return_code"
 }
 
 assert_empty() {
@@ -230,7 +174,7 @@ assert_ge() {
   local second="$2"
   local msg="${3-}"
 
-  if [[ "$first" -ge  "$second" ]]; then
+  if [ "$first" -ge  "$second" ]; then
     return 0
   else
     [ "${#msg}" -gt 0 ] && log_failure "$first >= $second :: $msg" || true
