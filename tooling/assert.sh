@@ -1,23 +1,27 @@
-#!/usr/bin/env bash
+#!/usr/bin/sh
+# ===--------------------------------------------------------------------------------------------===
+# Copyright © 2016 Mark Torok. All rights reserved.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+# associated documentation files (the “Software”), to deal in the Software without restriction,
+# including without limitation the rights to use, copy, modify, merge, publish, distribute,
+# sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all copies or
+# substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+# NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
+# OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# ===--------------------------------------------------------------------------------------------===
 
-#####################################################################
-##
-## title: Assert Extension
-##
-## description:
-## Assert extension of shell (bash, ...)
-##   with the common assert functions
-## Function list based on:
-##   http://junit.sourceforge.net/javadoc/org/junit/Assert.html
-## Log methods : inspired by
-##	- https://natelandau.com/bash-scripting-utilities/
-## author: Mark Torok
-##
-## date: 07. Dec. 2016
-##
-## license: MIT
-##
-#####################################################################
+# Deus-specific changes:
+#
+# - Compliance to POSIX; and
+# - replacement of header comment describing the program by the MIT license notice.
 
 if command -v tput &>/dev/null && tty -s; then
   RED=$(tput setaf 1)
@@ -51,7 +55,7 @@ assert_eq() {
   local actual="$2"
   local msg="${3-}"
 
-  if [ "$expected" == "$actual" ]; then
+  if [ "$expected" = "$actual" ]; then
     return 0
   else
     [ "${#msg}" -gt 0 ] && log_failure "$expected == $actual :: $msg" || true
@@ -64,7 +68,7 @@ assert_not_eq() {
   local actual="$2"
   local msg="${3-}"
 
-  if [ ! "$expected" == "$actual" ]; then
+  if [ ! "$expected" = "$actual" ]; then
     return 0
   else
     [ "${#msg}" -gt 0 ] && log_failure "$expected != $actual :: $msg" || true
@@ -99,19 +103,19 @@ assert_array_eq() {
   local msg="${3-}"
 
   local return_code=0
-  if [ ! "${#expected[@]}" == "${#actual[@]}" ]; then
+  if [ ! "${#expected[@]}" = "${#actual[@]}" ]; then
     return_code=1
   fi
 
   local i
   for (( i=1; i < ${#expected[@]} + 1; i+=1 )); do
-    if [ ! "${expected[$i-1]}" == "${actual[$i-1]}" ]; then
+    if [ ! "${expected[$i-1]}" = "${actual[$i-1]}" ]; then
       return_code=1
       break
     fi
   done
 
-  if [ "$return_code" == 1 ]; then
+  if [ "$return_code" = 1 ]; then
     [ "${#msg}" -gt 0 ] && log_failure "(${expected[*]}) != (${actual[*]}) :: $msg" || true
   fi
 
@@ -126,19 +130,19 @@ assert_array_not_eq() {
   local msg="${3-}"
 
   local return_code=1
-  if [ ! "${#expected[@]}" == "${#actual[@]}" ]; then
+  if [ ! "${#expected[@]}" = "${#actual[@]}" ]; then
     return_code=0
   fi
 
   local i
   for (( i=1; i < ${#expected[@]} + 1; i+=1 )); do
-    if [ ! "${expected[$i-1]}" == "${actual[$i-1]}" ]; then
+    if [ ! "${expected[$i-1]}" = "${actual[$i-1]}" ]; then
       return_code=0
       break
     fi
   done
 
-  if [ "$return_code" == 1 ]; then
+  if [ "$return_code" = 1 ]; then
     [ "${#msg}" -gt 0 ] && log_failure "(${expected[*]}) == (${actual[*]}) :: $msg" || true
   fi
 
@@ -213,7 +217,7 @@ assert_gt() {
   local second="$2"
   local msg="${3-}"
 
-  if [[ "$first" -gt  "$second" ]]; then
+  if [ "$first" -gt  "$second" ]; then
     return 0
   else
     [ "${#msg}" -gt 0 ] && log_failure "$first > $second :: $msg" || true
@@ -239,7 +243,7 @@ assert_lt() {
   local second="$2"
   local msg="${3-}"
 
-  if [[ "$first" -lt  "$second" ]]; then
+  if [ "$first" -lt  "$second" ]; then
     return 0
   else
     [ "${#msg}" -gt 0 ] && log_failure "$first < $second :: $msg" || true
@@ -252,7 +256,7 @@ assert_le() {
   local second="$2"
   local msg="${3-}"
 
-  if [[ "$first" -le  "$second" ]]; then
+  if [ "$first" -le  "$second" ]; then
     return 0
   else
     [ "${#msg}" -gt 0 ] && log_failure "$first <= $second :: $msg" || true
