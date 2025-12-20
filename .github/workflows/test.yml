@@ -22,12 +22,31 @@ jobs:
              build_date="${version: -10}"
              toolchain_path=~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
              echo SWIFT_TOOLCHAIN_ID="$(defaults read "$toolchain_path"/Info CFBundleIdentifier)" >> $GITHUB_ENV
-             echo SWIFT_TOOLCHAIN_VERSION="$version"
+
+             # Because dealing with development snapshots has been cumbersome, we ensure as much as
+             # possible that the toolchain being used is the installed one. For reference on the
+             # hassle, see https://github.com/supernova-oss/Deus/pull/44 and
+             # https://github.com/supernova-oss/Deus/pull/58.
+             source "$GITHUB_WORKSPACE"/tooling/assert.sh
+             assert_eq                                                      \
+               "$(~/.swiftly/bin/swiftly use --print-location | head -n 1)" \
+               "$toolchain_path"
+             assert_eq                                                                 \
+               "$(swift --version)"                                                    \
+               "$(cat << 'EOF'
+             Apple Swift version 6.3-dev (LLVM 36e07716208ae15, Swift 7b214378007870f)
+             Target: arm64-apple-macosx26.0
+             Build config: +assertions
+             EOF)"                                                                     \
+             "Version of Swift is not 6.3-dev."
+             assert_eq                                           \
+               "$(xcrun --find swift)"                           \
+               "$toolchain_path"/usr/bin/swift"                  \
+               "Swift is not that of the development toolchain."
       - name: Select Xcode
         run: sudo xcode-select -switch "$SELECTED_XCODE"
       - name: Test
         run: |
-             ls ~/Library/Developer/Toolchains
              mkdir build
              ~/.swiftly/bin/swiftly use ${{ env.SWIFT_TOOLCHAIN_VERSION }}
              export TOOLCHAINS=${{ env.SWIFT_TOOLCHAIN_ID }}
