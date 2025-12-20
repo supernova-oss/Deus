@@ -18,7 +18,7 @@ jobs:
              installer -pkg swiftly.pkg -target CurrentUserHomeDirectory
              version=$(cat .swift-version | xargs)
              ~/.swiftly/bin/swiftly init --assume-yes --skip-install
-             ~/.swiftly/bin/swiftly install --assume-yes --verbose "$version"
+             ~/.swiftly/bin/swiftly install --assume-yes --use --verbose "$version"
              build_date="${version: -10}"
              toolchain_path=~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
              echo SWIFT_TOOLCHAIN_ID="$(defaults read "$toolchain_path"/Info CFBundleIdentifier)" >> $GITHUB_ENV
