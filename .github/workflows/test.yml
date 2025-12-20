@@ -31,7 +31,8 @@ jobs:
              mkdir build
              ~/.swiftly/bin/swiftly use ${{ env.SWIFT_TOOLCHAIN_VERSION }}
              export TOOLCHAINS=${{ env.SWIFT_TOOLCHAIN_ID }}
-             xcodebuild                                                                        \
+             xcrun                                                                             \
+               xcodebuild                                                                      \
                -allowProvisioningUpdates                                                       \
                -destination 'platform=OS X,arch=${{ matrix.arch }}'                            \
                -resultBundlePath ResultBundle_${{ github.run_id }}_${{ matrix.arch }}.xcresult \
