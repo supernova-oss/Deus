@@ -24,7 +24,7 @@ jobs:
              build_date="${version: -10}"
              toolchain_path=~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
              echo SWIFT_TOOLCHAIN_ID="$(defaults read "$toolchain_path"/Info CFBundleIdentifier)" >> $GITHUB_ENV
-             echo SWIFT_TOOLCHAIN_PATH="$toolchain_path"
+             echo SWIFT_TOOLCHAIN_PATH="$toolchain_path" >> $GITHUB_ENV
       - name: Ensure Swift toolchain configuration
         run: |
              source "$GITHUB_WORKSPACE"/tooling/assert.sh
@@ -39,7 +39,8 @@ jobs:
              Build config: +assertions
              EOF)"                                                                     \
              "Version of Swift is not 6.3-dev."
-             assert_eq "$(xcode-select print-path)" \
+             assert_eq                              \
+               "$(xcode-select print-path)"         \
                /Users/runner/../.."$SELECTED_XCODE" \
                "$SELECTED_XCODE was not selected."
              assert_eq                                           \
