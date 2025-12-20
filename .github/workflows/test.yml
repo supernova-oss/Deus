@@ -32,10 +32,12 @@ jobs:
                "$(~/.swiftly/bin/swiftly use --print-location | head -n 1)" \
                "$toolchain_path"
              assert_eq
-               "$(swift --version)"
-               "Apple Swift version 6.3-dev (LLVM 36e07716208ae15, Swift 7b214378007870f)\n\
-             Target: arm64-apple-macosx26.0\n\
-             Build config: +assertions"                                                    \
+               "$(swift --version)"                                                    \
+               "$(cat << 'EOF'
+             Apple Swift version 6.3-dev (LLVM 36e07716208ae15, Swift 7b214378007870f)
+             Target: arm64-apple-macosx26.0
+             Build config: +assertions
+             EOF)"                                                                     \
              "Version of Swift is not 6.3-dev."
              assert_eq                                           \
                "$(xcrun --find swift)"                           \
