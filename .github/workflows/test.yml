@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Select Xcode
+        run: sudo xcode-select -switch "$SELECTED_XCODE"
       - name: Configure Swift toolchain
         run: |
              curl -O https://download.swift.org/swiftly/darwin/swiftly.pkg
@@ -39,16 +41,14 @@ jobs:
              Build config: +assertions
              EOF)"                                                                     \
              "Version of Swift is not 6.3-dev."
+             assert_eq "$(xcode-select print-path)" /Users/runner/../.."$SELECTED_XCODE"
              assert_eq                                           \
                "$(xcrun --find swift)"                           \
                "$toolchain_path"/usr/bin/swift"                  \
                "Swift is not that of the development toolchain."
-      - name: Select Xcode
-        run: sudo xcode-select -switch "$SELECTED_XCODE"
       - name: Test
         run: |
              mkdir build
-             ~/.swiftly/bin/swiftly use ${{ env.SWIFT_TOOLCHAIN_VERSION }}
              export TOOLCHAINS=${{ env.SWIFT_TOOLCHAIN_ID }}
              xcrun                                                                             \
                xcodebuild                                                                      \
