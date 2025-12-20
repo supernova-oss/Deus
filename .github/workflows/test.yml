@@ -31,7 +31,7 @@ jobs:
              assert_eq                                                      \
                "$(~/.swiftly/bin/swiftly use --print-location | head -n 1)" \
                "$toolchain_path"
-             assert_eq
+             assert_eq                                                                 \
                "$(swift --version)"                                                    \
                "$(cat << 'EOF'
              Apple Swift version 6.3-dev (LLVM 36e07716208ae15, Swift 7b214378007870f)
