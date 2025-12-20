@@ -47,6 +47,7 @@ jobs:
         run: sudo xcode-select -switch "$SELECTED_XCODE"
       - name: Test
         run: |
+             ls ~/Library/Developer/Toolchains
              mkdir build
              export TOOLCHAINS=${{ env.SWIFT_TOOLCHAIN_ID }}
              xcodebuild                                                                        \
