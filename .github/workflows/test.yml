@@ -43,7 +43,7 @@ jobs:
                "$SELECTED_XCODE was not selected."
              assert_eq                                           \
                "$(xcrun --find swift)"                           \
-               "$toolchain_path"/usr/bin/swift"                  \
+               "$toolchain_path"/usr/bin/swift                   \
                "Swift is not that of the development toolchain."
       - name: Test
         run: |
