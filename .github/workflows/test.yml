@@ -16,18 +16,20 @@ jobs:
         run: |
              curl -O https://download.swift.org/swiftly/darwin/swiftly.pkg
              installer -pkg swiftly.pkg -target CurrentUserHomeDirectory
-             version=$(cat .swift-version | xargs)
+             version="$(cat .swift-version | xargs)"
              ~/.swiftly/bin/swiftly init --assume-yes --skip-install
              ~/.swiftly/bin/swiftly install --assume-yes --verbose "$version"
              build_date="${version: -10}"
              toolchain_path=~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
              echo SWIFT_TOOLCHAIN_ID="$(defaults read "$toolchain_path"/Info CFBundleIdentifier)" >> $GITHUB_ENV
+             echo SWIFT_TOOLCHAIN_VERSION="$version"
       - name: Select Xcode
         run: sudo xcode-select -switch "$SELECTED_XCODE"
       - name: Test
         run: |
              ls ~/Library/Developer/Toolchains
              mkdir build
+             ~/.swiftly/bin/swiftly use ${{ env.SWIFT_TOOLCHAIN_VERSION }}
              export TOOLCHAINS=${{ env.SWIFT_TOOLCHAIN_ID }}
              xcodebuild                                                                        \
                -allowProvisioningUpdates                                                       \
