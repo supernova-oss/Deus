@@ -41,7 +41,7 @@ jobs:
              EOF)"                                                                     \
              "Version of Swift is not 6.3-dev."
              assert_eq                              \
-               "$(xcode-select print-path)"         \
+               "$(xcode-select --print-path)"       \
                /Users/runner/../.."$SELECTED_XCODE" \
                "$SELECTED_XCODE was not selected."
              assert_eq                                           \
