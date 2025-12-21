@@ -72,10 +72,10 @@ jobs:
                    "  \"version\": \"1221.4\",\n"
                    "  \"architectures\": [\n"
                    "    \"armv6\",\n"
-                   "    \"armv6m\",\n"
                    "    \"arm64\",\n"
                    "    \"arm64_32\",\n"
                    "    \"arm64e\",\n"
+                   "    \"armv6m\",\n"
                    "    \"armv7\",\n"
                    "    \"armv7s\",\n"
                    "    \"armv7em\",\n"
@@ -85,7 +85,7 @@ jobs:
                    "    \"armv8m.main\",\n"
                    "    \"i386\",\n"
                    "    \"x86_64\",\n"
-                   "    \"x86_64h\",\n"
+                   "    \"x86_64h\"\n"
                    "  ],\n"
                    "  \"lto\": {\n"
                    "    \"runtime_api_version\": 29,\n"
@@ -96,7 +96,7 @@ jobs:
                    "    \"version\": \"17.0.0\",\n"
                    "    \"version_string\": \"Apple TAPI version 17.0.0 (tapi-1700.3.8)\"\n"
                    "  }\n"
-                   "}\n"
+                   "}"
                  );
                } else {
                  execv("/usr/bin/ld", argv);
