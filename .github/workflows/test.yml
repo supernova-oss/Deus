@@ -30,10 +30,10 @@ jobs:
                export TOOLCHAINS="$(defaults read "$swift_toolchain_path"/Info CFBundleIdentifier)"
              }
 
-             intercept_swift_toolchain_ld() {
+             intercept_swift_toolchain_linker() {
                # This is weird: neither the current development snapshot nor posterior ones as of
-               # December 17, 2025 include the GNU linker (ld), which is required for compiling Swift
-               # sources.
+               # December 17, 2025 include the GNU linker (ld), which is required for compiling
+               # Swift sources.
                #
                # And, for some reason unknown by me, ld outputs the details of its version
                # successfully *before* `swift build` is called (by `swift run`), but yields an empty
@@ -131,7 +131,7 @@ jobs:
              }
 
              configure_swift_toolchain_in_environment
-             intercept_swift_toolchain_ld
+             intercept_swift_toolchain_linker
              ensure_swift_toolchain_configuration
              run_tests
       - name: Export result
