@@ -712,7 +712,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd on-build && swift run && cd ..\n";
+			shellScript = "cd on-build && swift run --toolchain \"$TOOLCHAINS\" --very-verbose && cd ..\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
