@@ -33,7 +33,10 @@ jobs:
 
              ensure_toolchain_configuration() {
                (source "$GITHUB_WORKSPACE"/tooling/assert.sh
-               assert_eq "$(swiftly use --print-location | head -n 1)" "$swift_toolchain_path"
+               assert_eq                                       \
+                 "$(swiftly use --print-location | head -n 1)" \
+                 "$swift_toolchain_path"                       \
+                 "Swift of Swiftly is not that of the development toolchain."
                assert_eq                                                                     \
                  "$(swift --version | head -n 1)"                                            \
                  "Apple Swift version 6.3-dev (LLVM 36e07716208ae15, Swift 7b214378007870f)" \
@@ -45,7 +48,7 @@ jobs:
                assert_eq                                           \
                  "$(xcrun --find swift)"                           \
                  "$swift_toolchain_path"/usr/bin/swift             \
-                 "Swift is not that of the development toolchain.")
+                 "Swift of xcrun is not that of the development toolchain.")
              }
 
              run_tests() {
