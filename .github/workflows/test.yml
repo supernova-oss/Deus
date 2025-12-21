@@ -112,7 +112,7 @@ jobs:
                  'Swift of xcrun is not that of the development toolchain.'
                assert_eq                                                        \
                  "$(find "$swift_toolchain_path"/usr/bin -maxdepth 1 -name ld)" \
-                 'ld'                                                           \
+                 "$swift_toolchain_path"/usr/bin/ld                             \
                  'Interceptor ld was not included in the toolchain.')
              }
 
