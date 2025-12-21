@@ -83,7 +83,7 @@ jobs:
                    "}\n"
                  );
                } else {
-                 execv("/usr/bin/ld", &argv);
+                 execv("/usr/bin/ld", argv);
                }
                return 0;
              }
