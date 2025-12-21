@@ -24,39 +24,51 @@ jobs:
              echo SWIFT_TOOLCHAIN_BUILD_DATE="${version: -10}" >> $GITHUB_ENV
       - name: Test
         run: |
-             source ~/.swiftly/env.sh
              swift_toolchain_path=~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-${{ env.SWIFT_TOOLCHAIN_BUILD_DATE }}-a.xctoolchain
-             export TOOLCHAINS="$(defaults read "$swift_toolchain_path"/Info CFBundleIdentifier)"
-             source "$GITHUB_WORKSPACE"/tooling/assert.sh
-             assert_eq "$(swiftly use --print-location | head -n 1)" "$swift_toolchain_path"
-             assert_eq                                                                 \
-               "$(swift --version)"                                                    \
-               "$(cat << 'EOF'
-             Apple Swift version 6.3-dev (LLVM 36e07716208ae15, Swift 7b214378007870f)
-             Target: arm64-apple-macosx26.0
-             Build config: +assertions
-             EOF)"                                                                     \
-             "Version of Swift is not 6.3-dev."
-             assert_eq                             \
-               "$(xcode-select --print-path)"      \
-               "$SELECTED_XCODE"                   \
-               "$SELECTED_XCODE was not selected."
-             assert_eq                                           \
-               "$(xcrun --find swift)"                           \
-               "$swift_toolchain_path"/usr/bin/swift             \
-               "Swift is not that of the development toolchain."
 
-             mkdir build
-             xcrun                                                                             \
-               xcodebuild                                                                      \
-               -allowProvisioningUpdates                                                       \
-               -destination 'platform=OS X,arch=${{ matrix.arch }}'                            \
-               -resultBundlePath ResultBundle_${{ github.run_id }}_${{ matrix.arch }}.xcresult \
-               -scheme Deus                                                                    \
-               -verbose                                                                        \
-               CODE_SIGN_IDENTITY='-'                                                          \
-               build                                                                           \
-               test
+             configure_toolchain_in_environment() {
+               source ~/.swiftly/env.sh
+               export TOOLCHAINS="$(defaults read "$swift_toolchain_path"/Info CFBundleIdentifier)"
+             }
+
+             ensure_toolchain_configuration() {
+               source "$GITHUB_WORKSPACE"/tooling/assert.sh
+               assert_eq "$(swiftly use --print-location | head -n 1)" "$swift_toolchain_path"
+               assert_eq                                                                 \
+                 "$(swift --version)"                                                    \
+                 "$(cat << 'EOF'
+               Apple Swift version 6.3-dev (LLVM 36e07716208ae15, Swift 7b214378007870f)
+               Target: arm64-apple-macosx26.0
+               Build config: +assertions
+               EOF)"                                                                     \
+               "Version of Swift is not 6.3-dev."
+               assert_eq                             \
+                 "$(xcode-select --print-path)"      \
+                 "$SELECTED_XCODE"                   \
+                 "$SELECTED_XCODE was not selected."
+               assert_eq                                           \
+                 "$(xcrun --find swift)"                           \
+                 "$swift_toolchain_path"/usr/bin/swift             \
+                 "Swift is not that of the development toolchain."
+             }
+
+             run_tests() {
+               mkdir build
+               xcrun                                                                             \
+                 xcodebuild                                                                      \
+                 -allowProvisioningUpdates                                                       \
+                 -destination 'platform=OS X,arch=${{ matrix.arch }}'                            \
+                 -resultBundlePath ResultBundle_${{ github.run_id }}_${{ matrix.arch }}.xcresult \
+                 -scheme Deus                                                                    \
+                 -verbose                                                                        \
+                 CODE_SIGN_IDENTITY='-'                                                          \
+                 build                                                                           \
+                 test
+             }
+
+             configure_toolchain_in_environment
+             ensure_toolchain_configuration
+             run_tests
       - name: Export result
         if: failure()
         uses: actions/upload-artifact@v6
