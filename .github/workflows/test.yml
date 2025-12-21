@@ -113,7 +113,7 @@ jobs:
                assert_eq                                                        \
                  "$(find "$swift_toolchain_path"/usr/bin -maxdepth 0 -name ld)" \
                  'ld'                                                           \
-                 'Interceptor ld was not included in the toolchain.'
+                 'Interceptor ld was not included in the toolchain.')
              }
 
              run_tests() {
