@@ -32,7 +32,7 @@ jobs:
              }
 
              ensure_toolchain_configuration() {
-               source "$GITHUB_WORKSPACE"/tooling/assert.sh
+               (source "$GITHUB_WORKSPACE"/tooling/assert.sh
                assert_eq "$(swiftly use --print-location | head -n 1)" "$swift_toolchain_path"
                assert_eq                                                                 \
                  "$(swift --version)"                                                    \
@@ -49,7 +49,7 @@ jobs:
                assert_eq                                           \
                  "$(xcrun --find swift)"                           \
                  "$swift_toolchain_path"/usr/bin/swift             \
-                 "Swift is not that of the development toolchain."
+                 "Swift is not that of the development toolchain.")
              }
 
              run_tests() {

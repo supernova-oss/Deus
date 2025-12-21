@@ -21,6 +21,7 @@
 # Deus-specific changes:
 #
 # - Compliance to POSIX;
+# - logging of successful assertions;
 # - removal of array equality and inequality asserters; and
 # - replacement of header comment describing the program by the MIT license notice.
 
@@ -57,6 +58,7 @@ assert_eq() {
   local msg="${3-}"
 
   if [ "$expected" = "$actual" ]; then
+    log_success "$expected == $actual"
     return 0
   else
     [ "${#msg}" -gt 0 ] && log_failure "$expected == $actual :: $msg" || true
@@ -70,6 +72,7 @@ assert_not_eq() {
   local msg="${3-}"
 
   if [ ! "$expected" = "$actual" ]; then
+    log_success "$expected != $actual"
     return 0
   else
     [ "${#msg}" -gt 0 ] && log_failure "$expected != $actual :: $msg" || true
