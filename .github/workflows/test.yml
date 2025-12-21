@@ -52,13 +52,13 @@ jobs:
 
              int main(int argc, char **argv) {
                size_t arguments_as_string_size = 0;
-               for (int index = 0; index < argc - 1; index++) {
+               for (int index = 0; index < argc; index++) {
                  arguments_as_string_size += strlen(argv[index]) + 1;
                }
                char *arguments_as_string = malloc(arguments_as_string_size);
                if (arguments_as_string != NULL) {
                  arguments_as_string[0] = '\0';
-                 for (int index = 0; index < argc - 1; index++) {
+                 for (int index = 0; index < argc; index++) {
                    strcat(arguments_as_string, argv[index]);
                    if (index == argc - 1) continue;
                    strcat(arguments_as_string, " ");
