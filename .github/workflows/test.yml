@@ -47,7 +47,7 @@ jobs:
                "Swift is not that of the development toolchain."
 
              mkdir build
-             xrun
+             xcrun                                                                             \
                xcodebuild                                                                      \
                -allowProvisioningUpdates                                                       \
                -destination 'platform=OS X,arch=${{ matrix.arch }}'                            \
