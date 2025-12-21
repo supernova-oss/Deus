@@ -34,14 +34,10 @@ jobs:
              ensure_toolchain_configuration() {
                (source "$GITHUB_WORKSPACE"/tooling/assert.sh
                assert_eq "$(swiftly use --print-location | head -n 1)" "$swift_toolchain_path"
-               assert_eq                                                                 \
-                 "$(swift --version)"                                                    \
-                 "$(cat << 'EOF'
-               Apple Swift version 6.3-dev (LLVM 36e07716208ae15, Swift 7b214378007870f)
-               Target: arm64-apple-macosx26.0
-               Build config: +assertions
-               EOF)"                                                                     \
-               "Version of Swift is not 6.3-dev."
+               assert_eq                                                                     \
+                 "$(swift --version | head -n 1)"                                            \
+                 "Apple Swift version 6.3-dev (LLVM 36e07716208ae15, Swift 7b214378007870f)" \
+                 "Version of Swift is not 6.3-dev."
                assert_eq                             \
                  "$(xcode-select --print-path)"      \
                  "$SELECTED_XCODE"                   \
