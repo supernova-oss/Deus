@@ -20,10 +20,6 @@
 # locally. It is recommended that it be run after the project is cloned and every time a change to
 # the Swift toolchain is made, given that the project relies on a specific development snapshot of
 # such toolchain.
-#
-# Although it is executed each time the project is built, this is the only script in Deus which
-# cannot be written in Swift as a part of the on-build package, due to its responsibility being
-# configuring the toolchain by which Swift sources are compiled.
 
 project_directory="$(dirname "$(realpath "$0")")"
 
