@@ -33,12 +33,14 @@ jobs:
         run: |
              chmod +x setup.sh
              ./setup.sh
+             source tooling/dswtc.sh
              mkdir .build
              xcodebuild                                                                               \
                -allowProvisioningUpdates                                                              \
                -destination 'platform=OS X,arch=${{ matrix.arch }}'                                   \
                -resultBundlePath .build/ResultBundle_${{ github.run_id }}_${{ matrix.arch }}.xcresult \
                -scheme Deus                                                                           \
+               -toolchain "$(dswtc_id)"                                                               \
                -verbose                                                                               \
                CODE_SIGN_IDENTITY='-'                                                                 \
                build                                                                                  \
