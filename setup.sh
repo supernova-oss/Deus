@@ -44,8 +44,7 @@ _is_swift_toolchain_installed() {
 
 install_swift_toolchain() {
   swift_toolchain_version="$(cat "$project_directory"/.swift-version | xargs)"
-  ! _is_swift_toolchain_installed                                              \
-    && swiftly install --assume-yes --use --verbose "$swift_toolchain_version"
+  ! _is_swift_toolchain_installed && swiftly install --assume-yes --use "$swift_toolchain_version"
   local build_date="${swift_toolchain_version: -10}"
   swift_toolchain_path=~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
   export TOOLCHAINS="$(defaults read "$swift_toolchain_path"/Info CFBundleIdentifier)"
