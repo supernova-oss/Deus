@@ -32,11 +32,11 @@ if command -v tput >/dev/null 2>&1 && tty -s; then
   NORMAL=$(tput sgr0)
   BOLD=$(tput bold)
 else
-  RED=""
-  GREEN=""
-  MAGENTA=""
-  NORMAL=""
-  BOLD=""
+  RED=
+  GREEN=
+  MAGENTA=
+  NORMAL=
+  BOLD=
 fi
 
 log_header() {
