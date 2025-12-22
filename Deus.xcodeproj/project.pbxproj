@@ -712,7 +712,8 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd on-build && swift run --toolchain \"$TOOLCHAINS\" --very-verbose && cd ..\n";
+			shellScript = "cd on-build && swift run --toolchain \"$(swiftly use --print-location | head -n 1)\" --very-verbose && cd ..\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 

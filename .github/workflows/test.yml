@@ -16,8 +16,6 @@
 # ===--------------------------------------------------------------------------------------------===
 
 name: Test
-env:
-  SELECTED_XCODE: '/Applications/Xcode_26.2.app/Contents/Developer'
 on:
   pull_request:
     branches: [ 'main' ]
@@ -30,127 +28,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Select Xcode
-        run: sudo xcode-select -switch "$SELECTED_XCODE"
-      - name: Install Swift toolchain
-        run: |
-             curl -O https://download.swift.org/swiftly/darwin/swiftly.pkg
-             installer -pkg swiftly.pkg -target CurrentUserHomeDirectory
-             version="$(cat .swift-version | xargs)"
-             ~/.swiftly/bin/swiftly init --assume-yes --skip-install
-             ~/.swiftly/bin/swiftly install --assume-yes --verbose "$version"
-             echo SWIFT_TOOLCHAIN_BUILD_DATE="${version: -10}" >> $GITHUB_ENV
+        run: sudo xcode-select -switch /Applications/Xcode_26.2.app/Contents/Developer
       - name: Test
         run: |
-             configure_swift_toolchain_in_environment() {
-               source ~/.swiftly/env.sh
-               swift_toolchain_path=~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-${{ env.SWIFT_TOOLCHAIN_BUILD_DATE }}-a.xctoolchain
-               export TOOLCHAINS="$(defaults read "$swift_toolchain_path"/Info CFBundleIdentifier)"
-             }
-
-             intercept_swift_toolchain_linker() {
-               # This is weird: neither the current development snapshot nor posterior ones as of
-               # December 17, 2025 include the GNU linker (ld), which is required for compiling
-               # Swift sources.
-               #
-               # And, for some reason unknown by me, ld outputs the details of its version
-               # successfully *before* `swift build` is called (by `swift run`), but yields an empty
-               # string when `swift build` calls it.
-               #
-               # https://github.com/swiftlang/swift-build/blob/ff02f8db335e41af9ccdc15896a94c667d31288b/Sources/SWBCore/SpecImplementations/Tools/LinkerTools.swift#L1916-L1920
-               #
-               # As a workaround, we "intercept" calls to ld, outputting the details of its version
-               # which are expected by the caller when the `version_details` flag is passed in;
-               # otherwise, the call is forwarded to the ld included in macOS.
-               cat > "$swift_toolchain_path"/usr/bin/ld.c << 'EOF'
-             #include <stdio.h>
-             #include <string.h>
-             #include <unistd.h>
-
-             int main(int argc, char **argv) {
-               if (!strcmp(argv[1], "-version_details")) {
-                 printf(
-                   "{"
-                     "\"version\": \"1221.4\", "
-                     "\"architectures\": ["
-                       "\"armv6\", "
-                       "\"arm64\", "
-                       "\"arm64_32\", "
-                       "\"arm64e\", "
-                       "\"armv6m\", "
-                       "\"armv7\", "
-                       "\"armv7s\", "
-                       "\"armv7em\", "
-                       "\"armv7k\", "
-                       "\"armv7m\", "
-                       "\"armv8.1m.main\", "
-                       "\"armv8m.main\", "
-                       "\"i386\", "
-                       "\"x86_64\", "
-                       "\"x86_64h\""
-                     "], "
-                     "\"lto\": {"
-                       "\"runtime_api_version\": 29, "
-                       "\"static_api_version\": 29, "
-                       "\"version_string\": \"LLVM version 17.0.0\""
-                     "}, "
-                     "\"tapi\": {"
-                       "\"version\": \"17.0.0\", "
-                       "\"version_string\": \"Apple TAPI version 17.0.0 (tapi-1700.3.8)\""
-                     "}"
-                   "}"
-                 );
-               } else {
-                 execv("/usr/bin/ld", argv);
-               }
-               return 0;
-             }
-             EOF
-               clang "$swift_toolchain_path"/usr/bin/ld.c -o "$swift_toolchain_path"/usr/bin/ld -v
-               rm "$swift_toolchain_path"/usr/bin/ld.c
-             }
-
-             ensure_swift_toolchain_configuration() {
-               (source "$GITHUB_WORKSPACE"/tooling/assert.sh
-               assert_eq                                       \
-                 "$(swiftly use --print-location | head -n 1)" \
-                 "$swift_toolchain_path"                       \
-                 'Swift of Swiftly is not that of the development toolchain.'
-               assert_eq                                                                     \
-                 "$(swift --version | head -n 1)"                                            \
-                 "Apple Swift version 6.3-dev (LLVM 36e07716208ae15, Swift 7b214378007870f)" \
-                 'Version of Swift is not 6.3-dev.'
-               assert_eq                             \
-                 "$(xcode-select --print-path)"      \
-                 "$SELECTED_XCODE"                   \
-                 "$SELECTED_XCODE was not selected."
-               assert_eq                                                    \
-                 "$(xcrun --find swift)"                                    \
-                 "$swift_toolchain_path"/usr/bin/swift                      \
-                 'Swift of xcrun is not that of the development toolchain.'
-               assert_eq                                                        \
-                 "$(find "$swift_toolchain_path"/usr/bin -maxdepth 1 -name ld)" \
-                 "$swift_toolchain_path"/usr/bin/ld                             \
-                 'Interceptor ld was not included in the toolchain.')
-             }
-
-             run_tests() {
-               mkdir build
-               xcrun                                                                             \
-                 xcodebuild                                                                      \
-                 -allowProvisioningUpdates                                                       \
-                 -destination 'platform=OS X,arch=${{ matrix.arch }}'                            \
-                 -resultBundlePath ResultBundle_${{ github.run_id }}_${{ matrix.arch }}.xcresult \
-                 -scheme Deus                                                                    \
-                 -verbose                                                                        \
-                 CODE_SIGN_IDENTITY='-'                                                          \
-                 build                                                                           \
-                 test
-             }
-
-             configure_swift_toolchain_in_environment
-             intercept_swift_toolchain_linker
-             ensure_swift_toolchain_configuration
-             run_tests
+             chmod +x setup.sh
+             ./setup.sh
+             mkdir .build
+             xcodebuild                                                                               \
+               -allowProvisioningUpdates                                                              \
+               -destination 'platform=OS X,arch=${{ matrix.arch }}'                                   \
+               -resultBundlePath .build/ResultBundle_${{ github.run_id }}_${{ matrix.arch }}.xcresult \
+               -scheme Deus                                                                           \
+               -verbose                                                                               \
+               CODE_SIGN_IDENTITY='-'                                                                 \
+               build                                                                                  \
+               test
       - name: Export result
         if: failure()
         uses: actions/upload-artifact@v6

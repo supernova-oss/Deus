@@ -1,0 +1,134 @@
+#!/bin/sh
+# ===--------------------------------------------------------------------------------------------===
+# Copyright © 2025 Supernova. All rights reserved.
+#
+# This file is part of the Deus open-source project.
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+# General Public License as published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If not,
+# see https://www.gnu.org/licenses.
+# ===--------------------------------------------------------------------------------------------===
+
+# This file performs the initial configuration of the environment for building and testing Deus
+# locally. It is recommended that it be run after the project is cloned and every time a change to
+# the Swift toolchain is made, given that the project relies on a specific development snapshot of
+# such toolchain.
+#
+# Although it is executed each time the project is built, this is the only script in Deus which
+# cannot be written in Swift as a part of the on-build package, due to its responsibility being
+# configuring the toolchain by which Swift sources are compiled.
+
+project_directory="$(dirname "$(realpath "$0")")"
+
+install_swiftly() {
+  if [ ! -d ~/.swiftly ]; then
+    curl -O https://download.swift.org/swiftly/darwin/swiftly.pkg
+    installer -pkg swiftly.pkg -target CurrentUserHomeDirectory
+    ~/.swiftly/bin/swiftly init --assume-yes --skip-install
+  fi
+  chmod +x ~/.swiftly/env.sh
+  ~/.swiftly/env.sh
+}
+
+install_swift_toolchain() {
+  swift_toolchain_version="$(cat "$project_directory"/.swift-version | xargs)"
+  if [ "$(swiftly list 2>/dev/null | grep --count --max-count 1 "$swift_toolchain_version")" -eq 0 ]; then
+    swiftly install --assume-yes --use --verbose "$swift_toolchain_version"
+  fi
+  local build_date="${swift_toolchain_version: -10}"
+  swift_toolchain_path=~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
+  export TOOLCHAINS="$(defaults read "$swift_toolchain_path"/Info CFBundleIdentifier)"
+  assert_eq                                                      \
+    "$(swiftly use --print-location 2>/dev/null | head -n 1)"    \
+    "$swift_toolchain_path"                                      \
+    'Swift of Swiftly is not that of the development toolchain.'
+  assert_eq                                                                     \
+    "$(swift --version 2>/dev/null | head -n 1)"                                \
+    'Apple Swift version 6.3-dev (LLVM 36e07716208ae15, Swift 7b214378007870f)' \
+    'Version of Swift is not 6.3-dev.'
+  assert_eq                                                    \
+    "$(xcrun --find swift)"                                    \
+    "$swift_toolchain_path"/usr/bin/swift                      \
+    'Swift of xcrun is not that of the development toolchain.'
+}
+
+intercept_swift_toolchain_linker() {
+  # This is weird: neither the current development snapshot nor posterior ones as of December 17,
+  # 2025 include the GNU linker (ld), which is required for compiling Swift sources.
+  #
+  # And, for some reason unknown by me, ld outputs the details of its version successfully *before*
+  # `swift build` is called (by `swift run`), but yields an empty string when `swift build` calls
+  # it.
+  #
+  # https://github.com/swiftlang/swift-build/blob/ff02f8db335e41af9ccdc15896a94c667d31288b/Sources/SWBCore/SpecImplementations/Tools/LinkerTools.swift#L1916-L1920
+  #
+  # As a workaround, we "intercept" calls to ld, outputting the details of its version which are
+  # expected by the caller when the `version_details` flag is passed in; otherwise, the call is
+  # forwarded to the ld included in macOS.
+  local linker_path="$swift_toolchain_path/usr/bin/ld"
+  rm "$linker_path".c 2>/dev/null
+  cat > "$linker_path".c << 'EOF'
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+
+int main(int argc, char **argv) {
+  if (!strcmp(argv[1], "-version_details")) {
+    printf(
+      "{"
+        "\"version\": \"1221.4\", "
+        "\"architectures\": ["
+          "\"armv6\", "
+          "\"arm64\", "
+          "\"arm64_32\", "
+          "\"arm64e\", "
+          "\"armv6m\", "
+          "\"armv7\", "
+          "\"armv7s\", "
+          "\"armv7em\", "
+          "\"armv7k\", "
+          "\"armv7m\", "
+          "\"armv8.1m.main\", "
+          "\"armv8m.main\", "
+          "\"i386\", "
+          "\"x86_64\", "
+          "\"x86_64h\""
+        "], "
+        "\"lto\": {"
+          "\"runtime_api_version\": 29, "
+          "\"static_api_version\": 29, "
+          "\"version_string\": \"LLVM version 17.0.0\""
+        "}, "
+        "\"tapi\": {"
+          "\"version\": \"17.0.0\", "
+          "\"version_string\": \"Apple TAPI version 17.0.0 (tapi-1700.3.8)\""
+        "}"
+      "}"
+    );
+  } else {
+    execv("/usr/bin/ld", argv);
+  }
+  return 0;
+}
+EOF
+  clang "$linker_path".c -o "$linker_path".c
+  rm "$linker_path".c
+  assert_eq                                                        \
+    "$(find "$swift_toolchain_path"/usr/bin -maxdepth 1 -name ld)" \
+    "$linker_path"                                                 \
+    'Interceptor ld was not included in the toolchain.'
+}
+
+(
+  source tooling/assert.sh
+  install_swiftly
+  install_swift_toolchain
+  intercept_swift_toolchain_linker
+)
