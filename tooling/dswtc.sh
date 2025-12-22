@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # ===--------------------------------------------------------------------------------------------===
 # Copyright © 2025 Supernova. All rights reserved.
 #
@@ -16,16 +16,15 @@
 # see https://www.gnu.org/licenses.
 # ===--------------------------------------------------------------------------------------------===
 
-# dswtc is the Deus Swift toolchain. Swift toolchains are a set of tools for documenting, linking,
-# compiling and debugging Swift sources. Deus requires a version of the Swift toolchain which
-# supports automatic differentiation for implementing quantum fields. The version of dswtc is that
-# defined by the .swift-version file located at the root of the directory of the project.
+# dswtc stands for "Deus Swift toolchain". Swift toolchains are a set of tools for documenting,
+# linking, compiling and debugging Swift sources. Deus requires a version of the Swift toolchain
+# which supports automatic differentiation for implementing quantum fields. dswtc is the Swift
+# toolchain whose version is that defined by the .swift-version file located at the root of the
+# directory of the project.
 #
-# This script provides information about the dswtc — or no information at all, in case
-# is_dswtc_installed equals zero.
+# This script provides information about the dswtc.
 
-project_directory="$(dirname "$(realpath "$0")")"/..
-dswtc_version="$(cat "$project_directory"/.swift-version | xargs)"
+dswtc_version="$(cat "$(dirname "${BASH_SOURCE[0]}")"/../.swift-version | xargs)"
 if swiftly list 2>/dev/null | grep --quiet "$dswtc_version"; then
   is_dswtc_installed=1
 else

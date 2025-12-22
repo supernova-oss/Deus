@@ -21,8 +21,6 @@
 # toolchain in use is changed, given that the project relies on a specific development snapshot of
 # such toolchain.
 
-project_directory="$(dirname "$(realpath "$0")")"
-
 install_swiftly() {
   if [ ! -d ~/.swiftly ]; then
     curl -O https://download.swift.org/swiftly/darwin/swiftly.pkg
@@ -33,7 +31,7 @@ install_swiftly() {
 }
 
 install_dswtc() {
-  source "$project_directory"/tooling/dswtc.sh
+  source "$(dirname "${BASH_SOURCE[0]}")"/tooling/dswtc.sh
   [ "$is_dswtc_installed" -eq 0 ] && swiftly install --assume-yes --use "$(dswtc_path)"
   assert_eq                                                      \
     "$(swiftly use --print-location 2>/dev/null | head -n 1)"    \
@@ -110,7 +108,7 @@ EOF
 }
 
 (
-  source "$project_directory"/tooling/assert.sh
+  source "$(dirname "${BASH_SOURCE[0]}")"/tooling/assert.sh
   install_swiftly
   install_dswtc
   intercept_dswtc_ld
