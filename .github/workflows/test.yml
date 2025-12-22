@@ -32,7 +32,7 @@ jobs:
       - name: Test
         run: |
              chmod +x setup.sh
-             ./setup.sh
+             source setup.sh
              source tooling/dswtc.sh
              mkdir .build
              xcodebuild                                                                               \
