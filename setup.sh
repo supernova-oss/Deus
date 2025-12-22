@@ -121,7 +121,7 @@ int main(int argc, char **argv) {
   return 0;
 }
 EOF
-  clang "$linker_path".c -o "$linker_path".c
+  clang "$linker_path".c -o "$linker_path"
   rm "$linker_path".c
   assert_eq                                                        \
     "$(find "$swift_toolchain_path"/usr/bin -maxdepth 1 -name ld)" \
