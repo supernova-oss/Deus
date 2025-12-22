@@ -34,7 +34,7 @@ install_swiftly() {
     ~/.swiftly/bin/swiftly init --assume-yes --skip-install
   fi
   chmod +x ~/.swiftly/env.sh
-  ~/.swiftly/env.sh
+  sh ~/.swiftly/env.sh
 }
 
 install_swift_toolchain() {
