@@ -33,15 +33,23 @@ install_swiftly() {
     installer -pkg swiftly.pkg -target CurrentUserHomeDirectory
     ~/.swiftly/bin/swiftly init --assume-yes --skip-install
   fi
-  chmod +x ~/.swiftly/env.sh
   source ~/.swiftly/env.sh
+}
+
+# Note: a Swift toolchain is a set of tools for documenting, linking, compiling and debugging Swift
+# sources. Here, due to Deus requiring a version of the Swift toolchain which supports automatic
+# differentiation for implementing quantum fields, "(the) Swift toolchain" refers to such version
+# specifically. This version is that defined by the .swift-version file located at the root of the
+# directory of the project.
+
+_is_swift_toolchain_installed() {
+  swiftly list 2>/dev/null | grep --quiet "$swift_toolchain_version"
 }
 
 install_swift_toolchain() {
   swift_toolchain_version="$(cat "$project_directory"/.swift-version | xargs)"
-  if [ "$(swiftly list 2>/dev/null | grep --count --max-count 1 "$swift_toolchain_version")" -eq 0 ]; then
-    swiftly install --assume-yes --use --verbose "$swift_toolchain_version"
-  fi
+  ! _is_swift_toolchain_installed                                              \
+    && swiftly install --assume-yes --use --verbose "$swift_toolchain_version"
   local build_date="${swift_toolchain_version: -10}"
   swift_toolchain_path=~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
   export TOOLCHAINS="$(defaults read "$swift_toolchain_path"/Info CFBundleIdentifier)"
@@ -73,7 +81,6 @@ intercept_swift_toolchain_linker() {
   # expected by the caller when the `version_details` flag is passed in; otherwise, the call is
   # forwarded to the ld included in macOS.
   local linker_path="$swift_toolchain_path/usr/bin/ld"
-  rm "$linker_path".c 2>/dev/null
   cat > "$linker_path".c << 'EOF'
 #include <stdio.h>
 #include <string.h>
@@ -127,7 +134,7 @@ EOF
 }
 
 (
-  source tooling/assert.sh
+  source "$project_directory"/tooling/assert.sh
   install_swiftly
   install_swift_toolchain
   intercept_swift_toolchain_linker
