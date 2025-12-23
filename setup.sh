@@ -33,7 +33,6 @@ install_swiftly() {
 }
 
 install_dswtc() {
-  export PATH="$project_directory"/bin:$PATH
   dswtcinfo path &>/dev/null || swiftly install --assume-yes --use "$(dswtcinfo version)"
   assert_eq                                                      \
     "$(swiftly use --print-location 2>/dev/null | head -n 1)"    \
@@ -109,6 +108,7 @@ EOF
     'Interceptor ld was not included in the toolchain.'
 }
 
+export PATH="$project_directory"/bin:$PATH
 (
   source "$project_directory"/tooling/assert.sh
   install_swiftly

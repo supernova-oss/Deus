@@ -31,16 +31,14 @@ jobs:
         run: sudo xcode-select -switch /Applications/Xcode_26.2.app/Contents/Developer
       - name: Test
         run: |
-             chmod +x setup.sh
-             source setup.sh
-             source tooling/dswtc.sh
+             source setup.shc
              mkdir .build
              xcodebuild                                                                               \
                -allowProvisioningUpdates                                                              \
                -destination 'platform=OS X,arch=${{ matrix.arch }}'                                   \
                -resultBundlePath .build/ResultBundle_${{ github.run_id }}_${{ matrix.arch }}.xcresult \
                -scheme Deus                                                                           \
-               -toolchain "$(dswtc_id)"                                                               \
+               -toolchain "$(dswtcinfo id)"                                                           \
                -verbose                                                                               \
                CODE_SIGN_IDENTITY='-'                                                                 \
                build                                                                                  \
