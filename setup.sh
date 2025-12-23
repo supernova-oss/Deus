@@ -46,15 +46,17 @@ install_dswtc() {
 
 intercept_dswtc_ld() {
   # This is weird: neither dswtc nor toolchains posterior to it as of December 17, 2025 include the
-  # GNU linker (ld), which is required for compiling Swift sources. And, for some reason unknown by
-  # me, ld outputs the details of its version successfully *before* `swift build` is called (by
-  # `swift run`), but yields an empty string when `swift build` calls it.
+  # GNU linker (ld), which is required by SwiftPM for linking object files. And, for some reason
+  # unknown by me, ld outputs the details of its version successfully before `swift build` is called
+  # (by `swift run`), but yields an empty string when `swift build` calls it.
   #
   # https://github.com/swiftlang/swift-build/blob/ff02f8db335e41af9ccdc15896a94c667d31288b/Sources/SWBCore/SpecImplementations/Tools/LinkerTools.swift#L1916-L1920
   #
   # As a workaround, we intercept calls to ld, outputting the details of its version which are
   # expected by the caller when the `version_details` flag is passed in; otherwise, the call is
   # forwarded to the ld included in macOS.
+  #
+  # For more details on this issue, see https://github.com/supernova-oss/Deus/pull/58.
   local linker_path="$(dswtcinfo path)"/usr/bin/ld
   cat > "$linker_path".c << 'EOF'
 #include <stdio.h>
