@@ -22,7 +22,7 @@
 # toolchain whose version is that defined by the .swift-version file located at the root of the
 # directory of the project.
 #
-# This script provides information about dswtc.
+# This tool provides information about dswtc.
 
 ensure_installation() {
   if swiftly list 2>/dev/null | grep --quiet "$(dswtcinfo version)"; then
