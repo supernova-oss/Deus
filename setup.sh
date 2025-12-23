@@ -34,7 +34,7 @@ install_swiftly() {
 
 install_dswtc() {
   export PATH="$project_directory"/bin:$PATH
-  dswtcinfo path &>/dev/null || swiftly install --assume-yes --use "$(dswtcinfo path)"
+  dswtcinfo path &>/dev/null || swiftly install --assume-yes --use "$(dswtcinfo version)"
   assert_eq                                                      \
     "$(swiftly use --print-location 2>/dev/null | head -n 1)"    \
     "$(dswtcinfo path)"                                          \

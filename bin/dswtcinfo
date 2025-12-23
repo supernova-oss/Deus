@@ -29,7 +29,7 @@ ensure_installation() {
     return
   fi
   echo "dswtc is not installed. Run the setup.sh script at the root of the project or install the \
-  $(dswtc version) version of the Swift toolchain manually."
+  $(dswtcinfo version) version of the Swift toolchain manually."
   exit 1
 }
 
