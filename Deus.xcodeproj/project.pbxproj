@@ -712,7 +712,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "source tooling/dswtc.sh\ncd on-build && swift run --toolchain \"$(dswtc_path)\" --very-verbose && cd ..\n";
+			shellScript = "export PATH=\"$SRCROOT/bin\":$PATH\ncd on-build && swift run --toolchain \"$(dswtcinfo path)\" && cd ..\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
