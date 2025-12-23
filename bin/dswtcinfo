@@ -1,0 +1,66 @@
+#!/bin/bash
+# ===--------------------------------------------------------------------------------------------===
+# Copyright © 2025 Supernova. All rights reserved.
+#
+# This file is part of the Deus open-source project.
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+# General Public License as published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If not,
+# see https://www.gnu.org/licenses.
+# ===--------------------------------------------------------------------------------------------===
+
+# dswtc stands for "Deus Swift toolchain". Swift toolchains are a set of tools for documenting,
+# linking, compiling and debugging Swift sources. Deus requires a version of the Swift toolchain
+# which supports automatic differentiation for implementing quantum fields. dswtc is the Swift
+# toolchain whose version is that defined by the .swift-version file located at the root of the
+# directory of the project.
+#
+# This script provides information about dswtc.
+
+ensure_installation() {
+  if swiftly list 2>/dev/null | grep --quiet "$(dswtcinfo version)"; then
+    return
+  fi
+  echo "dswtc is not installed. Run the setup.sh script at the root of the project or install the \
+  $(dswtc version) version of the Swift toolchain manually."
+  exit 1
+}
+
+subcommand="$(echo "$@" | xargs)"
+if [ -z "$subcommand" ] || [ "$subcommand" = 'help' ]; then
+  cat << EOF
+OVERVIEW: Provider of information about the specific Swift toolchain required by Deus (dswtc).
+
+USAGE: dswtcinfo <subcommand>
+
+SUBCOMMANDS:
+  id                      Output the identifier of dswtc as defined in its Info.plist.
+  help                    Provide assistance as to how to utilize this command.
+  path                    Print the absolute path of the package of dswtc.
+  version                 Show the version of toolchain.
+EOF
+elif [ "$subcommand" = 'id' ]; then
+  ensure_installation
+  echo "$(defaults read "$(dswtcinfo path)"/Info CFBundleIdentifier)"
+elif [ "$subcommand" = 'path' ]; then
+  ensure_installation
+  version="$(dswtcinfo version)"
+  build_date="${version: -10}"
+  echo ~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
+elif [ "$subcommand" = 'version' ]; then
+  project_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"/..
+  echo "$(cat "$project_directory"/.swift-version | xargs)"
+else
+  cat << EOF
+Error: unexpected argument '$subcommand'.
+Usage: dswtcinfo <subcommand>
+  See 'dswtcinfo help' for more information.
+EOF
+fi

@@ -21,6 +21,8 @@
 # toolchain in use is changed, given that the project relies on a specific development snapshot of
 # such toolchain.
 
+project_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+
 install_swiftly() {
   if [ ! -d ~/.swiftly ]; then
     curl -O https://download.swift.org/swiftly/darwin/swiftly.pkg
@@ -31,11 +33,11 @@ install_swiftly() {
 }
 
 install_dswtc() {
-  source "$(dirname "${BASH_SOURCE[0]}")"/tooling/dswtc.sh
-  [ "$is_dswtc_installed" -eq 0 ] && swiftly install --assume-yes --use "$(dswtc_path)"
+  export PATH="$project_directory"/bin:$PATH
+  dswtcinfo path &>/dev/null || swiftly install --assume-yes --use "$(dswtcinfo path)"
   assert_eq                                                      \
     "$(swiftly use --print-location 2>/dev/null | head -n 1)"    \
-    "$(dswtc_path)"                                              \
+    "$(dswtcinfo path)"                                          \
     'Swift of Swiftly is not that of the development toolchain.'
   assert_eq                                                                     \
     "$(swift --version 2>/dev/null | head -n 1)"                                \
@@ -44,17 +46,17 @@ install_dswtc() {
 }
 
 intercept_dswtc_ld() {
-  # This is weird: neither the dswtc nor toolchains posterior to it as of December 17, 2025 include
-  # the GNU linker (ld), which is required for compiling Swift sources. And, for some reason unknown
-  # by me, ld outputs the details of its version successfully *before* `swift build` is called (by
+  # This is weird: neither dswtc nor toolchains posterior to it as of December 17, 2025 include the
+  # GNU linker (ld), which is required for compiling Swift sources. And, for some reason unknown by
+  # me, ld outputs the details of its version successfully *before* `swift build` is called (by
   # `swift run`), but yields an empty string when `swift build` calls it.
   #
   # https://github.com/swiftlang/swift-build/blob/ff02f8db335e41af9ccdc15896a94c667d31288b/Sources/SWBCore/SpecImplementations/Tools/LinkerTools.swift#L1916-L1920
   #
-  # As a workaround, we "intercept" calls to ld, outputting the details of its version which are
+  # As a workaround, we intercept calls to ld, outputting the details of its version which are
   # expected by the caller when the `version_details` flag is passed in; otherwise, the call is
   # forwarded to the ld included in macOS.
-  local linker_path="$(dswtc_path)"/usr/bin/ld
+  local linker_path="$(dswtcinfo path)"/usr/bin/ld
   cat > "$linker_path".c << 'EOF'
 #include <stdio.h>
 #include <string.h>
@@ -101,14 +103,14 @@ int main(int argc, char **argv) {
 EOF
   clang "$linker_path".c -o "$linker_path"
   rm "$linker_path".c
-  assert_eq                                                \
-    "$(find "$(dswtc_path)"/usr/bin -maxdepth 1 -name ld)" \
-    "$linker_path"                                         \
+  assert_eq                                                    \
+    "$(find "$(dswtcinfo path)"/usr/bin -maxdepth 1 -name ld)" \
+    "$linker_path"                                             \
     'Interceptor ld was not included in the toolchain.'
 }
 
 (
-  source "$(dirname "${BASH_SOURCE[0]}")"/tooling/assert.sh
+  source "$project_directory"/tooling/assert.sh
   install_swiftly
   install_dswtc
   intercept_dswtc_ld
