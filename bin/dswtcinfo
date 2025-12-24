@@ -26,27 +26,7 @@
 
 subcommand="$(echo "$@" | xargs)"
 
-print_version() {
-  local project_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"/..
-  echo "$(cat "$project_directory"/.swift-version | xargs)"
-}
-
-print_expected_path() {
-  local version="$(print_version)"
-  local build_date="${version: -10}"
-  echo ~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
-}
-
-exit_if_not_installed() {
-  if [ ! -z "$(find "$(print_expected_path)")" ]; then
-    return
-  fi
-  echo "dswtc is not installed. Run the setup.sh script at the root of the project or install the \
-$(print_version) version of the Swift toolchain manually."
-  exit 1
-}
-
-if [ -z "$subcommand" ] || [ "$subcommand" = 'help' ]; then
+print_help() {
   cat << EOF
 OVERVIEW: Provider of information about the specific Swift toolchain required by Deus (dswtc).
 
@@ -58,18 +38,51 @@ SUBCOMMANDS:
   path                    Print the absolute path of the package of dswtc.
   version                 Show the version of toolchain.
 EOF
-elif [ "$subcommand" = 'id' ]; then
-  exit_if_not_installed
-  echo "$(defaults read "$(print_expected_path)"/Info CFBundleIdentifier)"
-elif [ "$subcommand" = 'path' ]; then
-  exit_if_not_installed
+}
+
+print_version() {
+  local project_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"/..
+  echo "$(cat "$project_directory"/.swift-version | xargs)"
+}
+
+print_expected_path() {
+  local version="$(print_version)"
+  local build_date="${version: -10}"
+  echo ~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
+}
+
+error_if_not_installed() {
+  [ -d "$(print_expected_path)" ] && return
+  echo "dswtc is not installed. Run the setup.sh script at the root of the project or install the \
+$(print_version) version of the Swift toolchain manually."
+  exit 1
+}
+
+print_path() {
+  error_if_not_installed
   print_expected_path
-elif [ "$subcommand" = 'version' ]; then
-  print_version
-else
+}
+
+print_id() {
+  echo "$(defaults read "$(print_path)"/Info CFBundleIdentifier)"
+}
+
+print_error() {
   cat << EOF
 Error: unexpected argument '$subcommand'.
 Usage: dswtcinfo <subcommand>
   See 'dswtcinfo help' for more information.
 EOF
+}
+
+if [ -z "$subcommand" ] || [ "$subcommand" = 'help' ]; then
+  print_help
+elif [ "$subcommand" = 'id' ]; then
+  print_id
+elif [ "$subcommand" = 'path' ]; then
+  print_path
+elif [ "$subcommand" = 'version' ]; then
+  print_version
+else
+  print_error
 fi
