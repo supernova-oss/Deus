@@ -22,7 +22,7 @@
 # toolchain whose version is that defined by the .swift-version file located at the root of the
 # directory of the project.
 #
-# This tool provides information about dswtc.
+# This utility provides information about dswtc.
 
 subcommand="$(echo "$@" | xargs)"
 

@@ -33,6 +33,8 @@ install_swiftly() {
 }
 
 install_dswtc() {
+  # dswtc stands for "Deus Swift toolchain" — the specific version of the Swift toolchain required
+  # by this project. For more information, see ./bin/dswtcinfo.
   dswtcinfo path &>/dev/null || swiftly install --assume-yes --use "$(dswtcinfo version)"
   assert_eq                                                      \
     "$(swiftly use --print-location 2>/dev/null | head -n 1)"    \
