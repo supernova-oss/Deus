@@ -1,0 +1,104 @@
+#!/bin/bash
+# ===--------------------------------------------------------------------------------------------===
+# Copyright © 2025 Supernova. All rights reserved.
+#
+# This file is part of the Deus open-source project.
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+# General Public License as published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If not,
+# see https://www.gnu.org/licenses.
+# ===--------------------------------------------------------------------------------------------===
+
+# This script undoes the configuration done by the configuration script at the root of the project.
+# 
+# Executing this without having configured the project or repeatedly is a no-op.
+
+project_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+configuration_file_path="$project_directory"/configuration.json
+
+print_overview() {
+  cat << EOF
+Deus: deconfigure
+OVERVIEW: Undoes the initial configuration of the project.
+EOF
+}
+
+prepare_binaries_for_execution() {
+  local binaries_path="$project_directory"/bin
+  export PATH="$binaries_path":$PATH
+  chmod +x "$binaries_path"/dconfiginfo
+}
+
+error_on_configuration_file_absence() {
+  [ -f "$configuration_file_path" ] && return
+  dconfiginfo error
+}
+
+uninstall_dswtc() {
+  echo '=== DSWTC UNINSTALLATION ==='
+  if ! dswtcinfo path 2>/dev/null; then
+    echo 'Is not installed. Skipping uninstallation.'
+    return
+  fi
+  if dconfiginfo wasDswtcPreviouslyInstalled 1>/dev/null; then
+    echo 'Was installed prior to configuration of the project. Skipping uninstallation.'
+    return
+  fi
+  echo 'Uninstalling…'
+  ~/.swiftly/bin/swiftly uninstall --assume-yes "$(dswtcinfo version)" || rm -r "$(dswtc path)"
+  echo 'Uninstalled.'
+}
+
+print_divider() {
+  echo ''
+}
+
+uninstall_swiftly() {
+  echo '=== SWIFTLY UNINSTALLATION ==='
+  if dconfiginfo wasSwiftlyPreviouslyInstalled &>/dev/null; then
+    echo 'Was installed prior to configuration of the project. Skipping uninstallation.'
+    return
+  fi
+  echo 'Uninstalling…'
+  [ -f ~/.swiftly/bin/swiftly ] && ~/.swiftly/bin/swiftly self-uninstall 2>/dev/null && return
+
+  # Not having returned up until this point denotes that `swiftly self-uninstall` failed; we will
+  # have to, then, uninstall it manually, following the steps documented at
+  # https://github.com/swiftlang/swiftly/blob/20ceb4748fd55a7e0574cf426b70f978a2636418/README.md#uninstalling-swiftly.
+  echo 'Tried to uninstall via `self-uninstall`; did not work. Uninstalling manually…'
+  local escaped_user_directory="${HOME//\//\\/}"
+  for filename in '.bash_profile' '.profile' '.zprofile' 'fish/conf.d'; do
+    [ -f ~/"$filename" ] || continue
+    echo "Removing modifications by Swiftly at $(echo ~/$filename)…"
+    echo "$(awk                                                                                                                                                                                                                            \
+      -v escaped_user_directory="$escaped_user_directory"                                                                                                                                                                                  \
+      '/^[[:space:]]*# Added by swiftly[[:space:]]*$/ { getline next_line; if (next_line ~ "^[[:space:]]*\\.[[:space:]]+" escaped_user_directory "/\\.swiftly/env\\.sh[[:space:]]*$") { next }; print; print next_line; next }; { print }' \
+      ~/"$filename")"                                                                                                                                                                                                                      \
+      >~/"$filename"
+  done
+  [ -d ~/.swiftly ] && rm -r ~/.swiftly
+  echo 'Removed ~/.swiftly.'
+}
+
+remove_configuration_file() {
+  rm "$configuration_file_path"
+}
+
+set -e
+print_overview
+print_divider
+prepare_binaries_for_execution
+error_on_configuration_file_absence
+uninstall_dswtc
+print_divider
+uninstall_swiftly
+remove_configuration_file
+print_divider
+echo 'Done!'

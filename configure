@@ -1,0 +1,216 @@
+#!/bin/bash
+# ===--------------------------------------------------------------------------------------------===
+# Copyright © 2025 Supernova. All rights reserved.
+#
+# This file is part of the Deus open-source project.
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+# General Public License as published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If not,
+# see https://www.gnu.org/licenses.
+# ===--------------------------------------------------------------------------------------------===
+
+# This script performs the initial configuration of the environment for building and testing Deus
+# locally. It is recommended that it be run after the project is cloned and every time the Swift
+# toolchain in use is changed, given that the project relies on a specific development snapshot of
+# such toolchain.
+
+project_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+
+print_overview() {
+  cat << EOF
+Deus: configure
+OVERVIEW: Performs the initial configuration of the environment for building and testing the \
+project.
+EOF
+}
+
+prepare_binaries_for_execution() {
+  local binaries_path="$project_directory"/bin
+  export PATH="$binaries_path":$PATH
+  chmod +x deconfigure
+}
+
+configure_swiftly() {
+  echo '=== SWIFTLY CONFIGURATION ==='
+  echo 'Checking presence…'
+  if [ -f ~/.swiftly/bin/swiftly ] &>/dev/null; then
+    was_swiftly_previously_installed=true
+    echo 'Already installed. Skipping download and installation.'
+  else
+    was_swiftly_previously_installed=false
+    swiftly_package_path=~/Downloads/swiftly-"$(uuidgen)".pkg
+    echo 'Not downloaded. Downloading…'
+    curl                                                    \
+      --location                                            \
+      --output "$swiftly_package_path"                      \
+      https://download.swift.org/swiftly/darwin/swiftly.pkg \
+      2>/dev/null
+    echo 'Downloaded.'
+    echo 'Installing…'
+    installer -pkg "$swiftly_package_path" -target CurrentUserHomeDirectory 1>/dev/null
+    echo 'Installed.'
+    rm "$swiftly_package_path"
+  fi
+  echo 'Initializing…'
+  ~/.swiftly/bin/swiftly init --assume-yes --skip-install 1>/dev/null
+  source ~/.swiftly/env.sh
+  echo 'Initialized.'
+}
+
+print_divider() {
+  echo ''
+}
+
+enable_assertions() {
+  source "$project_directory"/tooling/assert.sh
+}
+
+# dswtc stands for "Deus Swift toolchain" — the specific version of the Swift toolchain required by
+# this project. For more information, run `./bin/dswtcinfo help`.
+configure_dswtc() {
+  echo '=== DSWTC (DEUS SWIFT TOOLCHAIN) CONFIGURATION ==='
+  echo 'Checking installation…'
+  if dswtcinfo path &>/dev/null; then
+    was_dswtc_previously_installed=true
+
+    # Although dswtc is installed, in the event of Swiftly being uninstalled and installed again
+    # while dswtc remained present, the reinstalled version, as of 1.1.1, does not recognize dswtc
+    # as an installed toolchain. In these scenarios, we force Swiftly to consider dswtc as such by
+    # editing its configuration file.
+    local swiftly_configuration_file_path=~/.swiftly/config.json
+    echo 'Already installed. Skipping installation.'
+    if ! jq '.installedToolchains' "$swiftly_configuration_file_path" \
+      | xargs                                                         \
+      | tr -d '\n'                                                    \
+      | grep --max-count 1 --quiet "$(dswtcinfo version)"; then
+      echo 'Swiftly does not recognize it as an installed toolchain. Forcing recognition…'
+      echo "$(jq                                   \
+        --arg dswtc_version "$(dswtcinfo version)" \
+        '.installedToolchains += [$dswtc_version]' \
+        "$swiftly_configuration_file_path")"       \
+        > "$swiftly_configuration_file_path"
+      echo 'Forced recognition by Swiftly of dswtc.'
+    fi
+  else
+    was_dswtc_previously_installed=false
+    echo 'Not installed. Installing…'
+    swiftly install --assume-yes "$(dswtcinfo version)" 1>/dev/null
+    echo 'Installed.'
+  fi
+  swiftly link "$(dswtcinfo version)" --assume-yes 1>/dev/null
+  swiftly use "$(dswtcinfo version)" 1>/dev/null
+  echo "Swiftly is using toolchain at $(dswtcinfo path)."
+  assert_eq                           \
+    "$(swiftly use --print-location)" \
+    "$(dswtcinfo path)"               \
+    'Swiftly is not using dswtc.'
+  assert_eq                                                                     \
+    "$(swift --version 2>/dev/null | head -n 1)"                                \
+    'Apple Swift version 6.3-dev (LLVM 36e07716208ae15, Swift 7b214378007870f)' \
+    'Version of Swift is not 6.3-dev.'
+}
+
+# This is weird: neither dswtc nor toolchains posterior to it as of December 17, 2025 include the
+# GNU linker (ld), which is required by SwiftPM for linking object files. And, for some reason
+# unknown by me, ld outputs the details of its version successfully before `swift build` is called
+# (by `swift run`), but yields an empty string when `swift build` calls it.
+#
+# https://github.com/swiftlang/swift-build/blob/ff02f8db335e41af9ccdc15896a94c667d31288b/Sources/SWBCore/SpecImplementations/Tools/LinkerTools.swift#L1916-L1920
+#
+# As a workaround, we intercept calls to ld, outputting the details of its version which are
+# expected by the caller when the `version_details` flag is passed in; otherwise, the call is
+# forwarded to the ld included in macOS.
+#
+# For more details on this issue, see https://github.com/supernova-oss/Deus/pull/58.
+intercept_dswtc_ld() {
+  echo '=== DSWTC GNU LINKER INTERCEPTION ==='
+  local ld_path="$(dswtcinfo path)"/usr/bin/ld
+  echo 'Writing source for linker interceptor…'
+  cat >"$ld_path".c <<'EOF'
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+
+int main(int argc, char **argv) {
+  if (!strcmp(argv[1], "-version_details")) {
+    printf(
+      "{"
+        "\"version\": \"1221.4\", "
+        "\"architectures\": ["
+          "\"armv6\", "
+          "\"arm64\", "
+          "\"arm64_32\", "
+          "\"arm64e\", "
+          "\"armv6m\", "
+          "\"armv7\", "
+          "\"armv7s\", "
+          "\"armv7em\", "
+          "\"armv7k\", "
+          "\"armv7m\", "
+          "\"armv8.1m.main\", "
+          "\"armv8m.main\", "
+          "\"i386\", "
+          "\"x86_64\", "
+          "\"x86_64h\""
+        "], "
+        "\"lto\": {"
+          "\"runtime_api_version\": 29, "
+          "\"static_api_version\": 29, "
+          "\"version_string\": \"LLVM version 17.0.0\""
+        "}, "
+        "\"tapi\": {"
+          "\"version\": \"17.0.0\", "
+          "\"version_string\": \"Apple TAPI version 17.0.0 (tapi-1700.3.8)\""
+        "}"
+      "}"
+    );
+  } else {
+    execv("/usr/bin/ld", argv);
+  }
+  return 0;
+}
+EOF
+  echo "Source for linker interceptor has been written."
+  echo 'Compiling source for linker interceptor…'
+  clang "$ld_path".c -o "$ld_path"
+  echo "Linker interceptor has been compiled."
+  echo 'Removing source for linker interceptor…'
+  rm "$ld_path".c
+  echo "Source for linker interceptor has been removed."
+  assert_eq                                                    \
+    "$(find "$(dswtcinfo path)"/usr/bin -maxdepth 1 -name ld)" \
+    "$ld_path"                                                 \
+    'Interceptor ld was not included in the toolchain.'
+}
+
+write_configuration_to_file() {
+  cat >"$project_directory"/configuration.json <<EOF
+{
+  "_warning": "This file was generated automatically upon configuration and should be neither \
+modified nor deleted.",
+  "wasDswtcPreviouslyInstalled": $was_dswtc_previously_installed,
+  "wasSwiftlyPreviouslyInstalled": $was_swiftly_previously_installed
+}
+EOF
+}
+
+set -e
+print_overview
+print_divider
+prepare_binaries_for_execution
+enable_assertions
+configure_swiftly
+print_divider
+configure_dswtc
+print_divider
+intercept_dswtc_ld
+write_configuration_to_file
+print_divider
+echo 'Done!'

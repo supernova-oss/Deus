@@ -20,7 +20,7 @@
 # linking, compiling and debugging Swift sources. Deus requires a version of the Swift toolchain
 # which supports automatic differentiation for implementing quantum fields. dswtc is the Swift
 # toolchain whose version is that defined by the .swift-version file located at the root of the
-# directory of the project.
+# project.
 #
 # This utility provides information about dswtc.
 
@@ -52,10 +52,16 @@ print_expected_path() {
 }
 
 error_if_not_installed() {
-  [ -d "$(print_expected_path)" ] && return
-  echo "dswtc is not installed. Run the setup.sh script at the root of the project or install the \
-$(print_version) version of the Swift toolchain manually."
-  exit 1
+  if ! command -v swiftly 1>/dev/null; then
+    source ~/.swiftly/env.sh 2>/dev/null
+  fi
+  if ! swiftly list | grep --count --max-count 1 --quiet "$(print_version)"                  \
+    || [ ! -d "$(print_expected_path)" ]                                                     \
+    || [ -z "$(find "$(print_expected_path)" -maxdepth 1 -mindepth 1 2>/dev/null)" ]; then
+    echo "dswtc is not installed. Run the configuration script at the root of the project or \
+install the $(print_version) version of the Swift toolchain manually." >&2
+    exit 1
+  fi
 }
 
 print_path() {
@@ -64,17 +70,20 @@ print_path() {
 }
 
 print_id() {
-  echo "$(defaults read "$(print_path)"/Info CFBundleIdentifier)"
+  error_if_not_installed
+  echo "$(defaults read "$(print_expected_path)"/Info CFBundleIdentifier)"
 }
 
-print_error() {
+error() {
   cat << EOF
 Error: unexpected argument '$subcommand'.
 Usage: dswtcinfo <subcommand>
   See 'dswtcinfo help' for more information.
 EOF
+  exit 1
 }
 
+set -e
 if [ -z "$subcommand" ] || [ "$subcommand" = 'help' ]; then
   print_help
 elif [ "$subcommand" = 'id' ]; then
@@ -84,5 +93,5 @@ elif [ "$subcommand" = 'path' ]; then
 elif [ "$subcommand" = 'version' ]; then
   print_version
 else
-  print_error
+  error
 fi

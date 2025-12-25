@@ -20,8 +20,9 @@ import Geometry
 
 /// Closure whose signature matches that of the
 /// ``TimeLapseListener/timeDidElapse(on:from:after:towards:)`` callback.
-public typealias TimeDidElapse =
-  @Sendable (Clock, _ start: Duration, _ previous: Duration?, _ end: Duration) async -> Void
+public typealias TimeDidElapse = @Sendable (
+  Clock, _ start: Duration, _ previous: Duration?, _ end: Duration
+) async -> Void
 
 /// Closure which is executed whenever a ``Clock`` is started.
 typealias ClockDidStart = () -> Void

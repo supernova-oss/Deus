@@ -1,0 +1,73 @@
+#!/bin/bash
+# ===--------------------------------------------------------------------------------------------===
+# Copyright © 2025 Supernova. All rights reserved.
+#
+# This file is part of the Deus open-source project.
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+# General Public License as published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If not,
+# see https://www.gnu.org/licenses.
+# ===--------------------------------------------------------------------------------------------===
+
+# This utility reads from the configuration file created by the configuration script at the root of
+# the project.
+
+project_directory="$(cd "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"/.. && pwd -P)"
+configuration_file_path="$project_directory"/configuration.json
+subcommand="$(echo "$@" | xargs)"
+
+print_help() {
+  cat << EOF
+OVERVIEW: Reader of properties defined by the configuration script at the root of the project.
+
+USAGE: dswtcinfo <subcommand>
+
+SUBCOMMANDS:
+  <property>                Unquoted name of any property of the configuration file.
+  error                     Exit the program because of the configuration file not being present.
+EOF
+}
+
+error_because_of_nonexisting_configuration_file() {
+  echo "Project either was not configured or has been deconfigured. Run the configuration script \
+at the root of the project to continue." >&2
+  exit 1
+}
+
+error_if_not_configured() {
+  [ -f "$configuration_file_path" ] && return
+  error_because_of_nonexisting_configuration_file
+}
+
+read_configuration() {
+  error_if_not_configured
+  echo "$(jq --raw-output ".$1" "$configuration_file_path")"
+}
+
+error_because_of_unknown_argument() {
+  cat >&2 << EOF
+Error: unexpected argument '$subcommand'.
+Usage: dconfiginfo <property>
+  See 'dconfiginfo help' for more information.
+EOF
+  exit 1
+}
+
+set -e
+if [ -z "$subcommand" ] || [ "$subcommand" = 'help' ]; then
+  print_help
+elif [ "$subcommand" = 'error' ]; then
+  error_because_of_nonexisting_configuration_file
+elif [ "$subcommand" = 'wasDswtcPreviouslyInstalled' ] \
+  || [ "$subcommand" = 'wasSwiftlyPreviouslyInstalled' ]; then
+  read_configuration "$subcommand"
+else
+  error_because_of_unknown_argument
+fi
