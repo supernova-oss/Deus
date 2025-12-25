@@ -54,7 +54,7 @@ read_configuration() {
 error_because_of_unknown_argument() {
   cat >&2 << EOF
 Error: unexpected argument '$subcommand'.
-Usage: dconfiginfo <property>
+Usage: dconfiginfo <subcommand>
   See 'dconfiginfo help' for more information.
 EOF
   exit 1
