@@ -79,13 +79,13 @@ configure_dswtc() {
   echo 'Checking installation…'
   if dswtcinfo path &>/dev/null; then
     was_dswtc_previously_installed=true
+    local swiftly_configuration_file_path=~/.swiftly/config.json
+    echo 'Already installed. Skipping installation.'
 
     # Although dswtc is installed, in the event of Swiftly being uninstalled and installed again
     # while dswtc remained present, the reinstalled version, as of 1.1.1, does not recognize dswtc
     # as an installed toolchain. In these scenarios, we force Swiftly to consider dswtc as such by
     # editing its configuration file.
-    local swiftly_configuration_file_path=~/.swiftly/config.json
-    echo 'Already installed. Skipping installation.'
     if ! jq '.installedToolchains' "$swiftly_configuration_file_path" \
       | xargs                                                         \
       | tr -d '\n'                                                    \
@@ -106,7 +106,6 @@ configure_dswtc() {
   fi
   swiftly link "$(dswtcinfo version)" --assume-yes 1>/dev/null
   swiftly use "$(dswtcinfo version)" 1>/dev/null
-  echo "Swiftly is using toolchain at $(dswtcinfo path)."
   assert_eq                           \
     "$(swiftly use --print-location)" \
     "$(dswtcinfo path)"               \
@@ -115,6 +114,7 @@ configure_dswtc() {
     "$(swift --version 2>/dev/null | head -n 1)"                                \
     'Apple Swift version 6.3-dev (LLVM 36e07716208ae15, Swift 7b214378007870f)' \
     'Version of Swift is not 6.3-dev.'
+  echo "Swiftly is using toolchain at $(dswtcinfo path)."
 }
 
 # This is weird: neither dswtc nor toolchains posterior to it as of December 17, 2025 include the
