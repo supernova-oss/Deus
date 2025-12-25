@@ -31,7 +31,9 @@ jobs:
         run: sudo xcode-select -switch /Applications/Xcode_26.2.app/Contents/Developer
       - name: Test
         run: |
-             source setup.sh
+             chmod +x configure
+             ./configure
+             export PATH="$(pwd -P)"/bin:$PATH
              mkdir .build
              xcodebuild                                                                               \
                -allowProvisioningUpdates                                                              \
