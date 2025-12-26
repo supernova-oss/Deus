@@ -75,7 +75,7 @@ enable_assertions() {
 # dswtc stands for "Deus Swift toolchain" — the specific version of the Swift toolchain required by
 # this project. For more information, run `./bin/dswtcinfo help`.
 configure_dswtc() {
-  echo '=== DSWTC (DEUS SWIFT TOOLCHAIN) CONFIGURATION ==='
+  echo '=== SWIFT TOOLCHAIN CONFIGURATION ==='
   echo 'Checking installation…'
   if dswtcinfo path &>/dev/null; then
     was_dswtc_previously_installed=true

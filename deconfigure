@@ -42,9 +42,9 @@ error_on_configuration_file_absence() {
 }
 
 uninstall_dswtc() {
-  echo '=== DSWTC UNINSTALLATION ==='
+  echo '=== SWIFT TOOLCHAIN UNINSTALLATION ==='
   if ! dswtcinfo path 2>/dev/null; then
-    echo 'Is not installed. Skipping uninstallation.'
+    echo 'Not installed. Skipping uninstallation.'
     return
   fi
   if dconfiginfo wasDswtcPreviouslyInstalled 1>/dev/null; then
