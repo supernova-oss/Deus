@@ -20,7 +20,7 @@
 # the project.
 
 project_directory="$(cd "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"/.. && pwd -P)"
-configuration_file_path="$project_directory"/configuration.json
+configuration_file_path="$project_directory"/.configuration.json
 subcommand="$(echo "$@" | xargs)"
 
 print_help() {
