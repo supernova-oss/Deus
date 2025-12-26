@@ -52,7 +52,9 @@ uninstall_dswtc() {
     return
   fi
   echo 'Uninstalling…'
-  ~/.swiftly/bin/swiftly uninstall --assume-yes "$(dswtcinfo version)" || rm -r "$(dswtc path)"
+  [ -d ~/.swiftly/bin/swiftly ]                                             \
+    && ~/.swiftly/bin/swiftly uninstall --assume-yes "$(dswtcinfo version)" \
+    || rm -r "$(dswtc path)"
   echo 'Uninstalled.'
 }
 
