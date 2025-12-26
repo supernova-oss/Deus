@@ -22,6 +22,7 @@
 
 project_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 configuration_file_path="$project_directory"/.configuration.json
+swiftly_executable_path=~/.swiftly/bin/swiftly
 
 print_overview() {
   cat << EOF
@@ -52,8 +53,8 @@ uninstall_dswtc() {
     return
   fi
   echo 'Uninstalling…'
-  [ -d ~/.swiftly/bin/swiftly ]                                             \
-    && ~/.swiftly/bin/swiftly uninstall --assume-yes "$(dswtcinfo version)" \
+  [ -f "$swiftly_executable_path" ]                                             \
+    && "$swiftly_executable_path" uninstall --assume-yes "$(dswtcinfo version)" \
     || rm -r "$(dswtc path)"
   echo 'Uninstalled.'
 }
@@ -69,7 +70,7 @@ uninstall_swiftly() {
     return
   fi
   echo 'Uninstalling…'
-  [ -f ~/.swiftly/bin/swiftly ] && ~/.swiftly/bin/swiftly self-uninstall 2>/dev/null && return
+  [ -f "$swiftly_executable_path" ] && ~/.swiftly/bin/swiftly self-uninstall 2>/dev/null && return
 
   # Not having returned up until this point denotes that `swiftly self-uninstall` failed; we will
   # have to, then, uninstall it manually, following the steps documented at
