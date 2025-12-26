@@ -184,7 +184,7 @@ EOF
 }
 
 write_configuration_to_file() {
-  cat >"$project_directory"/configuration.json <<EOF
+  cat >"$project_directory"/.configuration.json <<EOF
 {
   "_warning": "This file was generated automatically upon configuration and should be neither \
 modified nor deleted.",

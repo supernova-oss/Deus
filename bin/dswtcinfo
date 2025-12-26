@@ -52,10 +52,8 @@ print_expected_path() {
 }
 
 error_if_not_installed() {
-  if ! command -v swiftly 1>/dev/null; then
-    source ~/.swiftly/env.sh 2>/dev/null
-  fi
-  if ! swiftly list | grep --count --max-count 1 --quiet "$(print_version)"                  \
+  if [ -f ~/.swiftly/bin/swiftly ]                                                           \
+    && ! ~/.swiftly/bin/swiftly list | grep --count --max-count 1 --quiet "$(print_version)" \
     || [ ! -d "$(print_expected_path)" ]                                                     \
     || [ -z "$(find "$(print_expected_path)" -maxdepth 1 -mindepth 1 2>/dev/null)" ]; then
     echo "dswtc is not installed. Run the configuration script at the root of the project or \

@@ -21,7 +21,7 @@
 # Executing this without having configured the project or repeatedly is a no-op.
 
 project_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-configuration_file_path="$project_directory"/configuration.json
+configuration_file_path="$project_directory"/.configuration.json
 
 print_overview() {
   cat << EOF
