@@ -1,5 +1,5 @@
 .build/
-/configuration.json
+/.configuration.json
 /tooling/.venv/
 QuantumMechanicsTests/Elementary/QuarkTests.swift
 QuantumMechanicsTests/DiscretionTests.swift
