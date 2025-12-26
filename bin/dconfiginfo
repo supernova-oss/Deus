@@ -27,11 +27,11 @@ print_help() {
   cat << EOF
 OVERVIEW: Reader of properties defined by the configuration script at the root of the project.
 
-USAGE: dswtcinfo <subcommand>
+USAGE: dconfiginfo <subcommand>
 
 SUBCOMMANDS:
-  <property>                Unquoted name of any property of the configuration file.
-  error                     Exit the program because of the configuration file not being present.
+  <property>              Unquoted name of any property of the configuration file.
+  error                   Exit the program because of the configuration file not being present.
 EOF
 }
 
