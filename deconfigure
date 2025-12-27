@@ -22,6 +22,8 @@
 
 project_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 configuration_file_path="$project_directory"/.configuration.json
+post_configuration_modification_message='Was modified after the project was configured. Skipping uninstallation.'
+pre_configuration_installation_message='Was installed prior to configuration of the project. Skipping uninstallation.'
 swiftly_executable_path=~/.swiftly/bin/swiftly
 
 print_overview() {
@@ -42,20 +44,32 @@ error_on_configuration_file_absence() {
   dconfiginfo error
 }
 
+was_modified_after_configuration() {
+  if [ $(stat -f %m -t %s "$1") -gt $(dconfiginfo timestamp) ]; then
+    echo 1
+  else
+    echo 0
+  fi
+}
+
 uninstall_dswtc() {
   echo '=== SWIFT TOOLCHAIN UNINSTALLATION ==='
-  if ! dswtcinfo path 2>/dev/null; then
+  if ! dswtcinfo path &>/dev/null; then
     echo 'Not installed. Skipping uninstallation.'
     return
   fi
+  if [ $(was_modified_after_configuration "$(dswtcinfo path)") -eq 1 ]; then
+    echo "$post_configuration_modification_message"
+    return
+  fi
   if dconfiginfo wasDswtcPreviouslyInstalled 1>/dev/null; then
-    echo 'Was installed prior to configuration of the project. Skipping uninstallation.'
+    echo "$pre_configuration_installation_message"
     return
   fi
   echo 'Uninstalling…'
   [ -f "$swiftly_executable_path" ]                                             \
     && "$swiftly_executable_path" uninstall --assume-yes "$(dswtcinfo version)" \
-    || rm -r "$(dswtc path)"
+    || rm -r "$(dswtcinfo path)"
   echo 'Uninstalled.'
 }
 
@@ -65,8 +79,12 @@ print_divider() {
 
 uninstall_swiftly() {
   echo '=== SWIFTLY UNINSTALLATION ==='
+  if [ $(was_modified_after_configuration ~/.swiftly) -eq 1 ]; then
+    echo "$post_configuration_modification_message"
+    return
+  fi
   if dconfiginfo wasSwiftlyPreviouslyInstalled &>/dev/null; then
-    echo 'Was installed prior to configuration of the project. Skipping uninstallation.'
+    echo "$pre_configuration_installation_message"
     return
   fi
   echo 'Uninstalling…'
@@ -87,7 +105,7 @@ uninstall_swiftly() {
       >~/"$filename"
   done
   [ -d ~/.swiftly ] && rm -r ~/.swiftly
-  echo 'Removed ~/.swiftly.'
+  echo 'Uninstalled.'
 }
 
 remove_configuration_file() {

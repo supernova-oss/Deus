@@ -188,6 +188,7 @@ write_configuration_to_file() {
 {
   "_warning": "This file was generated automatically upon configuration and should be neither \
 modified nor deleted.",
+  "timestamp": $(date +"%s"),
   "wasDswtcPreviouslyInstalled": $was_dswtc_previously_installed,
   "wasSwiftlyPreviouslyInstalled": $was_swiftly_previously_installed
 }

@@ -48,7 +48,7 @@ error_if_not_configured() {
 
 read_configuration() {
   error_if_not_configured
-  echo "$(jq --raw-output ".$1" "$configuration_file_path")"
+  echo "$(jq ".$1" "$configuration_file_path")"
 }
 
 error_because_of_unknown_argument() {
@@ -65,8 +65,9 @@ if [ -z "$subcommand" ] || [ "$subcommand" = 'help' ]; then
   print_help
 elif [ "$subcommand" = 'error' ]; then
   error_because_of_nonexisting_configuration_file
-elif [ "$subcommand" = 'wasDswtcPreviouslyInstalled' ] \
-  || [ "$subcommand" = 'wasSwiftlyPreviouslyInstalled' ]; then
+elif [ "$subcommand" = 'wasDswtcPreviouslyInstalled' ]   \
+  || [ "$subcommand" = 'wasSwiftlyPreviouslyInstalled' ] \
+  || [ "$subcommand" = 'timestamp' ]; then
   read_configuration "$subcommand"
 else
   error_because_of_unknown_argument
