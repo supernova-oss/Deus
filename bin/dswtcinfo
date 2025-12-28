@@ -46,20 +46,22 @@ print_version() {
 }
 
 print_expected_path() {
-  local version="$(print_version)"
-  local build_date="${version: -10}"
-  echo ~/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
+  local version_name="$(print_version)"
+  local version_number="${version_name:0:3}"
+  local build_date="${version_name: -10}"
+  echo ~/Library/Developer/Toolchains/swift-"$version_number"-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
 }
 
 error_if_not_installed() {
   if [ -f ~/.swiftly/bin/swiftly ]                                                           \
-    && ! ~/.swiftly/bin/swiftly list | grep --count --max-count 1 --quiet "$(print_version)" \
-    || [ ! -d "$(print_expected_path)" ]                                                     \
-    || [ -z "$(find "$(print_expected_path)" -maxdepth 1 -mindepth 1 2>/dev/null)" ]; then
-    echo "dswtc is not installed. Run the configuration script at the root of the project or \
-install the $(print_version) version of the Swift toolchain manually." >&2
-    exit 1
+    && ~/.swiftly/bin/swiftly list | grep --max-count 1 --quiet "$(print_version)"           \
+    || [ -d "$(print_expected_path)" ]                                                       \
+    && [ ! -z "$(find "$(print_expected_path)" -maxdepth 1 -mindepth 1 2>/dev/null)" ]; then
+    return
   fi
+  echo "dswtc is not installed. Run the configuration script at the root of the project or \
+install the $(print_version) version of the Swift toolchain manually." >&2
+  exit 1
 }
 
 print_path() {
