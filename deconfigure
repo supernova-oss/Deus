@@ -58,6 +58,9 @@ uninstall_dswtc() {
     echo 'Not installed. Skipping uninstallation.'
     return
   fi
+  echo 'Removing GNU linker interceptor…'
+  [ -f "$(dswtcinfo path)"/usr/bin/ld ] && rm "$(dswtcinfo path)"/usr/bin/ld
+  echo 'Removed GNU linker interceptor.'
   if [ $(was_modified_after_configuration "$(dswtcinfo path)") -eq 1 ]; then
     echo "$post_configuration_modification_message"
     return
