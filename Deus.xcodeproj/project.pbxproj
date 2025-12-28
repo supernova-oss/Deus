@@ -128,6 +128,10 @@
 		492A77552EE2EBD500BDB7D1 /* on-build */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = "on-build"; sourceTree = "<group>"; };
 		494EFBF92DDF36B100C66063 /* RelativityKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RelativityKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		494EFC012DDF36B200C66063 /* RelativityKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RelativityKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		495EBF692F013ACE00B568B0 /* dconfiginfo */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = dconfiginfo; sourceTree = "<group>"; };
+		495EBF6A2F013ACE00B568B0 /* dswtcinfo */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = dswtcinfo; sourceTree = "<group>"; };
+		495EBF6C2F013ACE00B568B0 /* configure */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = configure; sourceTree = "<group>"; };
+		495EBF6D2F013ACE00B568B0 /* deconfigure */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = deconfigure; sourceTree = "<group>"; };
 		4960AB482DDCE34E00EB1410 /* Geometry.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Geometry.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4960AB502DDCE34E00EB1410 /* GeometryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GeometryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		496813642E4643BA00B22450 /* ObservationKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ObservationKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -272,6 +276,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		495EBF6B2F013ACE00B568B0 /* bin */ = {
+			isa = PBXGroup;
+			children = (
+				495EBF692F013ACE00B568B0 /* dconfiginfo */,
+				495EBF6A2F013ACE00B568B0 /* dswtcinfo */,
+			);
+			path = bin;
+			sourceTree = "<group>";
+		};
 		4960AB6D2DDCE45D00EB1410 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -282,6 +295,9 @@
 		49FD31192DBFC9E2003CEAF9 = {
 			isa = PBXGroup;
 			children = (
+				495EBF6B2F013ACE00B568B0 /* bin */,
+				495EBF6C2F013ACE00B568B0 /* configure */,
+				495EBF6D2F013ACE00B568B0 /* deconfigure */,
 				49267D662EF1DA6C00FFA7AD /* .swift-version */,
 				492A77552EE2EBD500BDB7D1 /* on-build */,
 				4921F2692DD4ECA900393B6F /* Deus.xctestplan */,
