@@ -22,13 +22,56 @@
 # such toolchain.
 
 project_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+option="$(echo "$@" | xargs)"
 
 print_overview() {
-  cat << EOF
-Deus: configure
-OVERVIEW: Performs the initial configuration of the environment for building and testing the \
-project.
+  echo "OVERVIEW: Performs the initial configuration of the environment for building and testing \
+the project."
+}
+
+print_help() {
+  cat <<EOF
+$(print_overview)
+
+OPTIONS:
+  -h, --help
+    Provide assistance as to how to utilize this command.
+
+  --sym-link-xcswtc-to-dswtc
+    Includes a symbolic link from the Xcode-bundled Swift toolchain to that required by Deus. This \
+is essential for continuous integration (CI) because of an issue with SwiftPM, which remains \
+unsolved as of December 29, 2025. For more details, see \
+https://github.com/supernova-oss/Deus/pull/58#issuecomment-3696928780.
+    Given that the project builds successfuly when built from Xcode (as of Xcode 26.2), passing \
+this option in outside of CI is discouraged, as other tools depending on the Xcode-bundled Swift \
+toolchain may break or work unexpectedly due to incompatibility with the toolchain required by \
+Deus. If you do so, remember to execute \`./deconfigure --xcswtc-to-dswtc-symlink-only\` \
+afterward, which will remove such symlink.
 EOF
+}
+
+print_titled_overview() {
+  CAT <<EOF
+Deus: configure
+$(print_overview)
+EOF
+}
+
+error() {
+  case "$option" in
+    -*)
+      argument_name='option'
+      ;;
+    *)
+      argument_name='argument'
+      ;;
+  esac
+  cat << EOF
+Error: unexpected $argument_name '$option'.
+Usage: ./configure <option>
+  See './configure --help' for more information.
+EOF
+  exit 1
 }
 
 prepare_binaries_for_execution() {
@@ -115,13 +158,40 @@ configure_dswtc() {
     'Apple Swift version 6.3-dev (LLVM 8322c7222063676, Swift d1735f66f43c37f)' \
     'Version of Swift is not 6.3-dev.'
   echo "Swiftly is using toolchain at $(dswtcinfo path)."
+  if [ $sym_links_xcswtc_to_dswtc -eq 0 ]; then
+    return
+  fi
+  local original_xcswtc_path=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain
+  if [ -L $original_xcswtc_path ]; then
+    return
+  elif [ ! -d $original_xcswtc_path ]; then
+    echo "Could not symbolically link the Xcode-bundled toolchain to that required by Deus \
+because the Xcode-bundled toolchain was not found." >&2
+  fi
+  echo 'Creating symbolic link from Xcode-bundled toolchain…'
+
+  # The symlink will live in the same directory as that of the original file; therefore, we rename
+  # the original file. Appending a UUID may be a stretch, but ensures that the original file is
+  # named uniquely.
+  renamed_xcswtc_path="$original_xcswtc_path · Renamed by Deus · $(uuidgen)"
+  sudo mv $original_xcswtc_path "$renamed_xcswtc_path"
+  sudo ln -s "$(dswtcinfo path)" $original_xcswtc_path
+  echo 'Symbolically-linked successfully.'
 }
 
 write_configuration_to_file() {
-  cat >"$project_directory"/.configuration.json <<EOF
+  local configuration_file_path="$project_directory"/.configuration.json
+  cat >"$configuration_file_path" <<EOF
 {
   "_warning": "This file was generated automatically upon configuration and should be neither \
 modified nor deleted.",
+EOF
+  if [[ -n ${renamed_xcswtc_path+1} ]]; then
+    cat >>"$configuration_file_path" <<EOF
+  "renamedXcswtcPath": "$renamed_xcswtc_path",
+EOF
+  fi
+  cat >>"$configuration_file_path" <<EOF
   "timestamp": $(date +"%s"),
   "wasDswtcPreviouslyInstalled": $was_dswtc_previously_installed,
   "wasSwiftlyPreviouslyInstalled": $was_swiftly_previously_installed
@@ -130,13 +200,26 @@ EOF
 }
 
 set -e
-print_overview
-print_divider
-prepare_binaries_for_execution
-enable_assertions
-configure_swiftly
-print_divider
-configure_dswtc
-write_configuration_to_file
-print_divider
-echo 'Done!'
+if [ "$option" = '-h' ] || [ "$option" = '--help' ]; then
+  print_help
+  return
+fi
+if [ "$option" != '--sym-link-xcswtc-to-dswtc' ]; then
+  sym_links_xcswtc_to_dswtc=0
+else
+  sym_links_xcswtc_to_dswtc=1
+fi
+if [ -z "$option" ] || [ $sym_links_xcswtc_to_dswtc -eq 1 ]; then
+  print_titled_overview
+  print_divider
+  prepare_binaries_for_execution
+  enable_assertions
+  configure_swiftly
+  print_divider
+  configure_dswtc
+  write_configuration_to_file
+  print_divider
+  echo 'Done!'
+else
+  error
+fi
