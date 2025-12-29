@@ -165,10 +165,10 @@ configure_dswtc() {
   if [ -L $original_xcswtc_path ]; then
     return
   elif [ ! -d $original_xcswtc_path ]; then
-    echo "Could not symbolically link the Xcode-bundled toolchain to that required by Deus \
-because the Xcode-bundled toolchain was not found." >&2
+    echo "Could not sym-link the Xcode-bundled toolchain to that required by Deus because the \
+Xcode-bundled toolchain was not found." >&2
   fi
-  echo 'Creating symbolic link from Xcode-bundled toolchain…'
+  echo 'Creating symlink from Xcode-bundled toolchain…'
 
   # The symlink will live in the same directory as that of the original file; therefore, we rename
   # the original file. Appending a UUID may be a stretch, but ensures that the original file is
@@ -176,7 +176,7 @@ because the Xcode-bundled toolchain was not found." >&2
   renamed_xcswtc_path="$original_xcswtc_path · Renamed by Deus · $(uuidgen)"
   sudo mv $original_xcswtc_path "$renamed_xcswtc_path"
   sudo ln -s "$(dswtcinfo path)" $original_xcswtc_path
-  echo 'Symbolically-linked successfully.'
+  echo 'Sym-linked successfully.'
 }
 
 write_configuration_to_file() {
@@ -186,7 +186,7 @@ write_configuration_to_file() {
   "_warning": "This file was generated automatically upon configuration and should be neither \
 modified nor deleted.",
 EOF
-  if [[ -n ${renamed_xcswtc_path+1} ]]; then
+  if [ -n ${renamed_xcswtc_path+1} ]; then
     cat >>"$configuration_file_path" <<EOF
   "renamedXcswtcPath": "$renamed_xcswtc_path",
 EOF
