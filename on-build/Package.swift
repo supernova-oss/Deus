@@ -1,4 +1,4 @@
-// swift-tools-version: 6.3
+// swift-tools-version: 6.3-dev
 // ===-------------------------------------------------------------------------------------------===
 // Copyright © 2025 Supernova. All rights reserved.
 //
