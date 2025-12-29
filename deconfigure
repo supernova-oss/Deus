@@ -22,8 +22,10 @@
 
 project_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 configuration_file_path="$project_directory"/.configuration.json
-post_configuration_modification_message='Was modified after the project was configured. Skipping uninstallation.'
-pre_configuration_installation_message='Was installed prior to configuration of the project. Skipping uninstallation.'
+post_configuration_modification_message="Was modified after the project was configured. Skipping \
+uninstallation."
+pre_configuration_installation_message="Was installed prior to configuration of the project. \
+Skipping uninstallation."
 swiftly_executable_path=~/.swiftly/bin/swiftly
 
 print_overview() {

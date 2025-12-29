@@ -38,7 +38,7 @@ prepare_binaries_for_execution() {
 }
 
 configure_swiftly() {
-  echo '=== SWIFTLY CONFIGURATION ==='
+  echo '=== SWIFTLY ==='
   echo 'Checking presence…'
   if [ -f ~/.swiftly/bin/swiftly ] &>/dev/null; then
     was_swiftly_previously_installed=true
@@ -75,7 +75,7 @@ enable_assertions() {
 # dswtc stands for "Deus Swift toolchain" — the specific version of the Swift toolchain required by
 # this project. For more information, run `./bin/dswtcinfo help`.
 configure_dswtc() {
-  echo '=== SWIFT TOOLCHAIN CONFIGURATION ==='
+  echo '=== SWIFT TOOLCHAIN ==='
   echo 'Checking installation…'
   if dswtcinfo path &>/dev/null; then
     was_dswtc_previously_installed=true
