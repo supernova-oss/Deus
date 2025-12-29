@@ -128,8 +128,6 @@
 		492A77552EE2EBD500BDB7D1 /* on-build */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = "on-build"; sourceTree = "<group>"; };
 		494EFBF92DDF36B100C66063 /* RelativityKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RelativityKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		494EFC012DDF36B200C66063 /* RelativityKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RelativityKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		495EBF692F013ACE00B568B0 /* dconfiginfo */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = dconfiginfo; sourceTree = "<group>"; };
-		495EBF6A2F013ACE00B568B0 /* dswtcinfo */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = dswtcinfo; sourceTree = "<group>"; };
 		495EBF6C2F013ACE00B568B0 /* configure */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = configure; sourceTree = "<group>"; };
 		495EBF6D2F013ACE00B568B0 /* deconfigure */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = deconfigure; sourceTree = "<group>"; };
 		4960AB482DDCE34E00EB1410 /* Geometry.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Geometry.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -151,6 +149,16 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		490C46FD2F02A40E00B5EC1C /* .github */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = .github;
+			sourceTree = "<group>";
+		};
+		490C47012F02A40E00B5EC1C /* bin */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = bin;
+			sourceTree = "<group>";
+		};
 		4927F36D2DD25BC400E368D8 /* Deus */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Deus;
@@ -276,15 +284,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		495EBF6B2F013ACE00B568B0 /* bin */ = {
-			isa = PBXGroup;
-			children = (
-				495EBF692F013ACE00B568B0 /* dconfiginfo */,
-				495EBF6A2F013ACE00B568B0 /* dswtcinfo */,
-			);
-			path = bin;
-			sourceTree = "<group>";
-		};
 		4960AB6D2DDCE45D00EB1410 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -295,7 +294,6 @@
 		49FD31192DBFC9E2003CEAF9 = {
 			isa = PBXGroup;
 			children = (
-				495EBF6B2F013ACE00B568B0 /* bin */,
 				495EBF6C2F013ACE00B568B0 /* configure */,
 				495EBF6D2F013ACE00B568B0 /* deconfigure */,
 				49267D662EF1DA6C00FFA7AD /* .swift-version */,
@@ -321,6 +319,8 @@
 				49EF5D572DE20D36008AFB31 /* QuantumMechanicsTests.xctest */,
 				498FA26B2E2459DE0058A9C8 /* ObservationKit.framework */,
 				496813642E4643BA00B22450 /* ObservationKitTests.xctest */,
+				490C46FD2F02A40E00B5EC1C /* .github */,
+				490C47012F02A40E00B5EC1C /* bin */,
 			);
 			sourceTree = "<group>";
 		};
