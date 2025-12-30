@@ -97,6 +97,34 @@ enable_assertions() {
   source "$project_directory"/tooling/assert.sh
 }
 
+sym_link_xcswtc_to_dswtc() {
+  local original_xcswtc_path="$(cd "$(xcode-select --print-path)" && pwd -P)"/Toolchains/XcodeDefault.xctoolchain
+  if [ ! -d "$original_xcswtc_path" ]; then
+    echo "Xcode-bundled toolchain could not be sym-linked to that required by Deus because the \
+Xcode-bundled toolchain was not found." >&2
+    exit 1
+  fi
+  if [ -L "$original_xcswtc_path" ]; then
+    if [ "$(cd "$original_xcswtc_path" && pwd -P)" = "$(dswtcinfo path)" ]; then
+      echo 'Xcode-bundled toolchain is already sym-linked to that required by Deus. Skipping.'
+      return
+    fi
+    echo "Xcode-bundled toolchain is sym-linked to another file unknown by Deus. Will not be \
+sym-linked to that required by the project; skipping." >&2
+    exit 1
+  fi
+  echo 'Creating symlink from Xcode-bundled toolchain…'
+
+  # The symlink will live in the same directory as that of the original file; therefore, we rename
+  # the original file. Appending a UUID may be a stretch, but ensures that the original file is
+  # named uniquely.
+  renamed_xcswtc_path="$original_xcswtc_path · Renamed by Deus · $(uuidgen)"
+  sudo mv $original_xcswtc_path "$renamed_xcswtc_path"
+  sudo ln -s "$(dswtcinfo path)" $original_xcswtc_path
+
+  echo 'Sym-linked successfully.'
+}
+
 # dswtc stands for "Deus Swift toolchain" — the specific version of the Swift toolchain required by
 # this project. For more information, run `./bin/dswtcinfo help`.
 configure_dswtc() {
@@ -143,23 +171,7 @@ configure_dswtc() {
   if [ $sym_links_xcswtc_to_dswtc -eq 0 ]; then
     return
   fi
-  local original_xcswtc_path="$(cd "$(xcode-select --print-path)" && pwd -P)"/Toolchains/XcodeDefault.xctoolchain
-  if [ -L $original_xcswtc_path ]; then
-    return
-  elif [ ! -d $original_xcswtc_path ]; then
-    echo "Xcode-bundled toolchain was not sym-linked to that required by Deus because the \
-Xcode-bundled toolchain was not found." >&2
-    return
-  fi
-  echo 'Creating symlink from Xcode-bundled toolchain…'
-
-  # The symlink will live in the same directory as that of the original file; therefore, we rename
-  # the original file. Appending a UUID may be a stretch, but ensures that the original file is
-  # named uniquely.
-  renamed_xcswtc_path="$original_xcswtc_path · Renamed by Deus · $(uuidgen)"
-  sudo mv $original_xcswtc_path "$renamed_xcswtc_path"
-  sudo ln -s "$(dswtcinfo path)" $original_xcswtc_path
-  echo 'Sym-linked successfully.'
+  sym_link_xcswtc_to_dswtc
 }
 
 write_configuration_to_file() {
@@ -185,10 +197,10 @@ EOF
 error() {
   case "$option" in
     -*)
-      argument_name='option'
+      local argument_name='option'
       ;;
     *)
-      argument_name='argument'
+      local argument_name='argument'
       ;;
   esac
   cat << EOF

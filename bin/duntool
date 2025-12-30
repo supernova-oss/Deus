@@ -1,0 +1,83 @@
+#!/bin/sh
+# ===--------------------------------------------------------------------------------------------===
+# Copyright © 2025 Supernova. All rights reserved.
+#
+# This file is part of the Deus open-source project.
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+# General Public License as published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If not,
+# see https://www.gnu.org/licenses.
+# ===--------------------------------------------------------------------------------------------===
+
+# Utility for uninstalling tools on which Deus depends.
+
+argument="$(echo "$@" | xargs)"
+
+print_help() {
+  cat << EOF
+OVERVIEW: Uninstaller of tools used by Deus.
+
+USAGE: duntool <tool>
+
+TOOLS:
+  swiftly                 Uninstall the official Swift toolchain manager from the system.
+
+OPTIONS:
+  -h, --help:             Provide assistance as to how to utilize this command.
+EOF
+}
+
+uninstall_swiftly() {
+  echo 'Uninstalling…'
+  [ -f "$swiftly_executable_path" ] && ~/.swiftly/bin/swiftly self-uninstall 2>/dev/null && return
+
+  # Not having returned up until this point denotes that `swiftly self-uninstall` failed; we will
+  # have to, then, uninstall it manually, following the steps documented at
+  # https://github.com/swiftlang/swiftly/blob/20ceb4748fd55a7e0574cf426b70f978a2636418/README.md#uninstalling-swiftly.
+  echo 'Tried to uninstall via `self-uninstall`; did not work. Uninstalling manually…'
+  local escaped_user_directory="${HOME//\//\\/}"
+  for filename in '.bash_profile' '.profile' '.zprofile' 'fish/conf.d'; do
+    [ -f ~/"$filename" ] || continue
+    echo "Removing modifications by Swiftly at $(echo ~/$filename)…"
+    echo "$(awk                                                                                                                                                                                                                            \
+      -v escaped_user_directory="$escaped_user_directory"                                                                                                                                                                                  \
+      '/^[[:space:]]*# Added by swiftly[[:space:]]*$/ { getline next_line; if (next_line ~ "^[[:space:]]*\\.[[:space:]]+" escaped_user_directory "/\\.swiftly/env\\.sh[[:space:]]*$") { next }; print; print next_line; next }; { print }' \
+      ~/"$filename")"                                                                                                                                                                                                                      \
+      >~/"$filename"
+  done
+  [ -d ~/.swiftly ] && rm -r ~/.swiftly
+  echo 'Uninstalled.'
+}
+
+error() {
+  case "$argument" in
+    -*)
+      local description='unexpected option'
+      ;;
+    *)
+      local description='unknown tool'
+      ;;
+  esac
+  cat << EOF
+Error: $description '$argument'.
+Usage: duntool
+  See 'duntool --help' for more information.
+EOF
+  exit 1
+}
+
+set -e
+if [ -z "$argument" ] || [ "$argument" = '-h' ] || [ "$argument" = '--help' ]; then
+  print_help
+elif [ "$argument" = 'swiftly' ]; then
+  uninstall_swiftly
+else
+  error
+fi

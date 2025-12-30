@@ -61,6 +61,7 @@ prepare_binaries_for_execution() {
   local binaries_path="$project_directory"/bin
   export PATH="$binaries_path":$PATH
   chmod +x "$binaries_path"/dconfiginfo
+  chmod +x "$binaries_path"/duntool
 }
 
 error_on_configuration_file_absence() {
@@ -69,7 +70,7 @@ error_on_configuration_file_absence() {
 }
 
 was_modified_after_configuration() {
-  if [ $(stat -f %m -t %s "$1") -gt $(dconfiginfo timestamp) ]; then
+  if [ "$(stat -f %m -t %s "$1")" -gt $(dconfiginfo timestamp) ]; then
     echo 1
   else
     echo 0
@@ -130,25 +131,7 @@ uninstall_swiftly() {
     echo "$pre_configuration_installation_message"
     return
   fi
-  echo 'Uninstalling…'
-  [ -f "$swiftly_executable_path" ] && ~/.swiftly/bin/swiftly self-uninstall 2>/dev/null && return
-
-  # Not having returned up until this point denotes that `swiftly self-uninstall` failed; we will
-  # have to, then, uninstall it manually, following the steps documented at
-  # https://github.com/swiftlang/swiftly/blob/20ceb4748fd55a7e0574cf426b70f978a2636418/README.md#uninstalling-swiftly.
-  echo 'Tried to uninstall via `self-uninstall`; did not work. Uninstalling manually…'
-  local escaped_user_directory="${HOME//\//\\/}"
-  for filename in '.bash_profile' '.profile' '.zprofile' 'fish/conf.d'; do
-    [ -f ~/"$filename" ] || continue
-    echo "Removing modifications by Swiftly at $(echo ~/$filename)…"
-    echo "$(awk                                                                                                                                                                                                                            \
-      -v escaped_user_directory="$escaped_user_directory"                                                                                                                                                                                  \
-      '/^[[:space:]]*# Added by swiftly[[:space:]]*$/ { getline next_line; if (next_line ~ "^[[:space:]]*\\.[[:space:]]+" escaped_user_directory "/\\.swiftly/env\\.sh[[:space:]]*$") { next }; print; print next_line; next }; { print }' \
-      ~/"$filename")"                                                                                                                                                                                                                      \
-      >~/"$filename"
-  done
-  [ -d ~/.swiftly ] && rm -r ~/.swiftly
-  echo 'Uninstalled.'
+  duntool 'swiftly'
 }
 
 remove_configuration_file() {
@@ -158,10 +141,10 @@ remove_configuration_file() {
 error() {
   case "$option" in
     -*)
-      argument_name='option'
+      local argument_name='option'
       ;;
     *)
-      argument_name='argument'
+      local argument_name='argument'
       ;;
   esac
   cat << EOF
