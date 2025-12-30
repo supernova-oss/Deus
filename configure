@@ -161,7 +161,7 @@ configure_dswtc() {
   if [ $sym_links_xcswtc_to_dswtc -eq 0 ]; then
     return
   fi
-  local original_xcswtc_path=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain
+  local original_xcswtc_path="$(xcode-select --print-path)"/Toolchains/XcodeDefault.xctoolchain
   if [ -L $original_xcswtc_path ]; then
     return
   elif [ ! -d $original_xcswtc_path ]; then
