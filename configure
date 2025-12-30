@@ -56,23 +56,6 @@ $(print_overview)
 EOF
 }
 
-error() {
-  case "$option" in
-    -*)
-      argument_name='option'
-      ;;
-    *)
-      argument_name='argument'
-      ;;
-  esac
-  cat << EOF
-Error: unexpected $argument_name '$option'.
-Usage: ./configure <option>
-  See './configure --help' for more information.
-EOF
-  exit 1
-}
-
 prepare_binaries_for_execution() {
   local binaries_path="$project_directory"/bin
   export PATH="$binaries_path":$PATH
@@ -197,6 +180,23 @@ EOF
   "wasSwiftlyPreviouslyInstalled": $was_swiftly_previously_installed
 }
 EOF
+}
+
+error() {
+  case "$option" in
+    -*)
+      argument_name='option'
+      ;;
+    *)
+      argument_name='argument'
+      ;;
+  esac
+  cat << EOF
+Error: unexpected $argument_name '$option'.
+Usage: ./configure
+  See './configure --help' for more information.
+EOF
+  exit 1
 }
 
 set -e
