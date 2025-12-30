@@ -43,7 +43,7 @@ USAGE: ./deconfigure
 
 OPTIONS:
   -h, --help                      Provide assistance as to how to utilize this command.
-  --xcswtc-to-dswtc-symlink-only  Removes the symlink from the Xcode-bundled toolchain to that \
+  --xcswtc-to-dswtc-symlink-only  Remove the symlink from the Xcode-bundled toolchain to that \
 required by Deus, maintaining every other modification resulted from the previous configuration. \
 The last call to ./configure must have had the --sym-link-xcswtc-to-dswtc option passed into it; \
 otherwise, deconfiguration with this option will fail.
@@ -76,7 +76,7 @@ was_modified_after_configuration() {
   fi
 }
 
-remove_sym_link_from_xcswtc_to_dswtc() {
+remove_symlink_from_xcswtc_to_dswtc() {
   local is_standalone=$1
   local renamed_xcswtc_path="$(dconfiginfo 'renamedXcswtcPath')"
   local symlink_path="$(cd "$(xcode-select --print-path)" && pwd -P)"/Toolchains/XcodeDefault.xctoolchain
@@ -96,7 +96,7 @@ remove_sym_link_from_xcswtc_to_dswtc() {
 
 uninstall_dswtc() {
   echo '=== SWIFT TOOLCHAIN UNINSTALLATION ==='
-  remove_sym_link_from_xcswtc_to_dswtc 0 || :
+  remove_symlink_from_xcswtc_to_dswtc 0 || :
   if ! dswtcinfo path &>/dev/null; then
     echo 'Not installed. Skipping uninstallation.'
     return
@@ -191,7 +191,7 @@ elif [ "$option" = '--xcswtc-to-dswtc-symlink-only' ]; then
   print_titled_overview
   print_divider
   prepare_binaries_for_execution
-  remove_sym_link_from_xcswtc_to_dswtc 1
+  remove_symlink_from_xcswtc_to_dswtc 1
 else
   error
 fi
