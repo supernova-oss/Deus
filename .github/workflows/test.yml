@@ -45,6 +45,7 @@ jobs:
                CODE_SIGN_IDENTITY='-'                                                                 \
                build                                                                                  \
                test
+             ./deconfigure
       - name: Export result
         if: failure()
         uses: actions/upload-artifact@v6
