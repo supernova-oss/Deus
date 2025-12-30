@@ -33,20 +33,19 @@ print_help() {
   cat <<EOF
 $(print_overview)
 
-OPTIONS:
-  -h, --help
-    Provide assistance as to how to utilize this command.
+USAGE: ./configure
 
-  --sym-link-xcswtc-to-dswtc
-    Includes a symbolic link from the Xcode-bundled Swift toolchain to that required by Deus. This \
-is essential for continuous integration (CI) because of an issue with SwiftPM, which remains \
-unsolved as of December 29, 2025. For more details, see \
+OPTIONS:
+  -h, --help                  Provide assistance as to how to utilize this command.
+  --sym-link-xcswtc-to-dswtc  Includes a symbolic link from the Xcode-bundled Swift toolchain to \
+that required by Deus. This is essential for continuous integration (CI) because of an issue with \
+SwiftPM, which remains unsolved as of December 29, 2025. For more details, see \
 https://github.com/supernova-oss/Deus/pull/58#issuecomment-3696928780.
-    Given that the project builds successfuly when built from Xcode (as of Xcode 26.2), passing \
-this option in outside of CI is discouraged, as other tools depending on the Xcode-bundled Swift \
-toolchain may break or work unexpectedly due to incompatibility with the toolchain required by \
-Deus. If you do so, remember to execute \`./deconfigure --xcswtc-to-dswtc-symlink-only\` \
-afterward, which will remove such symlink.
+                              Given that the project builds successfuly when built from Xcode (as \
+of Xcode 26.2), passing this option in outside of CI is discouraged, as other tools depending on \
+the Xcode-bundled Swift toolchain may break or work unexpectedly due to incompatibility with the \
+toolchain required by Deus. If you do so, remember to execute \
+\`./deconfigure --xcswtc-to-dswtc-symlink-only\` afterward, which will remove such symlink.
 EOF
 }
 
@@ -161,12 +160,13 @@ configure_dswtc() {
   if [ $sym_links_xcswtc_to_dswtc -eq 0 ]; then
     return
   fi
-  local original_xcswtc_path="$(xcode-select --print-path)"/Toolchains/XcodeDefault.xctoolchain
+  local original_xcswtc_path="$(cd "$(xcode-select --print-path)" && pwd -P)"/Toolchains/XcodeDefault.xctoolchain
   if [ -L $original_xcswtc_path ]; then
     return
   elif [ ! -d $original_xcswtc_path ]; then
-    echo "Could not sym-link the Xcode-bundled toolchain to that required by Deus because the \
+    echo "Xcode-bundled toolchain was not sym-linked to that required by Deus because the \
 Xcode-bundled toolchain was not found." >&2
+    return
   fi
   echo 'Creating symlink from Xcode-bundled toolchain…'
 

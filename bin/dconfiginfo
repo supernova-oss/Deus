@@ -30,7 +30,7 @@ OVERVIEW: Reader of properties defined by the configuration script at the root o
 USAGE: dconfiginfo <subcommand>
 
 SUBCOMMANDS:
-  <property>              Unquoted name of any property of the configuration file.
+  <key>                   Unquoted key of a property of the configuration file.
   error                   Exit the program because of the configuration file not being present.
 EOF
 }
@@ -48,7 +48,19 @@ error_if_not_configured() {
 
 read_configuration() {
   error_if_not_configured
-  echo "$(jq ".$1" "$configuration_file_path")"
+
+  # Even though this function is only called when a valid key is passed in, its presence on the
+  # configuration JSON may be conditional, depending on some other state. For example:
+  # 'renamedXcswtcPath' is valid, but is only present when Deus is configured with the
+  # --sym-link-xcswtc-to-dswtc option.
+  if ! $(jq --arg key "$1" 'has($key)' "$configuration_file_path"); then
+    echo                                                                                           \
+      "\"$1\" is the key of a valid property, but such property is not in the configuration file." \
+      >&2
+    exit 1
+  fi
+
+  echo "$(jq --raw-output ".$1" "$configuration_file_path")"
 }
 
 error_because_of_unknown_argument() {
@@ -65,9 +77,10 @@ if [ -z "$subcommand" ] || [ "$subcommand" = 'help' ]; then
   print_help
 elif [ "$subcommand" = 'error' ]; then
   error_because_of_nonexisting_configuration_file
-elif [ "$subcommand" = 'wasDswtcPreviouslyInstalled' ]   \
-  || [ "$subcommand" = 'wasSwiftlyPreviouslyInstalled' ] \
-  || [ "$subcommand" = 'timestamp' ]; then
+elif [ "$subcommand" = 'renamedXcswtcPath' ]                   \
+  || [ "$subcommand" = 'timestamp' ]                           \
+  || [ "$subcommand" = 'wasDswtcPreviouslyInstalled' ]         \
+  || [ "$subcommand" = 'wasSwiftlyPreviouslyInstalled' ]; then
   read_configuration "$subcommand"
 else
   error_because_of_unknown_argument
