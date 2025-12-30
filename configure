@@ -202,7 +202,7 @@ EOF
 set -e
 if [ "$option" = '-h' ] || [ "$option" = '--help' ]; then
   print_help
-  return
+  exit 0
 fi
 if [ "$option" != '--sym-link-xcswtc-to-dswtc' ]; then
   sym_links_xcswtc_to_dswtc=0
