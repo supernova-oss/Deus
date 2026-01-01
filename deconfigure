@@ -21,47 +21,25 @@
 # Executing this without having configured the project or repeatedly is a no-op.
 
 project_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-option="$(echo "$@" | xargs)"
 configuration_file_path="$project_directory"/.configuration.json
 post_configuration_modification_message="Was modified after the project was configured. Skipping \
 uninstallation."
 pre_configuration_installation_message="Was installed prior to configuration of the project. \
 Skipping uninstallation."
-swiftly_executable_path=~/.swiftly/bin/swiftly
 
 print_overview() {
-  cat <<EOF
-OVERVIEW: Undoes the initial configuration of the project.
-EOF
-}
-
-print_help() {
-  cat <<EOF
-$(print_overview)
-
-USAGE: ./deconfigure
-
-OPTIONS:
-  -h, --help                      Provide assistance as to how to utilize this command.
-  --xcswtc-to-dswtc-symlink-only  Remove the symlink from the Xcode-bundled toolchain to that \
-required by Deus, maintaining every other modification resulted from the previous configuration. \
-The last call to ./configure must have had the --sym-link-xcswtc-to-dswtc option passed into it; \
-otherwise, deconfiguration with this option will fail.
-EOF
-}
-
-print_titled_overview() {
-  cat <<EOF
+  cat << EOF
 Deus: deconfigure
-$(print_overview)
+OVERVIEW: Undoes the initial configuration of the project.
 EOF
 }
 
 prepare_binaries_for_execution() {
   local binaries_path="$project_directory"/bin
   export PATH="$binaries_path":$PATH
-  chmod +x "$binaries_path"/dconfiginfo
-  chmod +x "$binaries_path"/duntool
+  for filename in dconfiginfo duntool; do
+    chmod +x "$binaries_path"/$filename
+  done
 }
 
 error_on_configuration_file_absence() {
@@ -70,43 +48,27 @@ error_on_configuration_file_absence() {
 }
 
 was_modified_after_configuration() {
-  if [ "$(stat -f %m -t %s "$1")" -gt $(dconfiginfo timestamp) ]; then
+  if [ $(stat -f %m -t %s "$1") -gt $(dconfiginfo timestamp) ]; then
     echo 1
   else
     echo 0
   fi
 }
 
-remove_symlink_from_xcswtc_to_dswtc() {
-  local is_standalone=$1
-  local renamed_xcswtc_path="$(dconfiginfo 'renamedXcswtcPath')"
-  local symlink_path="$(cd "$(xcode-select --print-path)" && pwd -P)"/Toolchains/XcodeDefault.xctoolchain
-  if [ $? -ne 0 ] || [ ! -L "$symlink_path" ]; then
-    [ $is_standalone -eq 1 ] || return
-    echo 'Xcode-bundled Swift toolchain was not sym-linked to that required by Deus. Aborting.' >&2
-    exit 1
-  fi
-  echo 'Removing symlink from Xcode-bundled toolchain…'
-  sudo rm -r "$symlink_path"
-  sudo mv "$renamed_xcswtc_path" "$symlink_path"
-  if [ $is_standalone -eq 1 ]; then
-    jq 'del(.renamedXcswtcPath)' "$configuration_file_path" >"$configuration_file_path"
-  fi
-  echo 'Symlink removed successfully.'
-}
-
 uninstall_dswtc() {
   echo '=== SWIFT TOOLCHAIN UNINSTALLATION ==='
-  remove_symlink_from_xcswtc_to_dswtc 0 || :
   if ! dswtcinfo path &>/dev/null; then
     echo 'Not installed. Skipping uninstallation.'
     return
   fi
+  echo 'Removing GNU linker interceptor…'
+  [ -f "$(dswtcinfo path)"/usr/bin/ld ] && rm "$(dswtcinfo path)"/usr/bin/ld
+  echo 'Removed GNU linker interceptor.'
   if [ $(was_modified_after_configuration "$(dswtcinfo path)") -eq 1 ]; then
     echo "$post_configuration_modification_message"
     return
   fi
-  if dconfiginfo 'wasDswtcPreviouslyInstalled' 1>/dev/null; then
+  if dconfiginfo wasDswtcPreviouslyInstalled 1>/dev/null; then
     echo "$pre_configuration_installation_message"
     return
   fi
@@ -127,55 +89,27 @@ uninstall_swiftly() {
     echo "$post_configuration_modification_message"
     return
   fi
-  if dconfiginfo 'wasSwiftlyPreviouslyInstalled' &>/dev/null; then
+  if dconfiginfo wasSwiftlyPreviouslyInstalled &>/dev/null; then
     echo "$pre_configuration_installation_message"
     return
   fi
-  duntool 'swiftly'
+  echo 'Uninstalling…'
+  duntool swiftly
+  echo 'Uninstalled.'
 }
 
 remove_configuration_file() {
   rm "$configuration_file_path"
 }
 
-error() {
-  case "$option" in
-    -*)
-      local argument_name='option'
-      ;;
-    *)
-      local argument_name='argument'
-      ;;
-  esac
-  cat << EOF
-Error: unexpected $argument_name '$option'.
-Usage: ./deconfigure
-  See './deconfigure --help' for more information.
-EOF
-  exit 1
-}
-
 set -e
-if [ "$option" = '-h' ] || [ "$option" = '--help' ]; then
-  print_help
-  exit 0
-fi
-if [ -z "$option" ]; then
-  print_titled_overview
-  print_divider
-  prepare_binaries_for_execution
-  error_on_configuration_file_absence
-  uninstall_dswtc
-  print_divider
-  uninstall_swiftly
-  remove_configuration_file
-  print_divider
-elif [ "$option" = '--xcswtc-to-dswtc-symlink-only' ]; then
-  print_titled_overview
-  print_divider
-  prepare_binaries_for_execution
-  remove_symlink_from_xcswtc_to_dswtc 1
-else
-  error
-fi
+print_overview
+print_divider
+prepare_binaries_for_execution
+error_on_configuration_file_absence
+uninstall_dswtc
+print_divider
+uninstall_swiftly
+remove_configuration_file
+print_divider
 echo 'Done!'

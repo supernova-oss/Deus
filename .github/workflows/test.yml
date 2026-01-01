@@ -32,7 +32,7 @@ jobs:
       - name: Test
         run: |
              chmod +x configure
-             ./configure --sym-link-xcswtc-to-dswtc
+             ./configure
              export PATH="$(pwd -P)"/bin:$PATH
              mkdir .build
              xcodebuild                                                                               \
