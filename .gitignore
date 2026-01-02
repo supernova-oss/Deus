@@ -1,7 +1,8 @@
 .build/
+.vscode/
 /.configuration.json
+/QuantumMechanicsTests/Elementary/QuarkTests.swift
+/QuantumMechanicsTests/DiscretionTests.swift
+/QuantumMechanicsTests/MeasurementTests.swift
 /tooling/.venv/
-QuantumMechanicsTests/Elementary/QuarkTests.swift
-QuantumMechanicsTests/DiscretionTests.swift
-QuantumMechanicsTests/MeasurementTests.swift
 xcuserdata/
