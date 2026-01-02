@@ -1,4 +1,5 @@
 {
+  "indentConditionalCompilationBlocks": false,
   "lineBreakBeforeEachArgument": true,
   "lineBreakBetweenDeclarationAttributes": true,
   "multiElementCollectionTrailingCommas": false,

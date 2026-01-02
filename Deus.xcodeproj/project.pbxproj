@@ -143,8 +143,17 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				DiscretionTests.swift.gyb,
+				Elementary/QuarkTests.swift.gyb,
+				MeasurementTests.swift.gyb,
 			);
 			target = 49EF5D562DE20D36008AFB31 /* QuantumMechanicsTests */;
+		};
+		498F54242EDB2CFF00FB4D53 /* Exceptions for "QuantumMechanics" folder in "QuantumMechanics" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Measurement+Differentiable.swift.gyb",
+			);
+			target = 49EF5D4E2DE20D36008AFB31 /* QuantumMechanics */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -196,6 +205,9 @@
 		};
 		49EF5D502DE20D36008AFB31 /* QuantumMechanics */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				498F54242EDB2CFF00FB4D53 /* Exceptions for "QuantumMechanics" folder in "QuantumMechanics" target */,
+			);
 			path = QuantumMechanics;
 			sourceTree = "<group>";
 		};
