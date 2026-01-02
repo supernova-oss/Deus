@@ -117,6 +117,16 @@ fileprivate struct ${Self}Tests {
     #expect(converted.quantityInBaseUnit == initial.quantityInBaseUnit)
     #expect(converted.symbol == ${Self}.in(unitRepresentable.unit).symbol)
   }
+
+  #if canImport(_Differentiation)
+  @Test(arguments: ${measurements_expression})
+  func moves(_ initial: ${Self}) {
+    var moved = initial
+    moved.move(by: 2)
+    #expect(moved.quantityInBaseUnit == initial.quantityInBaseUnit + 2)
+    #expect(moved.symbol == initial.symbol)
+  }
+  #endif
 }
 
 % end
