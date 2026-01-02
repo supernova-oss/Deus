@@ -1,6 +1,6 @@
 // swift-tools-version: 6.2
 // ===-------------------------------------------------------------------------------------------===
-// Copyright © 2025 Supernova. All rights reserved.
+// Copyright © 2025–2026 Supernova. All rights reserved.
 //
 // This file is part of the Deus open-source project.
 //

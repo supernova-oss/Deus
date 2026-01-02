@@ -1,0 +1,24 @@
+{
+  "configurations": [
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:Deus}/on-build",
+      "name": "Debug on-build (on-build)",
+      "target": "on-build",
+      "configuration": "debug",
+      "preLaunchTask": "swift: Build Debug on-build (on-build)"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:Deus}/on-build",
+      "name": "Release on-build (on-build)",
+      "target": "on-build",
+      "configuration": "release",
+      "preLaunchTask": "swift: Build Release on-build (on-build)"
+    }
+  ]
+}
