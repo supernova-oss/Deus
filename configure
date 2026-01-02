@@ -106,6 +106,18 @@ configure_dswtc() {
   fi
   swiftly link "$(dswtcinfo version)" --assume-yes 1>/dev/null
   swiftly use "$(dswtcinfo version)" 1>/dev/null
+
+  # This is weird: neither dswtc nor toolchains posterior to it as of December 17, 2025 include the
+  # GNU linker (ld), which is required by SwiftPM for linking object files. As a workaround, we
+  # sym-link the ld of dswtc to that of the Xcode-bundled Swift toolchain.
+  #
+  # For more details on this issue, see https://github.com/supernova-oss/Deus/pull/58.
+  local ld_path="$(dswtcinfo path)"/usr/bin/ld
+  [ -f "$ld_path" ] && rm "$ld_path"
+  sudo ln -s                                                                      \
+    "$(xcode-select --print-path)"/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld \
+    "$ld_path"
+
   assert_eq                           \
     "$(swiftly use --print-location)" \
     "$(dswtcinfo path)"               \
