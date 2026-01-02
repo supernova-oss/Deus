@@ -1,0 +1,115 @@
+#!/bin/bash
+# ===--------------------------------------------------------------------------------------------===
+# Copyright © 2025 Supernova. All rights reserved.
+#
+# This file is part of the Deus open-source project.
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+# General Public License as published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If not,
+# see https://www.gnu.org/licenses.
+# ===--------------------------------------------------------------------------------------------===
+
+# This script undoes the configuration done by the configuration script at the root of the project.
+# 
+# Executing this without having configured the project or repeatedly is a no-op.
+
+project_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+configuration_file_path="$project_directory"/.configuration.json
+post_configuration_modification_message="Was modified after the project was configured. Skipping \
+uninstallation."
+pre_configuration_installation_message="Was installed prior to configuration of the project. \
+Skipping uninstallation."
+
+print_overview() {
+  cat << EOF
+Deus: deconfigure
+OVERVIEW: Undoes the initial configuration of the project.
+EOF
+}
+
+prepare_binaries_for_execution() {
+  local binaries_path="$project_directory"/bin
+  export PATH="$binaries_path":$PATH
+  for filename in dconfiginfo duntool; do
+    chmod +x "$binaries_path"/$filename
+  done
+}
+
+error_on_configuration_file_absence() {
+  [ -f "$configuration_file_path" ] && return
+  dconfiginfo error
+}
+
+was_modified_after_configuration() {
+  if [ $(stat -f %m -t %s "$1") -gt $(dconfiginfo timestamp) ]; then
+    echo 1
+  else
+    echo 0
+  fi
+}
+
+uninstall_dswtc() {
+  echo '=== SWIFT TOOLCHAIN UNINSTALLATION ==='
+  if ! dswtcinfo path &>/dev/null; then
+    echo 'Not installed. Skipping uninstallation.'
+    return
+  fi
+  echo 'Removing GNU linker interceptor…'
+  [ -f "$(dswtcinfo path)"/usr/bin/ld ] && rm "$(dswtcinfo path)"/usr/bin/ld
+  echo 'Removed GNU linker interceptor.'
+  if [ $(was_modified_after_configuration "$(dswtcinfo path)") -eq 1 ]; then
+    echo "$post_configuration_modification_message"
+    return
+  fi
+  if dconfiginfo wasDswtcPreviouslyInstalled 1>/dev/null; then
+    echo "$pre_configuration_installation_message"
+    return
+  fi
+  echo 'Uninstalling…'
+  [ -f "$swiftly_executable_path" ]                                             \
+    && "$swiftly_executable_path" uninstall --assume-yes "$(dswtcinfo version)" \
+    || rm -r "$(dswtcinfo path)"
+  echo 'Uninstalled.'
+}
+
+print_divider() {
+  echo ''
+}
+
+uninstall_swiftly() {
+  echo '=== SWIFTLY UNINSTALLATION ==='
+  if [ $(was_modified_after_configuration ~/.swiftly) -eq 1 ]; then
+    echo "$post_configuration_modification_message"
+    return
+  fi
+  if dconfiginfo wasSwiftlyPreviouslyInstalled &>/dev/null; then
+    echo "$pre_configuration_installation_message"
+    return
+  fi
+  echo 'Uninstalling…'
+  duntool swiftly
+  echo 'Uninstalled.'
+}
+
+remove_configuration_file() {
+  rm "$configuration_file_path"
+}
+
+set -e
+print_overview
+print_divider
+prepare_binaries_for_execution
+error_on_configuration_file_absence
+uninstall_dswtc
+print_divider
+uninstall_swiftly
+remove_configuration_file
+print_divider
+echo 'Done!'

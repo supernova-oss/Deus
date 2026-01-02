@@ -20,8 +20,8 @@ import Geometry
 
 /// Closure whose signature matches that of the
 /// ``TimeLapseListener/timeDidElapse(on:from:after:towards:)`` callback.
-public typealias TimeDidElapse = (Clock, _ start: Duration, _ previous: Duration?, _ end: Duration)
-  async -> Void
+public typealias TimeDidElapse =
+  @Sendable (Clock, _ start: Duration, _ previous: Duration?, _ end: Duration) async -> Void
 
 /// Closure which is executed whenever a ``Clock`` is started.
 typealias ClockDidStart = () -> Void
@@ -211,7 +211,7 @@ public actor Clock {
   /// - Parameter listener: ``TimeLapseListener`` to be added.
   /// - Returns: ID of the `listener` with which it can be later removed.
   /// - SeeAlso: ``removeTimeLapseListener(identifiedAs:)``
-  public func addTimeLapseListener(_ listener: any AnyObject & TimeLapseListener) async -> UUID {
+  public func addTimeLapseListener(_ listener: some TimeLapseListener) async -> UUID {
     await Task { addAnyTimeLapseListener(.init(listener)) }.value
   }
 
@@ -220,8 +220,9 @@ public actor Clock {
   /// - Parameter timeDidElapse: Callback called whenever the time of this ``Clock`` is elapsed.
   /// - Returns: ID of the ``TimeLapseListener`` with which it can be later removed.
   /// - SeeAlso: ``removeTimeLapseListener(identifiedAs:)``
-  public func addTimeLapseListener(_ timeDidElapse: @escaping @Sendable TimeDidElapse) async -> UUID
-  { await Task { addAnyTimeLapseListener(.init(timeDidElapse: timeDidElapse)) }.value }
+  public func addTimeLapseListener(_ timeDidElapse: @escaping TimeDidElapse) async -> UUID {
+    await Task { addAnyTimeLapseListener(.init(timeDidElapse: timeDidElapse)) }.value
+  }
 
   /// Removes a listener of lapses of time of this ``Clock``.
   ///
@@ -332,7 +333,7 @@ public actor Clock {
 }
 
 /// Listener of lapses of time of a ``Clock``.
-public protocol TimeLapseListener: AnyObject {
+public protocol TimeLapseListener: AnyObject, Sendable {
   /// Callback called after a lapse of time of the `clock`.
   ///
   /// - Parameters:
@@ -364,13 +365,13 @@ public protocol TimeLapseListener: AnyObject {
 ///
 /// - SeeAlso: ``Clock/addTimeLapseListener(_:)-2lfn4``
 /// - SeeAlso: ``Clock/removeTimeLapseListener(identifiedAs:)``
-private actor AnyTimeLapseListener: TimeLapseListener, Identifiable {
+private actor AnyTimeLapseListener: Identifiable, TimeLapseListener {
   let id: UUID
 
   /// Callback to which calls to ``timeDidElapse(from:after:to:toward)`` delegate.
   private(set) var timeDidElapse: TimeDidElapse
 
-  init(_ base: any AnyObject & TimeLapseListener) {
+  init(_ base: some TimeLapseListener) {
     id = (base as? any Identifiable)?.id as? UUID ?? UUID()
     timeDidElapse = base.timeDidElapse
   }

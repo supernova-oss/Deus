@@ -1,0 +1,97 @@
+#!/bin/bash
+# ===--------------------------------------------------------------------------------------------===
+# Copyright © 2025 Supernova. All rights reserved.
+#
+# This file is part of the Deus open-source project.
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+# General Public License as published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If not,
+# see https://www.gnu.org/licenses.
+# ===--------------------------------------------------------------------------------------------===
+
+# dswtc stands for "Deus Swift toolchain". Swift toolchains are a set of tools for documenting,
+# linking, compiling and debugging Swift sources. Deus requires a version of the Swift toolchain
+# which supports automatic differentiation for implementing quantum fields. dswtc is the Swift
+# toolchain whose version is that defined by the .swift-version file located at the root of the
+# project.
+#
+# This utility provides information about dswtc.
+
+subcommand="$(echo "$@" | xargs)"
+
+print_help() {
+  cat << EOF
+OVERVIEW: Provider of information about the specific Swift toolchain required by Deus (dswtc).
+
+USAGE: dswtcinfo <subcommand>
+
+SUBCOMMANDS:
+  id                      Output the identifier of dswtc as defined in its Info.plist.
+  help                    Provide assistance as to how to utilize this command.
+  path                    Print the absolute path of the package of dswtc.
+  version                 Show the version of toolchain.
+EOF
+}
+
+print_version() {
+  local project_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"/..
+  echo "$(cat "$project_directory"/.swift-version | xargs)"
+}
+
+print_expected_path() {
+  local version_name="$(print_version)"
+  local version_number="${version_name:0:3}"
+  local build_date="${version_name: -10}"
+  echo ~/Library/Developer/Toolchains/swift-"$version_number"-DEVELOPMENT-SNAPSHOT-"$build_date"-a.xctoolchain
+}
+
+error_if_not_installed() {
+  if [ -f ~/.swiftly/bin/swiftly ]                                                           \
+    && ~/.swiftly/bin/swiftly list | grep --max-count 1 --quiet "$(print_version)"           \
+    || [ -d "$(print_expected_path)" ]                                                       \
+    && [ ! -z "$(find "$(print_expected_path)" -maxdepth 1 -mindepth 1 2>/dev/null)" ]; then
+    return
+  fi
+  echo "dswtc is not installed. Run the configuration script at the root of the project or \
+install the $(print_version) version of the Swift toolchain manually." >&2
+  exit 1
+}
+
+print_path() {
+  error_if_not_installed
+  print_expected_path
+}
+
+print_id() {
+  error_if_not_installed
+  echo "$(defaults read "$(print_expected_path)"/Info CFBundleIdentifier)"
+}
+
+error() {
+  cat << EOF
+Error: unexpected argument '$subcommand'.
+Usage: dswtcinfo <subcommand>
+  See 'dswtcinfo help' for more information.
+EOF
+  exit 1
+}
+
+set -e
+if [ -z "$subcommand" ] || [ "$subcommand" = 'help' ]; then
+  print_help
+elif [ "$subcommand" = 'id' ]; then
+  print_id
+elif [ "$subcommand" = 'path' ]; then
+  print_path
+elif [ "$subcommand" = 'version' ]; then
+  print_version
+else
+  error
+fi

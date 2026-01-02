@@ -1,0 +1,154 @@
+#!/bin/bash
+# ===--------------------------------------------------------------------------------------------===
+# Copyright © 2025–2026 Supernova. All rights reserved.
+#
+# This file is part of the Deus open-source project.
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+# General Public License as published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If not,
+# see https://www.gnu.org/licenses.
+# ===--------------------------------------------------------------------------------------------===
+
+# This script performs the initial configuration of the environment for building and testing Deus
+# locally. It is recommended that it be run after the project is cloned and every time the Swift
+# toolchain in use is changed, given that the project relies on a specific development snapshot of
+# such toolchain.
+
+project_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+
+print_overview() {
+  cat << EOF
+Deus: configure
+OVERVIEW: Performs the initial configuration of the environment for building and testing the \
+project.
+EOF
+}
+
+prepare_binaries_for_execution() {
+  local binaries_path="$project_directory"/bin
+  export PATH="$binaries_path":$PATH
+  chmod +x deconfigure
+}
+
+configure_swiftly() {
+  echo '=== SWIFTLY ==='
+  echo 'Checking presence…'
+  if [ -f ~/.swiftly/bin/swiftly ] &>/dev/null; then
+    was_swiftly_previously_installed=true
+    echo 'Already installed. Skipping download and installation.'
+  else
+    was_swiftly_previously_installed=false
+    swiftly_package_path=~/Downloads/swiftly-"$(uuidgen)".pkg
+    echo 'Not downloaded. Downloading…'
+    curl                                                    \
+      --location                                            \
+      --output "$swiftly_package_path"                      \
+      https://download.swift.org/swiftly/darwin/swiftly.pkg \
+      2>/dev/null
+    echo 'Downloaded.'
+    echo 'Installing…'
+    installer -pkg "$swiftly_package_path" -target CurrentUserHomeDirectory 1>/dev/null
+    echo 'Installed.'
+    rm "$swiftly_package_path"
+  fi
+  echo 'Initializing…'
+  ~/.swiftly/bin/swiftly init --assume-yes --skip-install 1>/dev/null
+  source ~/.swiftly/env.sh
+  echo 'Initialized.'
+}
+
+print_divider() {
+  echo ''
+}
+
+enable_assertions() {
+  source "$project_directory"/tooling/assert.sh
+}
+
+# dswtc stands for "Deus Swift toolchain" — the specific version of the Swift toolchain required by
+# this project. For more information, run `./bin/dswtcinfo help`.
+configure_dswtc() {
+  echo '=== SWIFT TOOLCHAIN ==='
+  echo 'Checking installation…'
+  if dswtcinfo path &>/dev/null; then
+    was_dswtc_previously_installed=true
+    local swiftly_configuration_file_path=~/.swiftly/config.json
+    echo 'Already installed. Skipping installation.'
+
+    # Although dswtc is installed, in the event of Swiftly being uninstalled and installed again
+    # while dswtc remained present, the reinstalled version, as of 1.1.1, does not recognize dswtc
+    # as an installed toolchain. In these scenarios, we force Swiftly to consider dswtc as such by
+    # editing its configuration file.
+    if ! jq '.installedToolchains' "$swiftly_configuration_file_path" \
+      | xargs                                                         \
+      | tr -d '\n'                                                    \
+      | grep --max-count 1 --quiet "$(dswtcinfo version)"; then
+      echo 'Swiftly does not recognize it as an installed toolchain. Forcing recognition…'
+      echo "$(jq                                   \
+        --arg dswtc_version "$(dswtcinfo version)" \
+        '.installedToolchains += [$dswtc_version]' \
+        "$swiftly_configuration_file_path")"       \
+        >"$swiftly_configuration_file_path"
+      echo 'Forced recognition by Swiftly of dswtc.'
+    fi
+  else
+    was_dswtc_previously_installed=false
+    echo 'Not installed. Installing…'
+    swiftly install --assume-yes "$(dswtcinfo version)" 1>/dev/null
+    echo 'Installed.'
+  fi
+  swiftly link "$(dswtcinfo version)" --assume-yes 1>/dev/null
+  swiftly use "$(dswtcinfo version)" 1>/dev/null
+
+  # This is weird: neither dswtc nor toolchains posterior to it as of December 17, 2025 include the
+  # GNU linker (ld), which is required by SwiftPM for linking object files. As a workaround, we
+  # sym-link the ld of dswtc to that of the Xcode-bundled Swift toolchain.
+  #
+  # For more details on this issue, see https://github.com/supernova-oss/Deus/pull/58.
+  local ld_path="$(dswtcinfo path)"/usr/bin/ld
+  [ -f "$ld_path" ] && rm "$ld_path"
+  sudo ln -s                                                                      \
+    "$(xcode-select --print-path)"/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld \
+    "$ld_path"
+
+  assert_eq                           \
+    "$(swiftly use --print-location)" \
+    "$(dswtcinfo path)"               \
+    'Swiftly is not using dswtc.'
+  assert_eq                                                                     \
+    "$(swift --version 2>/dev/null | head -n 1)"                                \
+    'Apple Swift version 6.3-dev (LLVM 8322c7222063676, Swift d1735f66f43c37f)' \
+    'Version of Swift is not 6.3-dev.'
+  echo "Swiftly is using toolchain at $(dswtcinfo path)."
+}
+
+write_configuration_to_file() {
+  cat >"$project_directory"/.configuration.json <<EOF
+{
+  "_warning": "This file was generated automatically upon configuration and should be neither \
+modified nor deleted.",
+  "timestamp": $(date +"%s"),
+  "wasDswtcPreviouslyInstalled": $was_dswtc_previously_installed,
+  "wasSwiftlyPreviouslyInstalled": $was_swiftly_previously_installed
+}
+EOF
+}
+
+set -e
+print_overview
+print_divider
+prepare_binaries_for_execution
+enable_assertions
+configure_swiftly
+print_divider
+configure_dswtc
+write_configuration_to_file
+print_divider
+echo 'Done!'

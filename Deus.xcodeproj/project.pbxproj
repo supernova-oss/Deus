@@ -123,10 +123,13 @@
 /* Begin PBXFileReference section */
 		4921F2692DD4ECA900393B6F /* Deus.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Deus.xctestplan; sourceTree = "<group>"; };
 		4921F3192DD54F0B00393B6F /* .swift-format */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".swift-format"; sourceTree = "<group>"; };
+		49267D662EF1DA6C00FFA7AD /* .swift-version */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".swift-version"; sourceTree = "<group>"; };
 		4927F36C2DD25BC400E368D8 /* Deus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Deus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		492A77552EE2EBD500BDB7D1 /* on-build */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = "on-build"; sourceTree = "<group>"; };
 		494EFBF92DDF36B100C66063 /* RelativityKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RelativityKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		494EFC012DDF36B200C66063 /* RelativityKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RelativityKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		495EBF6C2F013ACE00B568B0 /* configure */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = configure; sourceTree = "<group>"; };
+		495EBF6D2F013ACE00B568B0 /* deconfigure */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = deconfigure; sourceTree = "<group>"; };
 		4960AB482DDCE34E00EB1410 /* Geometry.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Geometry.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4960AB502DDCE34E00EB1410 /* GeometryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GeometryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		496813642E4643BA00B22450 /* ObservationKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ObservationKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -146,6 +149,16 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		490C46FD2F02A40E00B5EC1C /* .github */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = .github;
+			sourceTree = "<group>";
+		};
+		490C47012F02A40E00B5EC1C /* bin */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = bin;
+			sourceTree = "<group>";
+		};
 		4927F36D2DD25BC400E368D8 /* Deus */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Deus;
@@ -281,6 +294,9 @@
 		49FD31192DBFC9E2003CEAF9 = {
 			isa = PBXGroup;
 			children = (
+				495EBF6C2F013ACE00B568B0 /* configure */,
+				495EBF6D2F013ACE00B568B0 /* deconfigure */,
+				49267D662EF1DA6C00FFA7AD /* .swift-version */,
 				492A77552EE2EBD500BDB7D1 /* on-build */,
 				4921F2692DD4ECA900393B6F /* Deus.xctestplan */,
 				4921F3192DD54F0B00393B6F /* .swift-format */,
@@ -303,6 +319,8 @@
 				49EF5D572DE20D36008AFB31 /* QuantumMechanicsTests.xctest */,
 				498FA26B2E2459DE0058A9C8 /* ObservationKit.framework */,
 				496813642E4643BA00B22450 /* ObservationKitTests.xctest */,
+				490C46FD2F02A40E00B5EC1C /* .github */,
+				490C47012F02A40E00B5EC1C /* bin */,
 			);
 			sourceTree = "<group>";
 		};
@@ -710,7 +728,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd on-build && swift run && cd ..\n";
+			shellScript = "export PATH=\"$SRCROOT/bin\":$PATH\ncd on-build && swift run --toolchain \"$(dswtcinfo path)\" && cd ..\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
