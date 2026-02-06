@@ -1,5 +1,5 @@
 // ===-------------------------------------------------------------------------------------------===
-// Copyright © 2025 Supernova. All rights reserved.
+// Copyright © 2026 Supernova. All rights reserved.
 //
 // This file is part of the Deus open-source project.
 //
@@ -15,27 +15,17 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Testing
+import CoreGraphics
 
-@testable import QuantumMechanics
-
-struct QuarkLikeTests {
-  @Suite("Charge")
-  struct ChargeTests {
-    @Test(
-      arguments: AnyQuarkLike.discretion.filter({ quarkLike in quarkLike.symbol.contains(#/u|c|t/#)
-      })
-    )
-    func chargeOfUpTypeQuarkIsTwoThirdsOfE(_ quarkLike: AnyQuarkLike) {
-      #expect(quarkLike.charge == .elementary(2 / 3))
-    }
-
-    @Test(
-      arguments: AnyQuarkLike.discretion.filter({ quarkLike in quarkLike.symbol.contains(#/d|s|b/#)
-      })
-    )
-    func chargeOfDownTypeQuarkIsNegativeOneThirdOfE(_ quarkLike: AnyQuarkLike) {
-      #expect(quarkLike.charge == .elementary(-1 / 3))
-    }
+extension CGPoint {
+  func direction(toward other: Self) -> CGVector {
+    var direction = CGVector(dx: x - other.x, dy: y - other.y)
+    direction.normalize()
+    return direction
   }
+}
+
+extension CGPoint: @retroactive AdditiveArithmetic {
+  public static func + (lhs: Self, rhs: Self) -> Self { .init(x: lhs.x + rhs.x, y: lhs.y + rhs.y) }
+  public static func - (lhs: Self, rhs: Self) -> Self { .init(x: lhs.x - rhs.x, y: lhs.y - rhs.y) }
 }

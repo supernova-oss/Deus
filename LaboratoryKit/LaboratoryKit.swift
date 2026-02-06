@@ -1,5 +1,5 @@
 // ===-------------------------------------------------------------------------------------------===
-// Copyright © 2025 Supernova. All rights reserved.
+// Copyright © 2026 Supernova. All rights reserved.
 //
 // This file is part of the Deus open-source project.
 //
@@ -14,28 +14,3 @@
 // You should have received a copy of the GNU General Public License along with this program. If
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
-
-import Testing
-
-@testable import QuantumMechanics
-
-struct QuarkLikeTests {
-  @Suite("Charge")
-  struct ChargeTests {
-    @Test(
-      arguments: AnyQuarkLike.discretion.filter({ quarkLike in quarkLike.symbol.contains(#/u|c|t/#)
-      })
-    )
-    func chargeOfUpTypeQuarkIsTwoThirdsOfE(_ quarkLike: AnyQuarkLike) {
-      #expect(quarkLike.charge == .elementary(2 / 3))
-    }
-
-    @Test(
-      arguments: AnyQuarkLike.discretion.filter({ quarkLike in quarkLike.symbol.contains(#/d|s|b/#)
-      })
-    )
-    func chargeOfDownTypeQuarkIsNegativeOneThirdOfE(_ quarkLike: AnyQuarkLike) {
-      #expect(quarkLike.charge == .elementary(-1 / 3))
-    }
-  }
-}

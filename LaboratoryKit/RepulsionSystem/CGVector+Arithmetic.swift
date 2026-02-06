@@ -1,5 +1,5 @@
 // ===-------------------------------------------------------------------------------------------===
-// Copyright © 2025 Supernova. All rights reserved.
+// Copyright © 2026 Supernova. All rights reserved.
 //
 // This file is part of the Deus open-source project.
 //
@@ -15,27 +15,24 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Testing
+import CoreGraphics
 
-@testable import QuantumMechanics
+extension CGVector {
+  var length: CGFloat { sqrt(dx * dx + dy * dy) }
 
-struct QuarkLikeTests {
-  @Suite("Charge")
-  struct ChargeTests {
-    @Test(
-      arguments: AnyQuarkLike.discretion.filter({ quarkLike in quarkLike.symbol.contains(#/u|c|t/#)
-      })
-    )
-    func chargeOfUpTypeQuarkIsTwoThirdsOfE(_ quarkLike: AnyQuarkLike) {
-      #expect(quarkLike.charge == .elementary(2 / 3))
-    }
+  mutating func normalize() {
+    guard length > 0 else { return }
+    dx /= length
+    dy /= length
+  }
+}
 
-    @Test(
-      arguments: AnyQuarkLike.discretion.filter({ quarkLike in quarkLike.symbol.contains(#/d|s|b/#)
-      })
-    )
-    func chargeOfDownTypeQuarkIsNegativeOneThirdOfE(_ quarkLike: AnyQuarkLike) {
-      #expect(quarkLike.charge == .elementary(-1 / 3))
-    }
+extension CGVector: @retroactive AdditiveArithmetic {
+  public static func + (lhs: Self, rhs: Self) -> Self {
+    .init(dx: lhs.dx + rhs.dx, dy: lhs.dy + rhs.dy)
+  }
+
+  public static func - (lhs: Self, rhs: Self) -> Self {
+    .init(dx: lhs.dx - rhs.dx, dy: lhs.dy - rhs.dy)
   }
 }

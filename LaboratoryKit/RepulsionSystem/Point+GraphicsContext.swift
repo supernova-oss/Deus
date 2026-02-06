@@ -1,5 +1,5 @@
 // ===-------------------------------------------------------------------------------------------===
-// Copyright © 2025 Supernova. All rights reserved.
+// Copyright © 2026 Supernova. All rights reserved.
 //
 // This file is part of the Deus open-source project.
 //
@@ -15,27 +15,31 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Testing
+import SwiftUI
 
-@testable import QuantumMechanics
+internal import Collections
 
-struct QuarkLikeTests {
-  @Suite("Charge")
-  struct ChargeTests {
-    @Test(
-      arguments: AnyQuarkLike.discretion.filter({ quarkLike in quarkLike.symbol.contains(#/u|c|t/#)
-      })
+extension GraphicsContext {
+  func draw(_ point: Point) {
+    var path = Path()
+    path.addArc(
+      center: point.center,
+      radius: point.radius,
+      startAngle: .zero,
+      endAngle: .radians(2 * .pi),
+      clockwise: true
     )
-    func chargeOfUpTypeQuarkIsTwoThirdsOfE(_ quarkLike: AnyQuarkLike) {
-      #expect(quarkLike.charge == .elementary(2 / 3))
-    }
+    path.closeSubpath()
+    fill(path, with: .color(point.color))
+    guard let opposite = point.opposite else { return }
+    drawRepulsionLine(from: point, to: opposite)
+  }
 
-    @Test(
-      arguments: AnyQuarkLike.discretion.filter({ quarkLike in quarkLike.symbol.contains(#/d|s|b/#)
-      })
-    )
-    func chargeOfDownTypeQuarkIsNegativeOneThirdOfE(_ quarkLike: AnyQuarkLike) {
-      #expect(quarkLike.charge == .elementary(-1 / 3))
-    }
+  private func drawRepulsionLine(from point: Point, to opposite: CGPoint) {
+    var path = Path()
+    path.move(to: point.center)
+    path.addLine(to: .init(x: opposite.x + point.diameter, y: opposite.y + point.diameter))
+    path.closeSubpath()
+    stroke(path, with: .color(.orange))
   }
 }
