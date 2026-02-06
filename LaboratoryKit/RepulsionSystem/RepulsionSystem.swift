@@ -15,15 +15,16 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
+import Combine
 import SwiftUI
 
 internal import Collections
 
 #Preview {
   RepulsionSystem(
-    populationCount: 60,
+    populationCount: 30,
     repulsionDistance: 20,
-    repulsionForce: 0.2
+    repulsionForce: 0.3
   )
 }
 

@@ -77,6 +77,7 @@ final class Point {
     move()
     other.opposite = position
     other.velocity -= direction
+    other.move()
   }
 
   private func move(boundTo bounds: CGRect) {
