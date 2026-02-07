@@ -20,7 +20,6 @@ import CoreGraphics
 extension CGPoint {
   func direction(toward other: Self) -> CGVector {
     var direction = CGVector(dx: x - other.x, dy: y - other.y)
-    direction.normalize()
     return direction
   }
 }

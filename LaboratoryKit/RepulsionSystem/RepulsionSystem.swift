@@ -20,7 +20,7 @@ import SwiftUI
 
 internal import Collections
 
-#Preview { RepulsionSystem(populationCount: 30, repulsionDistance: 20, repulsionForce: 0.3) }
+#Preview { RepulsionSystem(populationCount: 30, repulsionDistance: 50, repulsionForce: 0.005) }
 
 private struct RepulsionSystem: View {
   @State

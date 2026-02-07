@@ -47,8 +47,12 @@ final class RepulsiveBody {
   ) {
     move(boundTo: bounds)
     for repulsedBody in system {
-      let distance = position - repulsedBody.position
-      guard abs(distance.x) <= repulsionDistance && abs(distance.y) <= repulsionDistance else {
+      let distance = CGVector(
+        dx: position.x + radius - repulsedBody.position.x + repulsedBody.radius,
+        dy: position.y + radius - repulsedBody.position.y + repulsedBody.radius
+      )
+      .length
+      guard distance <= repulsionDistance else {
         repulsionPoint = nil
         continue
       }
@@ -58,12 +62,12 @@ final class RepulsiveBody {
 
   func contain(within bounds: CGRect) {
     guard
-      position.x - diameter <= bounds.minX || position.x + diameter >= bounds.maxX
-        || position.y - diameter <= bounds.minY || position.y + diameter >= bounds.maxY
+      position.x - diameter <= bounds.minX || position.x + radius >= bounds.maxX
+        || position.y - diameter <= bounds.minY || position.y + radius >= bounds.maxY
     else { return }
     velocity.dx *= -1
     velocity.dy *= -1
-    move()
+    move(boundTo: bounds)
   }
 
   private func repulse(_ other: RepulsiveBody, boundTo bounds: CGRect, by force: CGFloat) {
@@ -72,10 +76,10 @@ final class RepulsiveBody {
     direction.dy *= force
     repulsionPoint = other.position
     velocity += direction
-    move()
+    move(boundTo: bounds)
     other.repulsionPoint = position
     other.velocity -= direction
-    other.move()
+    other.move(boundTo: bounds)
   }
 
   private func move(boundTo bounds: CGRect) {
