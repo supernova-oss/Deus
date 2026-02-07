@@ -40,7 +40,8 @@ extension Step {
     var modifiedFilePaths = try await spawnSubprocessAndCapture(
       .git,
       ["diff", "--name-only"] + stagingAreaPresence.differentiationFlags
-    ).components(separatedBy: .newlines)
+    )
+    .components(separatedBy: .newlines)
     modifiedFilePaths.removeLast()
     return .init(
       modifiedFilePaths.map({ modifiedFilePath in

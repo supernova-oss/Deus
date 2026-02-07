@@ -24,7 +24,7 @@ struct QuarkLikeTests {
   struct ChargeTests {
     @Test(
       arguments: AnyQuarkLike.discretion.filter({ quarkLike in quarkLike.symbol.contains(#/u|c|t/#)
-      })
+        })
     )
     func chargeOfUpTypeQuarkIsTwoThirdsOfE(_ quarkLike: AnyQuarkLike) {
       #expect(quarkLike.charge == .elementary(2 / 3))
@@ -32,7 +32,7 @@ struct QuarkLikeTests {
 
     @Test(
       arguments: AnyQuarkLike.discretion.filter({ quarkLike in quarkLike.symbol.contains(#/d|s|b/#)
-      })
+        })
     )
     func chargeOfDownTypeQuarkIsNegativeOneThirdOfE(_ quarkLike: AnyQuarkLike) {
       #expect(quarkLike.charge == .elementary(-1 / 3))

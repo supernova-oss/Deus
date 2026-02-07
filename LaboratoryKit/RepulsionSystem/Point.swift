@@ -58,10 +58,8 @@ final class Point {
 
   func contain(within bounds: CGRect) {
     guard
-      position.x - diameter <= bounds.minX
-        || position.x + diameter >= bounds.maxX
-        || position.y - diameter <= bounds.minY
-        || position.y + diameter >= bounds.maxY
+      position.x - diameter <= bounds.minX || position.x + diameter >= bounds.maxX
+        || position.y - diameter <= bounds.minY || position.y + diameter >= bounds.maxY
     else { return }
     velocity.dx *= -1
     velocity.dy *= -1

@@ -205,7 +205,8 @@ actor ClockTests {
         await timeLapseListeners.map { listener in
           await Task { await clock.addTimeLapseListener(listener) }.value
         }
-      }.value
+      }
+      .value
       for id in ids { await clock.removeTimeLapseListener(identifiedAs: id) }
       await clock.advanceTime(by: .milliseconds(2), spacing: .linear)
       for listener in timeLapseListeners { #expect(listener.count == 0) }

@@ -20,13 +20,7 @@ import SwiftUI
 
 internal import Collections
 
-#Preview {
-  RepulsionSystem(
-    populationCount: 30,
-    repulsionDistance: 20,
-    repulsionForce: 0.3
-  )
-}
+#Preview { RepulsionSystem(populationCount: 30, repulsionDistance: 20, repulsionForce: 0.3) }
 
 private struct RepulsionSystem: View {
   @State
@@ -38,8 +32,7 @@ private struct RepulsionSystem: View {
   private var elapsedDate = Date.now
 
   private let timerPublisher =
-    Timer
-    .publish(
+    Timer.publish(
       every: NSApplication.shared.keyWindow?.screen?.displayUpdateGranularity ?? 1 / 60,
       on: .main,
       in: .default
@@ -55,11 +48,7 @@ private struct RepulsionSystem: View {
 
   private static let pointRadius: CGFloat = 5
 
-  init(
-    populationCount: Int,
-    repulsionDistance: CGFloat,
-    repulsionForce: CGFloat
-  ) {
+  init(populationCount: Int, repulsionDistance: CGFloat, repulsionForce: CGFloat) {
     self.points = .init(minimumCapacity: populationCount)
     self.populationCount = populationCount
     self.repulsionDistance = repulsionDistance
@@ -73,8 +62,7 @@ private struct RepulsionSystem: View {
         for point in points { context.draw(point) }
       }
       Text(Duration.seconds(elapsedDate.timeIntervalSince(startDate)).formatted())
-        .fontDesign(.monospaced)
-        .padding()
+        .fontDesign(.monospaced).padding()
         .background(.ultraThinMaterial, in: ButtonBorderShape.roundedRectangle)
         .padding([.trailing, .bottom])
     }

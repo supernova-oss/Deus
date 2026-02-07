@@ -36,10 +36,8 @@ struct SymmetryTests {
     @Test
     func fieldIsTransformedWhenRotatedByNonGroupIdentity() {
       #expect(
-        Complex(2, 4).u1(by: .radians(2)).isApproximatelyEqual(
-          to: Complex(-4.46, 0.15),
-          relativeTolerance: 0.01
-        )
+        Complex(2, 4).u1(by: .radians(2))
+          .isApproximatelyEqual(to: Complex(-4.46, 0.15), relativeTolerance: 0.01)
       )
     }
   }

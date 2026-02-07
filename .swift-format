@@ -1,4 +1,5 @@
 {
+  "lineBreakAroundMultilineExpressionChainComponents": true,
   "lineBreakBeforeEachArgument": true,
   "lineBreakBetweenDeclarationAttributes": true,
   "multiElementCollectionTrailingCommas": false,
@@ -6,6 +7,7 @@
   "reflowMultilineStringLiterals": {
     "always": {}
   },
+  "respectsExistingLineBreaks": false,
   "rules": {
     "AvoidRetroactiveConformances": false
   },
