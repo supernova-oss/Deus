@@ -40,7 +40,7 @@ private struct RepulsionSystem: View {
     .autoconnect()
 
   @State
-  private var points: OrderedSet<Point>
+  private var repulsiveBodies: OrderedSet<RepulsiveBody>
 
   private let populationCount: Int
   private let repulsionDistance: CGFloat
@@ -49,7 +49,7 @@ private struct RepulsionSystem: View {
   private static let pointRadius: CGFloat = 5
 
   init(populationCount: Int, repulsionDistance: CGFloat, repulsionForce: CGFloat) {
-    self.points = .init(minimumCapacity: populationCount)
+    self.repulsiveBodies = .init(minimumCapacity: populationCount)
     self.populationCount = populationCount
     self.repulsionDistance = repulsionDistance
     self.repulsionForce = repulsionForce
@@ -59,7 +59,7 @@ private struct RepulsionSystem: View {
     ZStack(alignment: .bottomTrailing) {
       Canvas { context, size in
         context.drawGrid(within: size)
-        for point in points { context.draw(point) }
+        for repulsiveBody in repulsiveBodies { context.draw(repulsiveBody) }
       }
       Text(Duration.seconds(elapsedDate.timeIntervalSince(startDate)).formatted())
         .fontDesign(.monospaced).padding()
@@ -69,22 +69,22 @@ private struct RepulsionSystem: View {
     .onGeometryChange(for: CGSize.self, of: { geometry in geometry.frame(in: .local).size }) {
       size in
       let bounds = CGRect(origin: .zero, size: size)
-      if points.isEmpty {
-        for _ in points.startIndex..<populationCount {
-          points.append(Self.generatePoint(boundTo: bounds))
+      if repulsiveBodies.isEmpty {
+        for _ in repulsiveBodies.startIndex..<populationCount {
+          repulsiveBodies.append(Self.generateRepulsiveBody(boundTo: bounds))
         }
       } else {
-        for point in points { point.contain(within: bounds) }
+        for repulsiveBody in repulsiveBodies { repulsiveBody.contain(within: bounds) }
       }
       self.bounds = bounds
     }
     .onReceive(timerPublisher) { date in
       elapsedDate += date.timeIntervalSince(elapsedDate)
       guard let bounds else { return }
-      for point in points {
-        point.move(
+      for repulsiveBody in repulsiveBodies {
+        repulsiveBody.move(
           boundTo: bounds,
-          in: points,
+          in: repulsiveBodies,
           repulsingFromDistanceOfAtLeast: repulsionDistance,
           repulsingBy: repulsionForce
         )
@@ -92,7 +92,7 @@ private struct RepulsionSystem: View {
     }
   }
 
-  private static func generatePoint(boundTo bounds: CGRect) -> Point {
+  private static func generateRepulsiveBody(boundTo bounds: CGRect) -> RepulsiveBody {
     .init(
       x: .random(in: bounds.minX...bounds.maxX),
       y: .random(in: bounds.minY...bounds.maxY),

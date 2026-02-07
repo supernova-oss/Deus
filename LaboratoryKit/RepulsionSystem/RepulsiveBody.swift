@@ -17,7 +17,7 @@
 
 import SwiftUI
 
-final class Point {
+final class RepulsiveBody {
   var center: CGPoint { .init(x: position.x + diameter, y: position.y + diameter) }
   var diameter: CGFloat { radius / 2 }
 
@@ -25,7 +25,7 @@ final class Point {
   let radius: CGFloat
 
   private(set) var position: CGPoint
-  private(set) var opposite: CGPoint?
+  private(set) var repulsionPoint: CGPoint?
 
   private var velocity: CGVector
 
@@ -41,18 +41,18 @@ final class Point {
 
   func move(
     boundTo bounds: CGRect,
-    in system: some Sequence<Point>,
+    in system: some Sequence<RepulsiveBody>,
     repulsingFromDistanceOfAtLeast repulsionDistance: CGFloat,
     repulsingBy repulsionForce: CGFloat
   ) {
     move(boundTo: bounds)
-    for point in system {
-      let distance = position - point.position
+    for repulsedBody in system {
+      let distance = position - repulsedBody.position
       guard abs(distance.x) <= repulsionDistance && abs(distance.y) <= repulsionDistance else {
-        opposite = nil
+        repulsionPoint = nil
         continue
       }
-      repulse(point, boundTo: bounds, by: repulsionForce)
+      repulse(repulsedBody, boundTo: bounds, by: repulsionForce)
     }
   }
 
@@ -66,14 +66,14 @@ final class Point {
     move()
   }
 
-  private func repulse(_ other: Point, boundTo bounds: CGRect, by force: CGFloat) {
+  private func repulse(_ other: RepulsiveBody, boundTo bounds: CGRect, by force: CGFloat) {
     var direction = position.direction(toward: other.position)
     direction.dx *= force
     direction.dy *= force
-    opposite = other.position
+    repulsionPoint = other.position
     velocity += direction
     move()
-    other.opposite = position
+    other.repulsionPoint = position
     other.velocity -= direction
     other.move()
   }
@@ -94,13 +94,16 @@ final class Point {
   }
 }
 
-extension Point: Equatable { static func == (lhs: Point, rhs: Point) -> Bool { lhs === rhs } }
+extension RepulsiveBody: Equatable {
+  static func == (lhs: RepulsiveBody, rhs: RepulsiveBody) -> Bool { lhs === rhs }
+}
 
-extension Point: Hashable {
+extension RepulsiveBody: Hashable {
   func hash(into hasher: inout Hasher) {
     ObjectIdentifier(self).hash(into: &hasher)
     position.hash(into: &hasher)
     velocity.hash(into: &hasher)
     radius.hash(into: &hasher)
+    repulsionPoint.hash(into: &hasher)
   }
 }

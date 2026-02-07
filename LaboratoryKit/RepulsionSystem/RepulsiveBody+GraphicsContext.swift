@@ -20,25 +20,27 @@ import SwiftUI
 internal import Collections
 
 extension GraphicsContext {
-  func draw(_ point: Point) {
+  func draw(_ body: RepulsiveBody) {
     var path = Path()
     path.addArc(
-      center: point.center,
-      radius: point.radius,
+      center: body.center,
+      radius: body.radius,
       startAngle: .zero,
       endAngle: .radians(2 * .pi),
       clockwise: true
     )
     path.closeSubpath()
-    fill(path, with: .color(point.color))
-    guard let opposite = point.opposite else { return }
-    drawRepulsionLine(from: point, to: opposite)
+    fill(path, with: .color(body.color))
+    guard let repulsionPoint = body.repulsionPoint else { return }
+    drawRepulsionLine(from: body, to: repulsionPoint)
   }
 
-  private func drawRepulsionLine(from point: Point, to opposite: CGPoint) {
+  private func drawRepulsionLine(from body: RepulsiveBody, to repulsionPoint: CGPoint) {
     var path = Path()
-    path.move(to: point.center)
-    path.addLine(to: .init(x: opposite.x + point.diameter, y: opposite.y + point.diameter))
+    path.move(to: body.center)
+    path.addLine(
+      to: .init(x: repulsionPoint.x + body.diameter, y: repulsionPoint.y + body.diameter)
+    )
     path.closeSubpath()
     stroke(path, with: .color(.orange))
   }
