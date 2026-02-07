@@ -66,7 +66,8 @@ struct Formatting: Step {
       swift-format lint -p -r -s \(projectURL.path())
       git add .
 
-      """.write(to: preCommitURL, atomically: true, encoding: .utf8)
+      """
+      .write(to: preCommitURL, atomically: true, encoding: .utf8)
     } catch { throw .unallowed(.write, fileURL: preCommitURL) }
     try await spawnSubprocess(.chmod, ["+x", preCommitURL.path()])
   }

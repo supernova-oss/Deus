@@ -1,5 +1,5 @@
 // ===-------------------------------------------------------------------------------------------===
-// Copyright © 2025 Supernova. All rights reserved.
+// Copyright © 2026 Supernova. All rights reserved.
 //
 // This file is part of the Deus open-source project.
 //
@@ -15,30 +15,24 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Numerics
-import Testing
+import CoreGraphics
 
-@testable import QuantumMechanics
+extension CGVector {
+  var length: CGFloat { sqrt(dx * dx + dy * dy) }
 
-struct SymmetryTests {
-  @Suite("U1")
-  struct U1Tests {
-    @Test
-    func fieldIsUntransformedWhenUnrotated() {
-      #expect(Complex(2, 4).u1(by: .zero) == Complex(2, 4))
-    }
+  mutating func normalize() {
+    guard length > 0 else { return }
+    dx /= length
+    dy /= length
+  }
+}
 
-    @Test(arguments: stride(from: 2, to: 64, by: 2).map { Angle.radians(.pi * $0) })
-    func fieldIsUntransformedUponFullTurn(of angle: Angle) {
-      #expect(Complex(2, 4).u1(by: angle).isApproximatelyEqual(to: Complex(2, 4)))
-    }
+extension CGVector: @retroactive AdditiveArithmetic {
+  public static func + (lhs: Self, rhs: Self) -> Self {
+    .init(dx: lhs.dx + rhs.dx, dy: lhs.dy + rhs.dy)
+  }
 
-    @Test
-    func fieldIsTransformedWhenRotatedByNonGroupIdentity() {
-      #expect(
-        Complex(2, 4).u1(by: .radians(2))
-          .isApproximatelyEqual(to: Complex(-4.46, 0.15), relativeTolerance: 0.01)
-      )
-    }
+  public static func - (lhs: Self, rhs: Self) -> Self {
+    .init(dx: lhs.dx - rhs.dx, dy: lhs.dy - rhs.dy)
   }
 }

@@ -40,18 +40,16 @@ struct RandomAccessCollectionChunkTests {
   @Test(arguments: [false, true])
   func chunksImpartially(allowsPartiality: Bool) {
     #expect(
-      [2, 4, 8, 16].chunked(into: 2, allowsPartiality: allowsPartiality).map { chunks in
-        .init(chunks)
-      } == [[2, 4], [8, 16]]
+      [2, 4, 8, 16].chunked(into: 2, allowsPartiality: allowsPartiality)
+        .map { chunks in .init(chunks) } == [[2, 4], [8, 16]]
     )
   }
 
   @Test
   func chunksPartially() {
     #expect(
-      [2, 4, 8, 16, 32, 64, 128, 256].chunked(into: 3, allowsPartiality: true).map({ chunks in
-        .init(chunks)
-      }) == [[2, 4, 8], [16, 32, 64], [128, 256]]
+      [2, 4, 8, 16, 32, 64, 128, 256].chunked(into: 3, allowsPartiality: true)
+        .map({ chunks in .init(chunks) }) == [[2, 4, 8], [16, 32, 64], [128, 256]]
     )
   }
 }

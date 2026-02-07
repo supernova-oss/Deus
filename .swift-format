@@ -1,4 +1,5 @@
 {
+  "lineBreakAroundMultilineExpressionChainComponents": true,
   "lineBreakBeforeEachArgument": true,
   "lineBreakBetweenDeclarationAttributes": true,
   "multiElementCollectionTrailingCommas": false,

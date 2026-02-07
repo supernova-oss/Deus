@@ -172,11 +172,12 @@ public actor Clock {
       case .linear:
         stride(from: timeLapse.lowerBound, through: timeLapse.upperBound, by: Duration.subtickScale)
       case .eased:
-        stride(from: 0.0, through: 1, by: 0.05).map { t in
-          .subticks(
-            Int(BezierCurve.eased[t].y * .init(timeLapse.upperBound.comprisableSubtickCount))
-          )
-        }
+        stride(from: 0.0, through: 1, by: 0.05)
+          .map { t in
+            .subticks(
+              Int(BezierCurve.eased[t].y * .init(timeLapse.upperBound.comprisableSubtickCount))
+            )
+          }
       }
     }
   }

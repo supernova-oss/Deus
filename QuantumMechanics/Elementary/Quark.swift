@@ -170,13 +170,15 @@ public struct AnyQuark: Discrete, Quark {
   /// ``Quark`` based on which this one was initialized.
   let base: any QuarkLike
 
-  public static let discretion = AnySingleColor.discretion.flatMap { color in
-    [
-      Self.init(UpQuark(colorLike: color)), .init(DownQuark(colorLike: color)),
-      .init(CharmQuark(colorLike: color)), .init(StrangeQuark(colorLike: color)),
-      .init(BottomQuark(colorLike: color)), .init(TopQuark(colorLike: color))
-    ]
-  }.sorted(by: <)
+  public static let discretion = AnySingleColor.discretion
+    .flatMap { color in
+      [
+        Self.init(UpQuark(colorLike: color)), .init(DownQuark(colorLike: color)),
+        .init(CharmQuark(colorLike: color)), .init(StrangeQuark(colorLike: color)),
+        .init(BottomQuark(colorLike: color)), .init(TopQuark(colorLike: color))
+      ]
+    }
+    .sorted(by: <)
 
   public let spin: Spin
   public let charge: ElectricCharge

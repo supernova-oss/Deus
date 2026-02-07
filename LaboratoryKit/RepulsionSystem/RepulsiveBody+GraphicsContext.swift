@@ -1,5 +1,5 @@
 // ===-------------------------------------------------------------------------------------------===
-// Copyright © 2025 Supernova. All rights reserved.
+// Copyright © 2026 Supernova. All rights reserved.
 //
 // This file is part of the Deus open-source project.
 //
@@ -15,30 +15,33 @@
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
 
-import Numerics
-import Testing
+import SwiftUI
 
-@testable import QuantumMechanics
+internal import Collections
 
-struct SymmetryTests {
-  @Suite("U1")
-  struct U1Tests {
-    @Test
-    func fieldIsUntransformedWhenUnrotated() {
-      #expect(Complex(2, 4).u1(by: .zero) == Complex(2, 4))
-    }
+extension GraphicsContext {
+  func draw(_ body: RepulsiveBody) {
+    var path = Path()
+    path.addArc(
+      center: body.center,
+      radius: body.radius,
+      startAngle: .zero,
+      endAngle: .radians(2 * .pi),
+      clockwise: true
+    )
+    path.closeSubpath()
+    fill(path, with: .color(body.color))
+    guard let repulsionPoint = body.repulsionPoint else { return }
+    drawRepulsionLine(from: body, to: repulsionPoint)
+  }
 
-    @Test(arguments: stride(from: 2, to: 64, by: 2).map { Angle.radians(.pi * $0) })
-    func fieldIsUntransformedUponFullTurn(of angle: Angle) {
-      #expect(Complex(2, 4).u1(by: angle).isApproximatelyEqual(to: Complex(2, 4)))
-    }
-
-    @Test
-    func fieldIsTransformedWhenRotatedByNonGroupIdentity() {
-      #expect(
-        Complex(2, 4).u1(by: .radians(2))
-          .isApproximatelyEqual(to: Complex(-4.46, 0.15), relativeTolerance: 0.01)
-      )
-    }
+  private func drawRepulsionLine(from body: RepulsiveBody, to repulsionPoint: CGPoint) {
+    var path = Path()
+    path.move(to: body.center)
+    path.addLine(
+      to: .init(x: repulsionPoint.x + body.diameter, y: repulsionPoint.y + body.diameter)
+    )
+    path.closeSubpath()
+    stroke(path, with: .color(.orange))
   }
 }

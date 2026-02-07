@@ -53,21 +53,24 @@ struct RandomAccessCollectionPairTests {
       )
       #expect(
         targets
-          == pairs.chunked(into: 2, allowsPartiality: false).paired(to: { pair in
+          == pairs.chunked(into: 2, allowsPartiality: false)
+          .paired(to: { pair in
             var reversed = ArraySlice(pair)
             reversed.reverse()
             return reversed
-          }).joined().map(\.self)
+          })
+          .joined().map(\.self)
       )
     }
 
     @Test
     func returnsWhenPairMatchesThePredicate() {
       var testCount = 0
-      let containsPredicateMatchingPair = [2, 4, 8, 12].either({ first, second in
-        testCount += 1
-        return first == 8 && second == 12
-      })
+      let containsPredicateMatchingPair = [2, 4, 8, 12]
+        .either({ first, second in
+          testCount += 1
+          return first == 8 && second == 12
+        })
       #expect(testCount == 3)
       #expect(containsPredicateMatchingPair)
     }

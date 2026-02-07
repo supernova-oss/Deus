@@ -312,9 +312,8 @@ extension Measurement {
   /// - Parameter quantity: The quantity (e.g., ``quantityInCurrentUnit`` or ``quantityInBaseUnit``)
   ///   to be formatted.
   static func formatted(quantity: Double) -> String {
-    FloatingPointFormatStyle<Double>(locale: .autoupdatingCurrent).grouping(.automatic).precision(
-      .fractionLength(0...2)
-    ).format(quantity)
+    FloatingPointFormatStyle<Double>(locale: .autoupdatingCurrent).grouping(.automatic)
+      .precision(.fractionLength(0...2)).format(quantity)
   }
 }
 

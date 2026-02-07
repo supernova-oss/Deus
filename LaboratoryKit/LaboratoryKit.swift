@@ -1,5 +1,5 @@
 // ===-------------------------------------------------------------------------------------------===
-// Copyright © 2025 Supernova. All rights reserved.
+// Copyright © 2026 Supernova. All rights reserved.
 //
 // This file is part of the Deus open-source project.
 //
@@ -14,31 +14,3 @@
 // You should have received a copy of the GNU General Public License along with this program. If
 // not, see https://www.gnu.org/licenses.
 // ===-------------------------------------------------------------------------------------------===
-
-import Numerics
-import Testing
-
-@testable import QuantumMechanics
-
-struct SymmetryTests {
-  @Suite("U1")
-  struct U1Tests {
-    @Test
-    func fieldIsUntransformedWhenUnrotated() {
-      #expect(Complex(2, 4).u1(by: .zero) == Complex(2, 4))
-    }
-
-    @Test(arguments: stride(from: 2, to: 64, by: 2).map { Angle.radians(.pi * $0) })
-    func fieldIsUntransformedUponFullTurn(of angle: Angle) {
-      #expect(Complex(2, 4).u1(by: angle).isApproximatelyEqual(to: Complex(2, 4)))
-    }
-
-    @Test
-    func fieldIsTransformedWhenRotatedByNonGroupIdentity() {
-      #expect(
-        Complex(2, 4).u1(by: .radians(2))
-          .isApproximatelyEqual(to: Complex(-4.46, 0.15), relativeTolerance: 0.01)
-      )
-    }
-  }
-}
