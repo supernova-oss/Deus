@@ -18,7 +18,7 @@
 // ===-----------------------------------------------------------------------===
 
 import Testing
-@testable import RelativityKit
+@testable import RelativityCore
 
 @Suite("Duration+Strideable tests")
 struct DurationStrideableTests {

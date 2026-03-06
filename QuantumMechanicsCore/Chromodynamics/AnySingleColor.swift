@@ -134,8 +134,8 @@ extension SingleColorLike {
         fatalError(
           "Anticolor \(self) has an unknown counterpart: \(self.counterpart). "
             + "Conformance to the SingleColor protocol is restricted to the "
-            + "QuantumMechanics framework; introductions of custom types will "
-            + "likely result in errors such as this one."
+            + "QuantumMechanicsCore framework; introductions of custom types "
+            + "will likely result in errors such as this one."
         )
       }
     } else {

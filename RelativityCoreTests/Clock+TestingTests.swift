@@ -17,7 +17,7 @@
 // this program. If not, see https://www.gnu.org/licenses.
 // ===-----------------------------------------------------------------------===
 
-@testable import RelativityKit
+@testable import RelativityCore
 import Testing
 
 @Suite("Clock+Testing tests")

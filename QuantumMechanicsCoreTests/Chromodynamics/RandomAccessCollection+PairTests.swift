@@ -18,7 +18,7 @@
 // ===-----------------------------------------------------------------------===
 
 import Testing
-@testable import QuantumMechanics
+@testable import QuantumMechanicsCore
 
 @Suite("RandomAccessCollection+Pair tests")
 struct RandomAccessCollectionPairTests {

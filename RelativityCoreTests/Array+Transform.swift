@@ -17,7 +17,7 @@
 // this program. If not, see https://www.gnu.org/licenses.
 // ===-----------------------------------------------------------------------===
 
-@testable import RelativityKit
+@testable import RelativityCore
 
 extension Array where Element: Sendable {
   /// Produces an array containing the result of having applied the given

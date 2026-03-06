@@ -17,7 +17,7 @@
 // this program. If not, see https://www.gnu.org/licenses.
 // ===-----------------------------------------------------------------------===
 
-import Geometry
+import GeometryCore
 internal import Numerics
 
 // MARK: - U(1)

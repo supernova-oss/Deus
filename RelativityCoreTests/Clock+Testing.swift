@@ -17,7 +17,7 @@
 // this program. If not, see https://www.gnu.org/licenses.
 // ===-----------------------------------------------------------------------===
 
-@testable import RelativityKit
+@testable import RelativityCore
 
 /// Execute-around method (EAM) which produces an instance of a ``Clock``, calls
 /// the given closure and resets the ``Clock`` afterward. Prevents us from

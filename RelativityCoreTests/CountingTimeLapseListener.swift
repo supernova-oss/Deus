@@ -18,7 +18,7 @@
 // ===-----------------------------------------------------------------------===
 
 import Foundation
-@testable import RelativityKit
+@testable import RelativityCore
 
 /// ``TimeLapseListener`` which counts the amount of times it has been notified
 /// of ticks.

@@ -18,7 +18,7 @@
 // ===-----------------------------------------------------------------------===
 
 import Testing
-@testable import RelativityKit
+@testable import RelativityCore
 
 struct CountingTimeLapseListenerTests {
   @Test

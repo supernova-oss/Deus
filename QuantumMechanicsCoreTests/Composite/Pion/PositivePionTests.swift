@@ -18,7 +18,7 @@
 // ===-----------------------------------------------------------------------===
 
 import Testing
-@testable import QuantumMechanics
+@testable import QuantumMechanicsCore
 
 struct PositivePionTests {
   private let upQuark = UpQuark(colorLike: red)

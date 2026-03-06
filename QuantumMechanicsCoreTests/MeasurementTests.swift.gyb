@@ -54,7 +54,7 @@
 }%
 ${licensing.header()}
 
-@testable import QuantumMechanics
+@testable import QuantumMechanicsCore
 import Testing
 
 % for measurement_type in all_measurement_types:

@@ -18,7 +18,7 @@
 // ===-----------------------------------------------------------------------===
 
 import Testing
-@testable import QuantumMechanics
+@testable import QuantumMechanicsCore
 
 struct NegativePionTests {
   private let downQuark = DownQuark(colorLike: red)

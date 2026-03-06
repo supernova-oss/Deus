@@ -18,7 +18,7 @@
 // ===-----------------------------------------------------------------------===
 
 import Testing
-@testable import Geometry
+@testable import GeometryCore
 
 struct BezierCurveTests {
   @Test

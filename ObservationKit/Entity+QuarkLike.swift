@@ -19,7 +19,7 @@
 
 import AppKit
 import RealityKit
-import QuantumMechanics
+import QuantumMechanicsCore
 
 /// Shape of a quark-like: a sphere.
 @MainActor

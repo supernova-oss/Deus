@@ -34,7 +34,7 @@
 ${licensing.header()}
 
 import Testing
-@testable import QuantumMechanics
+@testable import QuantumMechanicsCore
 
 % for index, (flavor, mass) in enumerate(quarks.items()):
   % implementation = flavor.capitalize() + "Quark"

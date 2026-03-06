@@ -18,7 +18,7 @@
 // ===-----------------------------------------------------------------------===
 
 import Foundation
-import Geometry
+import GeometryCore
 
 /// Closure whose signature matches that of the
 /// ``TimeLapseListener/timeDidElapse(on:from:after:towards:)`` callback.

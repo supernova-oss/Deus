@@ -21,7 +21,7 @@
 /// conform.
 public protocol ColoredParticleLike: ParticleLike {
   /// The specific type of ``ColorLike``.
-  associatedtype ColorLike: QuantumMechanics.ColorLike
+  associatedtype ColorLike: QuantumMechanicsCore.ColorLike
 
   /// Measured transformation under the SU(3) symmetry.
   var colorLike: ColorLike { get }

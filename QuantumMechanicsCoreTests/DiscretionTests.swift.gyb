@@ -86,7 +86,7 @@
 ${licensing.header()}
 
 import Testing
-@testable import QuantumMechanics
+@testable import QuantumMechanicsCore
 
 % for index, erasure in enumerate(erasures):
   % for opposability in ['Like', '']:

@@ -19,7 +19,7 @@
 
 import Numerics
 import Testing
-@testable import QuantumMechanics
+@testable import QuantumMechanicsCore
 
 struct SymmetryTests {
   @Suite("U1")
