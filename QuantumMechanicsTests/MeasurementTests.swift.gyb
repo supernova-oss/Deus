@@ -1,20 +1,22 @@
 %{
-  # ===------------------------------------------------------------------------------------------===
-  # Copyright © 2025 Supernova. All rights reserved.
+  # ===----------------------------------------------------------------------===
+  # Copyright © 2025 Supernova
   #
   # This file is part of the Deus open-source project.
   #
-  # This program is free software: you can redistribute it and/or modify it under the terms of the
-  # GNU General Public License as published by the Free Software Foundation, either version 3 of the
-  # License, or (at your option) any later version.
+  # This program is free software: you can redistribute it and/or modify it
+  # under the terms of the GNU General Public License as published by the Free
+  # Software Foundation, either version 3 of the License, or (at your option)
+  # any later version.
   #
-  # This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-  # without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-  # the GNU General Public License for more details.
+  # This program is distributed in the hope that it will be useful, but WITHOUT
+  # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  # FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+  # more details.
   #
-  # You should have received a copy of the GNU General Public License along with this program. If
-  # not, see https://www.gnu.org/licenses.
-  # ===------------------------------------------------------------------------------------------===
+  # You should have received a copy of the GNU General Public License along with
+  # this program. If not, see https://www.gnu.org/licenses.
+  # ===----------------------------------------------------------------------===
 
   from os import environ
   from reflection import licensing
@@ -34,13 +36,14 @@
     return decapitalized
 
   def partialize(index, access):
-    """Converts a given Swift access from full, prefixed by the name of the enclosing type, into
-    partial, in which such prefix is omitted.
-    
-    These nomenclatures ("full and partial access") do not necessarily reflect that employed by
-    Swift in the documentation or the compiler. They are Deus-specific, and compose yet another type
-    of access: contextual. An array of contextual accesses contains, in order, a full access
-    followed by partial ones.
+    """Converts a given Swift access from full, prefixed by the name of the
+    enclosing type, into partial, in which such prefix is omitted.
+
+    These nomenclatures ("full and partial access") do not necessarily reflect
+    that employed by Swift in the documentation or the compiler. They are
+    Deus-specific, and compose yet another type of access: contextual. An array
+    of contextual accesses contains, in order, a full access followed by partial
+    ones.
 
     Keyword arguments:
       index -- Index of the access in the array.
@@ -120,10 +123,11 @@ fileprivate struct ${Self}Tests {
 }
 
 % end
-/// Representation of an SI unit in which a quantity of a ``Measurement`` may be. Exists merely for
-/// debugging purposes, allowing for displaying the actual name of the unit while testing rather
-/// than the string of the key path.
-private struct UnitRepresentable<MeasurementType>: @unchecked Sendable where MeasurementType: Measurement {
+/// Representation of an SI unit in which a quantity of a ``Measurement`` may
+/// be. Exists merely for debugging purposes, allowing for displaying the actual
+/// name of the unit while testing rather than the string of the key path.
+private struct UnitRepresentable<MeasurementType>: @unchecked Sendable
+where MeasurementType: Measurement {
   /// The unit of the specified ``Measurement`` being represented.
   let unit: MeasurementType.Unit
 }

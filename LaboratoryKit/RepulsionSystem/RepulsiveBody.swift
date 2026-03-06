@@ -1,24 +1,28 @@
-// ===-------------------------------------------------------------------------------------------===
-// Copyright © 2026 Supernova. All rights reserved.
+// ===-----------------------------------------------------------------------===
+// Copyright © 2026 Supernova
 //
 // This file is part of the Deus open-source project.
 //
-// This program is free software: you can redistribute it and/or modify it under the terms of the
-// GNU General Public License as published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
+// This program is free software: you can redistribute it and/or modify it under
+// the terms of the GNU General Public License as published by the Free Software
+// Foundation, either version 3 of the License, or (at your option) any later
+// version.
 //
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
-// even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-// General Public License for more details.
+// This program is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+// FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+// details.
 //
-// You should have received a copy of the GNU General Public License along with this program. If
-// not, see https://www.gnu.org/licenses.
-// ===-------------------------------------------------------------------------------------------===
+// You should have received a copy of the GNU General Public License along with
+// this program. If not, see https://www.gnu.org/licenses.
+// ===-----------------------------------------------------------------------===
 
 import SwiftUI
 
 final class RepulsiveBody {
-  var center: CGPoint { .init(x: position.x + diameter, y: position.y + diameter) }
+  var center: CGPoint {
+    .init(x: position.x + diameter, y: position.y + diameter)
+  }
   var diameter: CGFloat { radius / 2 }
 
   let color: Color
@@ -63,14 +67,19 @@ final class RepulsiveBody {
   func contain(within bounds: CGRect) {
     guard
       position.x - diameter <= bounds.minX || position.x + radius >= bounds.maxX
-        || position.y - diameter <= bounds.minY || position.y + radius >= bounds.maxY
+        || position.y - diameter <= bounds.minY
+        || position.y + radius >= bounds.maxY
     else { return }
     velocity.dx *= -1
     velocity.dy *= -1
     move(boundTo: bounds)
   }
 
-  private func repulse(_ other: RepulsiveBody, boundTo bounds: CGRect, by force: CGFloat) {
+  private func repulse(
+    _ other: RepulsiveBody,
+    boundTo bounds: CGRect,
+    by force: CGFloat
+  ) {
     var direction = position.direction(toward: other.position)
     direction.dx *= force
     direction.dy *= force
@@ -99,7 +108,9 @@ final class RepulsiveBody {
 }
 
 extension RepulsiveBody: Equatable {
-  static func == (lhs: RepulsiveBody, rhs: RepulsiveBody) -> Bool { lhs === rhs }
+  static func == (lhs: RepulsiveBody, rhs: RepulsiveBody) -> Bool {
+    lhs === rhs
+  }
 }
 
 extension RepulsiveBody: Hashable {

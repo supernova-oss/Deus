@@ -1,32 +1,37 @@
 %{
-  # ===------------------------------------------------------------------------------------------===
-  # Copyright © 2025 Supernova. All rights reserved.
+  # ===----------------------------------------------------------------------===
+  # Copyright © 2025 Supernova
   #
   # This file is part of the Deus open-source project.
   #
-  # This program is free software: you can redistribute it and/or modify it under the terms of the
-  # GNU General Public License as published by the Free Software Foundation, either version 3 of the
-  # License, or (at your option) any later version.
+  # This program is free software: you can redistribute it and/or modify it
+  # under the terms of the GNU General Public License as published by the Free
+  # Software Foundation, either version 3 of the License, or (at your option)
+  # any later version.
   #
-  # This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-  # without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-  # the GNU General Public License for more details.
+  # This program is distributed in the hope that it will be useful, but WITHOUT
+  # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  # FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+  # more details.
   #
-  # You should have received a copy of the GNU General Public License along with this program. If
-  # not, see https://www.gnu.org/licenses.
-  # ===------------------------------------------------------------------------------------------===
+  # You should have received a copy of the GNU General Public License along with
+  # this program. If not, see https://www.gnu.org/licenses.
+  # ===----------------------------------------------------------------------===
 
   from reflection import licensing
 
-  """Specifies each `Discrete`-conforming type that has an equatable wrapper by which such type gets
-  erased and, also, how to create their instances to be passed in as parameters of the test cases.
-  Each erasure is an object containing the following information:
+  """Specifies each `Discrete`-conforming type that has an equatable wrapper by
+  which such type gets erased and, also, how to create their instances to be
+  passed in as parameters of the test cases. Each erasure is an object
+  containing the following information:
 
   - name
-    The name of the non-erased base type, without the '-like' suffix (e.g., setting it as
-    'Particle' denotes that tests for `AnyParticleLike` and `AnyParticle` will be generated).
+    The name of the non-erased base type, without the '-like' suffix (e.g.,
+    setting it as 'Particle' denotes that tests for `AnyParticleLike` and
+    `AnyParticle` will be generated).
   - bases
-    Expressions of the instances whose types will be erased by their respective wrapper.
+    Expressions of the instances whose types will be erased by their respective
+    wrapper.
   """
   erasures = [{
     'name': 'SingleColor',
@@ -42,14 +47,14 @@
   })
 
   def instantiate(erasure, includes_counterparts):
-    """Returns a list containing the expressions of the erased instances of the type of the given
-    erasure, instantiated with each of the specified bases. If `includes_counterparts` is `True`,
-    the antimatter counterpart is appended alongside each expression of the instance of the erased
-    matter part.
+    """Returns a list containing the expressions of the erased instances of the
+    type of the given erasure, instantiated with each of the specified bases. If
+    `includes_counterparts` is `True`, the antimatter counterpart is appended
+    alongside each expression of the instance of the erased matter part.
 
     E.g., if the "Quark" erasure is at index 1,
-    `instantiate_erased(erasures[1], includes_counterparts=true)` returns each expression of
-    instantiation of erased quark and antiquark flavors:
+    `instantiate_erased(erasures[1], includes_counterparts=true)` returns each
+    expression of instantiation of erased quark and antiquark flavors:
 
     [
       'AnyQuarkLike(UpQuark(colorLike: red))',
@@ -63,8 +68,8 @@
       …
     ]
 
-    In the case in which `includes_counterparts` is `False`, antiquarks are not included and,
-    instead of `AnyQuarkLike`s, `AnyQuark`s are used as wrappers.
+    In the case in which `includes_counterparts` is `False`, antiquarks are not
+    included and, instead of `AnyQuarkLike`s, `AnyQuark`s are used as wrappers.
     """
     name = erasure['name']
     erased_type = f'Any{name}' + ('Like' if includes_counterparts else '')
@@ -81,7 +86,6 @@
 ${licensing.header()}
 
 import Testing
-
 @testable import QuantumMechanics
 
 % for index, erasure in enumerate(erasures):

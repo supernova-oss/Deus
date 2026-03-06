@@ -1,19 +1,21 @@
-// ===-------------------------------------------------------------------------------------------===
-// Copyright © 2025 Supernova. All rights reserved.
+// ===-----------------------------------------------------------------------===
+// Copyright © 2025 Supernova
 //
 // This file is part of the Deus open-source project.
 //
-// This program is free software: you can redistribute it and/or modify it under the terms of the
-// GNU General Public License as published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
+// This program is free software: you can redistribute it and/or modify it under
+// the terms of the GNU General Public License as published by the Free Software
+// Foundation, either version 3 of the License, or (at your option) any later
+// version.
 //
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
-// even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-// General Public License for more details.
+// This program is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+// FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+// details.
 //
-// You should have received a copy of the GNU General Public License along with this program. If
-// not, see https://www.gnu.org/licenses.
-// ===-------------------------------------------------------------------------------------------===
+// You should have received a copy of the GNU General Public License along with
+// this program. If not, see https://www.gnu.org/licenses.
+// ===-----------------------------------------------------------------------===
 
 @testable import RelativityKit
 import Testing
@@ -41,7 +43,10 @@ actor ClockTests {
     try await withClock { clock in
       await clock.setMode(.wall)
       try await Task.sleep(for: .microseconds(2))
-      #expect((Duration.microseconds(1)...(.microseconds(2))).contains(await clock.elapsedTime))
+      #expect(
+        (Duration.microseconds(1)...(.microseconds(2)))
+          .contains(await clock.elapsedTime)
+      )
     }
   }
 
@@ -68,14 +73,18 @@ actor ClockTests {
   ])
   func adds(timeLapseListeners: [CountingTimeLapseListener]) async throws {
     await withClock { clock in
-      for listener in timeLapseListeners { let _ = await clock.addTimeLapseListener(listener) }
+      for listener in timeLapseListeners {
+        let _ = await clock.addTimeLapseListener(listener)
+      }
       await clock.advanceTime(by: .milliseconds(2), spacing: .linear)
       for listener in timeLapseListeners { #expect(listener.count == 3) }
     }
   }
 
   @Test
-  func startTimePassedIntoTimeLapseListenerEqualsToThatElapsedUponAdvancementRequest() async throws
+  func
+    startTimePassedIntoTimeLapseListenerEqualsToThatElapsedUponAdvancementRequest()
+    async throws
   {
     await withClock { clock in
       await clock.advanceTime(by: .milliseconds(2), spacing: .linear)
@@ -87,7 +96,10 @@ actor ClockTests {
   }
 
   @Test
-  func previousTimeIsNilWhenTimeLapseIsNotifiedToListenerAfterClockIsJustStarted() async throws {
+  func
+    previousTimeIsNilWhenTimeLapseIsNotifiedToListenerAfterClockIsJustStarted()
+    async throws
+  {
     await withClock { clock in
       let listener = CountingTimeLapseListener()
       let _ = await clock.addTimeLapseListener(listener)
@@ -100,7 +112,9 @@ actor ClockTests {
   }
 
   @Test
-  func previousTimePassedIntoTimeLapseListenerEqualsToLastElapsedOneAtPause() async throws {
+  func previousTimePassedIntoTimeLapseListenerEqualsToLastElapsedOneAtPause()
+    async throws
+  {
     await withClock { clock in
       let listener = CountingTimeLapseListener()
       let _ = await clock.addTimeLapseListener(listener)
@@ -121,7 +135,10 @@ actor ClockTests {
   }
 
   @Test
-  func previousTimePassedIntoTimeLapseListenerIsOneMicrosecondLessThanCurrentOne() async throws {
+  func
+    previousTimePassedIntoTimeLapseListenerIsOneMicrosecondLessThanCurrentOne()
+    async throws
+  {
     await withClock { clock in
       let _ = await clock.addTimeLapseListener { clock, _, previous, _ in
         guard let previous else { return }
@@ -132,10 +149,14 @@ actor ClockTests {
   }
 
   @Test
-  func endTimePassedIntoTimeLapseListenerIsEqualToThatToWhichTheTimeIsAdvancedToward() async throws
+  func
+    endTimePassedIntoTimeLapseListenerIsEqualToThatToWhichTheTimeIsAdvancedToward()
+    async throws
   {
     await withClock { clock in
-      let _ = await clock.addTimeLapseListener { _, _, _, end in #expect(end == .milliseconds(2)) }
+      let _ = await clock.addTimeLapseListener { _, _, _, end in
+        #expect(end == .milliseconds(2))
+      }
       await clock.advanceTime(by: .milliseconds(2), spacing: .linear)
     }
   }
@@ -228,9 +249,13 @@ actor ClockTests {
     [CountingTimeLapseListener()],
     [CountingTimeLapseListener](count: 2) { _ in CountingTimeLapseListener() }
   ])
-  func removesUponReset(timeLapseListeners: [CountingTimeLapseListener]) async throws {
+  func removesUponReset(
+    timeLapseListeners: [CountingTimeLapseListener]
+  ) async throws {
     await withClock { clock in
-      for listener in timeLapseListeners { let _ = await clock.addTimeLapseListener(listener) }
+      for listener in timeLapseListeners {
+        let _ = await clock.addTimeLapseListener(listener)
+      }
       await clock.reset()
       await clock.start()
       await clock.advanceTime(by: .milliseconds(2), spacing: .linear)

@@ -2,7 +2,13 @@
   "lineBreakAroundMultilineExpressionChainComponents": true,
   "lineBreakBeforeEachArgument": true,
   "lineBreakBetweenDeclarationAttributes": true,
+  "lineLength": 80,
   "multiElementCollectionTrailingCommas": false,
+  "multilineTrailingCommaBehavior": "neverUsed",
+  "orderedImports": {
+    "includeConditionalImports": true,
+    "shouldGroupImports": true
+  },
   "prioritizeKeepingFunctionOutputTogether": true,
   "reflowMultilineStringLiterals": {
     "always": {}

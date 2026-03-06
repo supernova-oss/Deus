@@ -1,26 +1,27 @@
 #!/bin/bash
-# ===--------------------------------------------------------------------------------------------===
-# Copyright © 2025 Supernova. All rights reserved.
+# ===------------------------------------------------------------------------===
+# Copyright © 2025 Supernova
 #
 # This file is part of the Deus open-source project.
 #
-# This program is free software: you can redistribute it and/or modify it under the terms of the GNU
-# General Public License as published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
 #
-# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
-# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-# General Public License for more details.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License along with this program. If not,
-# see https://www.gnu.org/licenses.
-# ===--------------------------------------------------------------------------------------------===
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see https://www.gnu.org/licenses.
+# ===------------------------------------------------------------------------===
 
-# dswtc stands for "Deus Swift toolchain". Swift toolchains are a set of tools for documenting,
-# linking, compiling and debugging Swift sources. Deus requires a version of the Swift toolchain
-# which supports automatic differentiation for implementing quantum fields. dswtc is the Swift
-# toolchain whose version is that defined by the .swift-version file located at the root of the
-# project.
+# dswtc stands for "Deus Swift toolchain". Swift toolchains are a set of tools
+# for documenting, linking, compiling and debugging Swift sources. Deus requires
+# a version of the Swift toolchain which supports automatic differentiation for
+# implementing quantum fields. dswtc is the Swift toolchain whose version is
+# that defined by the .swift-version file located at the root of the project.
 #
 # This utility provides information about dswtc.
 
@@ -28,7 +29,8 @@ subcommand="$(echo "$@" | xargs)"
 
 print_help() {
   cat << EOF
-OVERVIEW: Provider of information about the specific Swift toolchain required by Deus (dswtc).
+OVERVIEW: Provider of information about the specific Swift toolchain required \
+by Deus (dswtc).
 
 USAGE: dswtcinfo <subcommand>
 
@@ -59,8 +61,9 @@ error_if_not_installed() {
     && [ ! -z "$(find "$(print_expected_path)" -maxdepth 1 -mindepth 1 2>/dev/null)" ]; then
     return
   fi
-  echo "dswtc is not installed. Run the configuration script at the root of the project or \
-install the $(print_version) version of the Swift toolchain manually." >&2
+  echo "dswtc is not installed. Run the configuration script at the root of \
+the project or install the $(print_version) version of the Swift toolchain \
+manually." >&2
   exit 1
 }
 

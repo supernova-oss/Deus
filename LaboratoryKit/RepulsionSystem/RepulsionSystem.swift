@@ -1,26 +1,34 @@
-// ===-------------------------------------------------------------------------------------------===
-// Copyright © 2026 Supernova. All rights reserved.
+// ===-----------------------------------------------------------------------===
+// Copyright © 2026 Supernova
 //
 // This file is part of the Deus open-source project.
 //
-// This program is free software: you can redistribute it and/or modify it under the terms of the
-// GNU General Public License as published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
+// This program is free software: you can redistribute it and/or modify it under
+// the terms of the GNU General Public License as published by the Free Software
+// Foundation, either version 3 of the License, or (at your option) any later
+// version.
 //
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
-// even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-// General Public License for more details.
+// This program is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+// FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+// details.
 //
-// You should have received a copy of the GNU General Public License along with this program. If
-// not, see https://www.gnu.org/licenses.
-// ===-------------------------------------------------------------------------------------------===
+// You should have received a copy of the GNU General Public License along with
+// this program. If not, see https://www.gnu.org/licenses.
+// ===-----------------------------------------------------------------------===
 
 import Combine
 import SwiftUI
 
 internal import Collections
 
-#Preview { RepulsionSystem(populationCount: 30, repulsionDistance: 50, repulsionForce: 0.005) }
+#Preview {
+  RepulsionSystem(
+    populationCount: 30,
+    repulsionDistance: 50,
+    repulsionForce: 0.005
+  )
+}
 
 private struct RepulsionSystem: View {
   @State
@@ -33,7 +41,8 @@ private struct RepulsionSystem: View {
 
   private let timerPublisher =
     Timer.publish(
-      every: NSApplication.shared.keyWindow?.screen?.displayUpdateGranularity ?? 1 / 60,
+      every: NSApplication.shared.keyWindow?.screen?.displayUpdateGranularity
+        ?? 1 / 60,
       on: .main,
       in: .default
     )
@@ -48,7 +57,11 @@ private struct RepulsionSystem: View {
 
   private static let pointRadius: CGFloat = 5
 
-  init(populationCount: Int, repulsionDistance: CGFloat, repulsionForce: CGFloat) {
+  init(
+    populationCount: Int,
+    repulsionDistance: CGFloat,
+    repulsionForce: CGFloat
+  ) {
     self.repulsiveBodies = .init(minimumCapacity: populationCount)
     self.populationCount = populationCount
     self.repulsionDistance = repulsionDistance
@@ -61,20 +74,26 @@ private struct RepulsionSystem: View {
         context.drawGrid(within: size)
         for repulsiveBody in repulsiveBodies { context.draw(repulsiveBody) }
       }
-      Text(Duration.seconds(elapsedDate.timeIntervalSince(startDate)).formatted())
-        .fontDesign(.monospaced).padding()
-        .background(.ultraThinMaterial, in: ButtonBorderShape.roundedRectangle)
-        .padding([.trailing, .bottom])
+      Text(
+        Duration.seconds(elapsedDate.timeIntervalSince(startDate)).formatted()
+      )
+      .fontDesign(.monospaced).padding()
+      .background(.ultraThinMaterial, in: ButtonBorderShape.roundedRectangle)
+      .padding([.trailing, .bottom])
     }
-    .onGeometryChange(for: CGSize.self, of: { geometry in geometry.frame(in: .local).size }) {
-      size in
+    .onGeometryChange(
+      for: CGSize.self,
+      of: { geometry in geometry.frame(in: .local).size }
+    ) { size in
       let bounds = CGRect(origin: .zero, size: size)
       if repulsiveBodies.isEmpty {
         for _ in repulsiveBodies.startIndex..<populationCount {
           repulsiveBodies.append(Self.generateRepulsiveBody(boundTo: bounds))
         }
       } else {
-        for repulsiveBody in repulsiveBodies { repulsiveBody.contain(within: bounds) }
+        for repulsiveBody in repulsiveBodies {
+          repulsiveBody.contain(within: bounds)
+        }
       }
       self.bounds = bounds
     }
@@ -92,7 +111,9 @@ private struct RepulsionSystem: View {
     }
   }
 
-  private static func generateRepulsiveBody(boundTo bounds: CGRect) -> RepulsiveBody {
+  private static func generateRepulsiveBody(
+    boundTo bounds: CGRect
+  ) -> RepulsiveBody {
     .init(
       x: .random(in: bounds.minX...bounds.maxX),
       y: .random(in: bounds.minY...bounds.maxY),

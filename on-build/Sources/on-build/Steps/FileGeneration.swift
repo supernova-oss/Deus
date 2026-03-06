@@ -1,44 +1,51 @@
-// ===-------------------------------------------------------------------------------------------===
-// Copyright © 2025 Supernova. All rights reserved.
+// ===-----------------------------------------------------------------------===
+// Copyright © 2025 Supernova
 //
 // This file is part of the Deus open-source project.
 //
-// This program is free software: you can redistribute it and/or modify it under the terms of the
-// GNU General Public License as published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
+// This program is free software: you can redistribute it and/or modify it under
+// the terms of the GNU General Public License as published by the Free Software
+// Foundation, either version 3 of the License, or (at your option) any later
+// version.
 //
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
-// even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-// General Public License for more details.
+// This program is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+// FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+// details.
 //
-// You should have received a copy of the GNU General Public License along with this program. If
-// not, see https://www.gnu.org/licenses.
-// ===-------------------------------------------------------------------------------------------===
+// You should have received a copy of the GNU General Public License along with
+// this program. If not, see https://www.gnu.org/licenses.
+// ===-----------------------------------------------------------------------===
 
 import Foundation
 import Subprocess
 import System
 
-/// ``Step`` in which Swift files are generated for their respective templates (files primarily
-/// identified by a `.swift.gyb` extension).
+/// ``Step`` in which Swift files are generated for their respective templates
+///  (files primarily identified by a `.swift.gyb` extension).
 struct FileGeneration: Step {
   let _fileManagerBox: _FileManagerBox
   let projectURL: URL
 
-  /// URLs of the templates whose Swift files which would have been generated from them are not
-  /// present. Their absence may be the result of prior manual deletion.
+  /// URLs of the templates whose Swift files which would have been generated
+  /// from them are not present. Their absence may be the result of prior manual
+  /// deletion.
   private var unpairedTemplateURLs: Set<URL> {
     get async throws(StepError) {
       let arguments = [".", "-name", "*.swift.gyb", "-type", "f"]
-      guard let found = try? await spawnSubprocessAndCapture(.find, arguments) else {
-        throw .missing(executable: .git)
-      }
+      guard let found = try? await spawnSubprocessAndCapture(.find, arguments)
+      else { throw .missing(executable: .find) }
       var templateURLsAsStrings = found.components(separatedBy: .newlines)
       templateURLsAsStrings.removeLast()
       return .init(
         try unsafeCallWithTypedThrowsCast(to: StepError.self) {
-          try templateURLsAsStrings.compactMap({ (templatePath: String) throws -> URL? in
-            guard fileManager.fileExists(atPath: "\(projectURL.path())/\(templatePath)") else {
+          try templateURLsAsStrings.compactMap({
+            (templatePath: String) throws -> URL? in
+            guard
+              fileManager.fileExists(
+                atPath: "\(projectURL.path())/\(templatePath)"
+              )
+            else {
               throw StepError.unexpectedOutput(
                 executable: .git,
                 arguments: arguments,
@@ -46,8 +53,11 @@ struct FileGeneration: Step {
                 reason: "The file does not exist."
               )
             }
-            let generatedFileURL = generatedFileURL(fromTemplateAtPath: templatePath)
-            guard !fileManager.fileExists(atPath: generatedFileURL.path()) else { return nil }
+            let generatedFileURL = generatedFileURL(
+              fromTemplateAtPath: templatePath
+            )
+            guard !fileManager.fileExists(atPath: generatedFileURL.path())
+            else { return nil }
             return .init(
               filePath: templatePath,
               directoryHint: .notDirectory,
@@ -62,9 +72,10 @@ struct FileGeneration: Step {
   /// ``projectURL`` as a `FilePath`.
   private let projectFilePath: FilePath
 
-  /// Names of the directories of Python packages under the `tooling` directory at the root of the
-  /// project. Each package included in this array will be pip-installed in the virtual environment
-  /// and, subsequently, accessible by every template file.
+  /// Names of the directories of Python packages under the `tooling` directory
+  /// at the root of the project. Each package included in this array will be
+  /// pip-installed in the virtual environment and, subsequently, accessible by
+  /// every template file.
   private static let pythonPackages = ["reflection"]
 
   init(fileManager: FileManager, projectURL: URL) {
@@ -79,30 +90,48 @@ struct FileGeneration: Step {
     try await generateFilesFromTemplates()
   }
 
-  /// Installs each Python package in the `tooling` directory at the root of the project which are
-  /// in the ``pythonPackages`` array. Each installation is performed parallel to each other within
-  /// a task group, with this function returning when all installations have finished successfully.
+  /// Installs each Python package in the `tooling` directory at the root of the
+  /// project which are in the ``pythonPackages`` array. Each installation is
+  /// performed parallel to each other within a task group, with this function
+  /// returning when all installations have finished successfully.
   private func installPythonPackages() async throws(StepError) {
     guard
       let enumerator = fileManager.enumerator(
-        at: .init(filePath: "tooling", directoryHint: .isDirectory, relativeTo: projectURL),
+        at: .init(
+          filePath: "tooling",
+          directoryHint: .isDirectory,
+          relativeTo: projectURL
+        ),
         includingPropertiesForKeys: [.pathKey],
-        options: [.producesRelativePathURLs, .skipsHiddenFiles, .skipsSubdirectoryDescendants]
+        options: [
+          .producesRelativePathURLs, .skipsHiddenFiles,
+          .skipsSubdirectoryDescendants
+        ]
       )
     else { return }
     let pip = Executable.name("\(projectURL.path())/tooling/.venv/bin/pip")
     try await unsafeCallWithTypedThrowsCast(to: StepError.self) {
       try await withThrowingTaskGroup { taskGroup in
-        for case let packageURLRelativeToToolingDirectory as URL in AnySequence(enumerator) {
-          guard packageURLRelativeToToolingDirectory.hasDirectoryPath else { continue }
-          let packageName = packageURLRelativeToToolingDirectory.lastPathComponent
+        for case let packageURLRelativeToToolingDirectory as URL in AnySequence(
+          enumerator
+        ) {
+          guard packageURLRelativeToToolingDirectory.hasDirectoryPath else {
+            continue
+          }
+          let packageName = packageURLRelativeToToolingDirectory
+            .lastPathComponent
           guard Self.pythonPackages.contains(packageName) else { continue }
-          taskGroup.addTask(name: "Installation of `\(packageName)` Python " + "package") {
+          taskGroup.addTask(
+            name: "Installation of `\(packageName)` Python " + "package"
+          ) {
             let packagePathRelativeToProjectDirectory =
               "tooling/\(packageURLRelativeToToolingDirectory.relativePath)"
             try await spawnSubprocess(
               pip,
-              ["install", "-r", "\(packagePathRelativeToProjectDirectory)/requirements.txt"]
+              [
+                "install", "-r",
+                "\(packagePathRelativeToProjectDirectory)/requirements.txt"
+              ]
             )
             try await spawnSubprocess(
               pip,
@@ -128,7 +157,9 @@ struct FileGeneration: Step {
               || templateURL.lastPathComponent.hasSuffix(".swift.gyb")
           else { continue }
           taskGroup.addTask {
-            let generatedFileURL = generatedFileURL(fromTemplateAtPath: templateURL.relativePath)
+            let generatedFileURL = generatedFileURL(
+              fromTemplateAtPath: templateURL.relativePath
+            )
             try await generateFile(from: templateURL, at: generatedFileURL)
             try await formatFile(at: generatedFileURL)
           }
@@ -141,53 +172,66 @@ struct FileGeneration: Step {
   /// Generates a file from a template.
   ///
   /// - Parameters:
-  ///   - templateURL: URL of the `.swift.gyb` file from which the file should be generated.
-  ///   - generatedFileURL: URL of the file to be generated. Expected to be the result of calling
-  ///     ``generatedFileURL(fromTemplateAtPath:)``.
-  private func generateFile(from templateURL: URL, at generatedFileURL: URL) async throws(StepError)
-  {
+  ///   - templateURL: URL of the `.swift.gyb` file from which the file should
+  ///     be generated.
+  ///   - generatedFileURL: URL of the file to be generated. Expected to be the
+  ///     result of calling ``generatedFileURL(fromTemplateAtPath:)``.
+  private func generateFile(
+    from templateURL: URL,
+    at generatedFileURL: URL
+  ) async throws(StepError) {
     try await spawnSubprocess(
       .name("\(projectURL.path())/tooling/.venv/bin/python3"),
       [
-        "tooling/gyb.py", "--line-directive", "", "-o", generatedFileURL.relativePath,
-        templateURL.path()
+        "tooling/gyb.py", "--line-directive", "", "-o",
+        generatedFileURL.relativePath, templateURL.path()
       ]
     )
   }
 
-  /// Rewrites the Swift file at the given URL, formatting it according to the configuration file at
-  /// the root of the project.
+  /// Rewrites the Swift file at the given URL, formatting it according to the
+  /// configuration file at the root of the project.
   ///
   /// - Parameters:
   ///   - fileURL: URL of the Swift file to be formatted.
   private func formatFile(at fileURL: URL) async throws(StepError) {
     let commonArguments = ["--parallel", "--recursive"]
-    try await spawnSubprocess(.swiftFormat, ["--in-place"] + commonArguments + ["."])
-    try await spawnSubprocess(.swiftFormat, ["lint"] + commonArguments + ["--strict", "."])
+    try await spawnSubprocess(
+      .swiftFormat,
+      ["--in-place"] + commonArguments + ["."]
+    )
+    try await spawnSubprocess(
+      .swiftFormat,
+      ["lint"] + commonArguments + ["--strict", "."]
+    )
   }
 
-  /// Produces the URL of a Swift file, relative to the ``projectURL``, which either will be or has
-  /// been generated for the template at the given URL. Guaranteeing that the `templateURL` is the
-  /// URL of a template is a responsibility of the caller; calling this function with a URL which
-  /// does not meet such criteria may produce a nonsensical URL.
+  /// Produces the URL of a Swift file, relative to the ``projectURL``, which
+  /// either will be or has been generated for the template at the given URL.
+  /// Guaranteeing that the `templateURL` is the URL of a template is a
+  /// responsibility of the caller; calling this function with a URL which does
+  /// not meet such criteria may produce a nonsensical URL.
   ///
-  /// - Parameter templatePath: Path of the template, relative to the ``projectURL``, from which the
-  ///   Swift file at the returned URL may be or has been generated.
-  private func generatedFileURL(fromTemplateAtPath templatePath: some StringProtocol) -> URL {
+  /// - Parameter templatePath: Path of the template, relative to the
+  ///   ``projectURL``, from which the Swift file at the returned URL may be or
+  ///   has been generated.
+  private func generatedFileURL(
+    fromTemplateAtPath templatePath: some StringProtocol
+  ) -> URL {
     let templateNameIndex =
       if let lastPathSeparatorIndex = templatePath.lastIndex(of: "/") {
         templatePath.index(after: lastPathSeparatorIndex)
       } else { templatePath.startIndex }
     var generatedFileName = templatePath[templateNameIndex...]
 
-    // Given the URL of a template, the last four characters of the name are of the ".gyb" substring
-    // of the ".swift.gyb" suffix.
+    // Given the URL of a template, the last four characters of the name are of
+    // the ".gyb" substring of the ".swift.gyb" suffix.
     generatedFileName.removeLast(4)
 
     let templateDirectoryPath = templatePath[..<templateNameIndex]
     return .init(
-      filePath:
-        "\(templateDirectoryPath)\(templateDirectoryPath.isEmpty ? "" : "/")\(generatedFileName)",
+      filePath: templateDirectoryPath
+        + (templateDirectoryPath.isEmpty ? "" : "/") + generatedFileName,
       directoryHint: .notDirectory,
       relativeTo: projectURL
     )
