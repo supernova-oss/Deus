@@ -208,6 +208,11 @@
 			path = LaboratoryKit;
 			sourceTree = "<group>";
 		};
+		49D988142F5B624E009F4A9B /* tooling */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = tooling;
+			sourceTree = "<group>";
+		};
 		49EF5D502DE20D36008AFB31 /* QuantumMechanics */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = QuantumMechanics;
@@ -345,6 +350,7 @@
 				490C46FD2F02A40E00B5EC1C /* .github */,
 				490C47012F02A40E00B5EC1C /* bin */,
 				49AAEB392F0822F600667191 /* LaboratoryKit.framework */,
+				49D988142F5B624E009F4A9B /* tooling */,
 			);
 			sourceTree = "<group>";
 		};
