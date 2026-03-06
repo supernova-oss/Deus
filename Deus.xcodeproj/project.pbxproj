@@ -7,18 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		494EFC152DDF36D700C66063 /* Geometry.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4960AB482DDCE34E00EB1410 /* Geometry.framework */; };
-		494EFC162DDF36D700C66063 /* Geometry.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4960AB482DDCE34E00EB1410 /* Geometry.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		494EFC152DDF36D700C66063 /* GeometryCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4960AB482DDCE34E00EB1410 /* GeometryCore.framework */; };
+		494EFC162DDF36D700C66063 /* GeometryCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4960AB482DDCE34E00EB1410 /* GeometryCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		496813682E4643BA00B22450 /* ObservationKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 498FA26B2E2459DE0058A9C8 /* ObservationKit.framework */; };
-		497244D82E4A616100481D5B /* Geometry.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4960AB482DDCE34E00EB1410 /* Geometry.framework */; };
-		497244D92E4A616100481D5B /* Geometry.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4960AB482DDCE34E00EB1410 /* Geometry.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		497244D82E4A616100481D5B /* GeometryCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4960AB482DDCE34E00EB1410 /* GeometryCore.framework */; };
+		497244D92E4A616100481D5B /* GeometryCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4960AB482DDCE34E00EB1410 /* GeometryCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		497244DE2E4A618100481D5B /* Numerics in Frameworks */ = {isa = PBXBuildFile; productRef = 497244DD2E4A618100481D5B /* Numerics */; };
 		498FA27E2E2459DE0058A9C8 /* ObservationKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 498FA26B2E2459DE0058A9C8 /* ObservationKit.framework */; };
 		498FA27F2E2459DE0058A9C8 /* ObservationKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 498FA26B2E2459DE0058A9C8 /* ObservationKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		498FA2F52E2591E80058A9C8 /* QuantumMechanics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EF5D4F2DE20D36008AFB31 /* QuantumMechanics.framework */; };
-		498FA2F62E2591E80058A9C8 /* QuantumMechanics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 49EF5D4F2DE20D36008AFB31 /* QuantumMechanics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		498FA2F52E2591E80058A9C8 /* QuantumMechanicsCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EF5D4F2DE20D36008AFB31 /* QuantumMechanicsCore.framework */; };
+		498FA2F62E2591E80058A9C8 /* QuantumMechanicsCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 49EF5D4F2DE20D36008AFB31 /* QuantumMechanicsCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		49D1CE842F35175500F00D7D /* Collections in Frameworks */ = {isa = PBXBuildFile; productRef = 49D1CE832F35175500F00D7D /* Collections */; };
-		49EF5D582DE20D36008AFB31 /* QuantumMechanics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EF5D4F2DE20D36008AFB31 /* QuantumMechanics.framework */; };
+		49EF5D582DE20D36008AFB31 /* QuantumMechanicsCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EF5D4F2DE20D36008AFB31 /* QuantumMechanicsCore.framework */; };
 		49F1F4102E4E8BF700ABEF15 /* Numerics in Frameworks */ = {isa = PBXBuildFile; productRef = 49F1F40F2E4E8BF700ABEF15 /* Numerics */; };
 /* End PBXBuildFile section */
 
@@ -99,7 +99,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				494EFC162DDF36D700C66063 /* Geometry.framework in Embed Frameworks */,
+				494EFC162DDF36D700C66063 /* GeometryCore.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -110,7 +110,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				497244D92E4A616100481D5B /* Geometry.framework in Embed Frameworks */,
+				497244D92E4A616100481D5B /* GeometryCore.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -121,7 +121,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				498FA2F62E2591E80058A9C8 /* QuantumMechanics.framework in Embed Frameworks */,
+				498FA2F62E2591E80058A9C8 /* QuantumMechanicsCore.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -134,26 +134,26 @@
 		49267D662EF1DA6C00FFA7AD /* .swift-version */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".swift-version"; sourceTree = "<group>"; };
 		4927F36C2DD25BC400E368D8 /* Deus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Deus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		492A77552EE2EBD500BDB7D1 /* on-build */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = "on-build"; sourceTree = "<group>"; };
-		494EFBF92DDF36B100C66063 /* RelativityKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RelativityKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		494EFC012DDF36B200C66063 /* RelativityKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RelativityKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		494EFBF92DDF36B100C66063 /* RelativityCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RelativityCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		494EFC012DDF36B200C66063 /* RelativityCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RelativityCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		495EBF6C2F013ACE00B568B0 /* configure */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = configure; sourceTree = "<group>"; };
 		495EBF6D2F013ACE00B568B0 /* deconfigure */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = deconfigure; sourceTree = "<group>"; };
-		4960AB482DDCE34E00EB1410 /* Geometry.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Geometry.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		4960AB502DDCE34E00EB1410 /* GeometryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GeometryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4960AB482DDCE34E00EB1410 /* GeometryCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GeometryCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4960AB502DDCE34E00EB1410 /* GeometryCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GeometryCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		496813642E4643BA00B22450 /* ObservationKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ObservationKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		498FA26B2E2459DE0058A9C8 /* ObservationKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ObservationKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		49AAEB392F0822F600667191 /* LaboratoryKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LaboratoryKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		49EF5D4F2DE20D36008AFB31 /* QuantumMechanics.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = QuantumMechanics.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		49EF5D572DE20D36008AFB31 /* QuantumMechanicsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QuantumMechanicsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		49EF5D4F2DE20D36008AFB31 /* QuantumMechanicsCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = QuantumMechanicsCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		49EF5D572DE20D36008AFB31 /* QuantumMechanicsCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QuantumMechanicsCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		493AD59E2E757A6E00DA3A76 /* Exceptions for "QuantumMechanicsTests" folder in "QuantumMechanicsTests" target */ = {
+		493AD59E2E757A6E00DA3A76 /* Exceptions for "QuantumMechanicsCoreTests" folder in "QuantumMechanicsCoreTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				DiscretionTests.swift.gyb,
 			);
-			target = 49EF5D562DE20D36008AFB31 /* QuantumMechanicsTests */;
+			target = 49EF5D562DE20D36008AFB31 /* QuantumMechanicsCoreTests */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -173,24 +173,24 @@
 			path = Deus;
 			sourceTree = "<group>";
 		};
-		494EFBFA2DDF36B100C66063 /* RelativityKit */ = {
+		494EFBFA2DDF36B100C66063 /* RelativityCore */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = RelativityKit;
+			path = RelativityCore;
 			sourceTree = "<group>";
 		};
-		494EFC072DDF36B200C66063 /* RelativityKitTests */ = {
+		494EFC072DDF36B200C66063 /* RelativityCoreTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = RelativityKitTests;
+			path = RelativityCoreTests;
 			sourceTree = "<group>";
 		};
-		4960AB492DDCE34E00EB1410 /* Geometry */ = {
+		4960AB492DDCE34E00EB1410 /* GeometryCore */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Geometry;
+			path = GeometryCore;
 			sourceTree = "<group>";
 		};
-		4960AB562DDCE34E00EB1410 /* GeometryTests */ = {
+		4960AB562DDCE34E00EB1410 /* GeometryCoreTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = GeometryTests;
+			path = GeometryCoreTests;
 			sourceTree = "<group>";
 		};
 		496813652E4643BA00B22450 /* ObservationKitTests */ = {
@@ -213,17 +213,17 @@
 			path = tooling;
 			sourceTree = "<group>";
 		};
-		49EF5D502DE20D36008AFB31 /* QuantumMechanics */ = {
+		49EF5D502DE20D36008AFB31 /* QuantumMechanicsCore */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = QuantumMechanics;
+			path = QuantumMechanicsCore;
 			sourceTree = "<group>";
 		};
-		49EF5D5D2DE20D36008AFB31 /* QuantumMechanicsTests */ = {
+		49EF5D5D2DE20D36008AFB31 /* QuantumMechanicsCoreTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				493AD59E2E757A6E00DA3A76 /* Exceptions for "QuantumMechanicsTests" folder in "QuantumMechanicsTests" target */,
+				493AD59E2E757A6E00DA3A76 /* Exceptions for "QuantumMechanicsCoreTests" folder in "QuantumMechanicsCoreTests" target */,
 			);
-			path = QuantumMechanicsTests;
+			path = QuantumMechanicsCoreTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -241,7 +241,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				494EFC152DDF36D700C66063 /* Geometry.framework in Frameworks */,
+				494EFC152DDF36D700C66063 /* GeometryCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,7 +278,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				498FA2F52E2591E80058A9C8 /* QuantumMechanics.framework in Frameworks */,
+				498FA2F52E2591E80058A9C8 /* QuantumMechanicsCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,7 +295,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				497244DE2E4A618100481D5B /* Numerics in Frameworks */,
-				497244D82E4A616100481D5B /* Geometry.framework in Frameworks */,
+				497244D82E4A616100481D5B /* GeometryCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -304,7 +304,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				49F1F4102E4E8BF700ABEF15 /* Numerics in Frameworks */,
-				49EF5D582DE20D36008AFB31 /* QuantumMechanics.framework in Frameworks */,
+				49EF5D582DE20D36008AFB31 /* QuantumMechanicsCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -329,22 +329,22 @@
 				4921F3192DD54F0B00393B6F /* .swift-format */,
 				4927F36C2DD25BC400E368D8 /* Deus.app */,
 				4927F36D2DD25BC400E368D8 /* Deus */,
-				4960AB482DDCE34E00EB1410 /* Geometry.framework */,
-				4960AB492DDCE34E00EB1410 /* Geometry */,
-				4960AB502DDCE34E00EB1410 /* GeometryTests.xctest */,
-				4960AB562DDCE34E00EB1410 /* GeometryTests */,
-				494EFBFA2DDF36B100C66063 /* RelativityKit */,
-				494EFC072DDF36B200C66063 /* RelativityKitTests */,
-				49EF5D502DE20D36008AFB31 /* QuantumMechanics */,
-				49EF5D5D2DE20D36008AFB31 /* QuantumMechanicsTests */,
+				4960AB482DDCE34E00EB1410 /* GeometryCore.framework */,
+				4960AB492DDCE34E00EB1410 /* GeometryCore */,
+				4960AB502DDCE34E00EB1410 /* GeometryCoreTests.xctest */,
+				4960AB562DDCE34E00EB1410 /* GeometryCoreTests */,
+				494EFBFA2DDF36B100C66063 /* RelativityCore */,
+				494EFC072DDF36B200C66063 /* RelativityCoreTests */,
+				49EF5D502DE20D36008AFB31 /* QuantumMechanicsCore */,
+				49EF5D5D2DE20D36008AFB31 /* QuantumMechanicsCoreTests */,
 				498FA26C2E2459DE0058A9C8 /* ObservationKit */,
 				496813652E4643BA00B22450 /* ObservationKitTests */,
 				49AAEB3A2F0822F600667191 /* LaboratoryKit */,
 				4960AB6D2DDCE45D00EB1410 /* Frameworks */,
-				494EFBF92DDF36B100C66063 /* RelativityKit.framework */,
-				494EFC012DDF36B200C66063 /* RelativityKitTests.xctest */,
-				49EF5D4F2DE20D36008AFB31 /* QuantumMechanics.framework */,
-				49EF5D572DE20D36008AFB31 /* QuantumMechanicsTests.xctest */,
+				494EFBF92DDF36B100C66063 /* RelativityCore.framework */,
+				494EFC012DDF36B200C66063 /* RelativityCoreTests.xctest */,
+				49EF5D4F2DE20D36008AFB31 /* QuantumMechanicsCore.framework */,
+				49EF5D572DE20D36008AFB31 /* QuantumMechanicsCoreTests.xctest */,
 				498FA26B2E2459DE0058A9C8 /* ObservationKit.framework */,
 				496813642E4643BA00B22450 /* ObservationKitTests.xctest */,
 				490C46FD2F02A40E00B5EC1C /* .github */,
@@ -420,9 +420,9 @@
 			productReference = 4927F36C2DD25BC400E368D8 /* Deus.app */;
 			productType = "com.apple.product-type.application";
 		};
-		494EFBF82DDF36B100C66063 /* RelativityKit */ = {
+		494EFBF82DDF36B100C66063 /* RelativityCore */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 494EFC132DDF36B200C66063 /* Build configuration list for PBXNativeTarget "RelativityKit" */;
+			buildConfigurationList = 494EFC132DDF36B200C66063 /* Build configuration list for PBXNativeTarget "RelativityCore" */;
 			buildPhases = (
 				494EFBF42DDF36B100C66063 /* Headers */,
 				494EFBF52DDF36B100C66063 /* Sources */,
@@ -436,18 +436,18 @@
 				494EFC182DDF36D700C66063 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				494EFBFA2DDF36B100C66063 /* RelativityKit */,
+				494EFBFA2DDF36B100C66063 /* RelativityCore */,
 			);
-			name = RelativityKit;
+			name = RelativityCore;
 			packageProductDependencies = (
 			);
 			productName = RelativityKit;
-			productReference = 494EFBF92DDF36B100C66063 /* RelativityKit.framework */;
+			productReference = 494EFBF92DDF36B100C66063 /* RelativityCore.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		494EFC002DDF36B200C66063 /* RelativityKitTests */ = {
+		494EFC002DDF36B200C66063 /* RelativityCoreTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 494EFC142DDF36B200C66063 /* Build configuration list for PBXNativeTarget "RelativityKitTests" */;
+			buildConfigurationList = 494EFC142DDF36B200C66063 /* Build configuration list for PBXNativeTarget "RelativityCoreTests" */;
 			buildPhases = (
 				494EFBFD2DDF36B200C66063 /* Sources */,
 				494EFBFE2DDF36B200C66063 /* Frameworks */,
@@ -460,18 +460,18 @@
 				494EFC062DDF36B200C66063 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				494EFC072DDF36B200C66063 /* RelativityKitTests */,
+				494EFC072DDF36B200C66063 /* RelativityCoreTests */,
 			);
-			name = RelativityKitTests;
+			name = RelativityCoreTests;
 			packageProductDependencies = (
 			);
 			productName = RelativityKitTests;
-			productReference = 494EFC012DDF36B200C66063 /* RelativityKitTests.xctest */;
+			productReference = 494EFC012DDF36B200C66063 /* RelativityCoreTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		4960AB472DDCE34E00EB1410 /* Geometry */ = {
+		4960AB472DDCE34E00EB1410 /* GeometryCore */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4960AB622DDCE34E00EB1410 /* Build configuration list for PBXNativeTarget "Geometry" */;
+			buildConfigurationList = 4960AB622DDCE34E00EB1410 /* Build configuration list for PBXNativeTarget "GeometryCore" */;
 			buildPhases = (
 				4960AB432DDCE34E00EB1410 /* Headers */,
 				4960AB442DDCE34E00EB1410 /* Sources */,
@@ -483,18 +483,18 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				4960AB492DDCE34E00EB1410 /* Geometry */,
+				4960AB492DDCE34E00EB1410 /* GeometryCore */,
 			);
-			name = Geometry;
+			name = GeometryCore;
 			packageProductDependencies = (
 			);
 			productName = Geometry;
-			productReference = 4960AB482DDCE34E00EB1410 /* Geometry.framework */;
+			productReference = 4960AB482DDCE34E00EB1410 /* GeometryCore.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		4960AB4F2DDCE34E00EB1410 /* GeometryTests */ = {
+		4960AB4F2DDCE34E00EB1410 /* GeometryCoreTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4960AB632DDCE34E00EB1410 /* Build configuration list for PBXNativeTarget "GeometryTests" */;
+			buildConfigurationList = 4960AB632DDCE34E00EB1410 /* Build configuration list for PBXNativeTarget "GeometryCoreTests" */;
 			buildPhases = (
 				4960AB4C2DDCE34E00EB1410 /* Sources */,
 				4960AB4D2DDCE34E00EB1410 /* Frameworks */,
@@ -505,13 +505,13 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				4960AB562DDCE34E00EB1410 /* GeometryTests */,
+				4960AB562DDCE34E00EB1410 /* GeometryCoreTests */,
 			);
-			name = GeometryTests;
+			name = GeometryCoreTests;
 			packageProductDependencies = (
 			);
 			productName = GeometryTests;
-			productReference = 4960AB502DDCE34E00EB1410 /* GeometryTests.xctest */;
+			productReference = 4960AB502DDCE34E00EB1410 /* GeometryCoreTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		496813632E4643BA00B22450 /* ObservationKitTests */ = {
@@ -587,9 +587,9 @@
 			productReference = 49AAEB392F0822F600667191 /* LaboratoryKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		49EF5D4E2DE20D36008AFB31 /* QuantumMechanics */ = {
+		49EF5D4E2DE20D36008AFB31 /* QuantumMechanicsCore */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 49EF5D642DE20D36008AFB31 /* Build configuration list for PBXNativeTarget "QuantumMechanics" */;
+			buildConfigurationList = 49EF5D642DE20D36008AFB31 /* Build configuration list for PBXNativeTarget "QuantumMechanicsCore" */;
 			buildPhases = (
 				49EF5D4A2DE20D36008AFB31 /* Headers */,
 				49EF5D4B2DE20D36008AFB31 /* Sources */,
@@ -603,19 +603,19 @@
 				497244DB2E4A616100481D5B /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				49EF5D502DE20D36008AFB31 /* QuantumMechanics */,
+				49EF5D502DE20D36008AFB31 /* QuantumMechanicsCore */,
 			);
-			name = QuantumMechanics;
+			name = QuantumMechanicsCore;
 			packageProductDependencies = (
 				497244DD2E4A618100481D5B /* Numerics */,
 			);
 			productName = StandardKit;
-			productReference = 49EF5D4F2DE20D36008AFB31 /* QuantumMechanics.framework */;
+			productReference = 49EF5D4F2DE20D36008AFB31 /* QuantumMechanicsCore.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		49EF5D562DE20D36008AFB31 /* QuantumMechanicsTests */ = {
+		49EF5D562DE20D36008AFB31 /* QuantumMechanicsCoreTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 49EF5D672DE20D36008AFB31 /* Build configuration list for PBXNativeTarget "QuantumMechanicsTests" */;
+			buildConfigurationList = 49EF5D672DE20D36008AFB31 /* Build configuration list for PBXNativeTarget "QuantumMechanicsCoreTests" */;
 			buildPhases = (
 				49EF5D532DE20D36008AFB31 /* Sources */,
 				49EF5D542DE20D36008AFB31 /* Frameworks */,
@@ -626,14 +626,14 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				49EF5D5D2DE20D36008AFB31 /* QuantumMechanicsTests */,
+				49EF5D5D2DE20D36008AFB31 /* QuantumMechanicsCoreTests */,
 			);
-			name = QuantumMechanicsTests;
+			name = QuantumMechanicsCoreTests;
 			packageProductDependencies = (
 				49F1F40F2E4E8BF700ABEF15 /* Numerics */,
 			);
 			productName = StandardKitTests;
-			productReference = 49EF5D572DE20D36008AFB31 /* QuantumMechanicsTests.xctest */;
+			productReference = 49EF5D572DE20D36008AFB31 /* QuantumMechanicsCoreTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -698,12 +698,12 @@
 			projectRoot = "";
 			targets = (
 				4927F36B2DD25BC400E368D8 /* Deus */,
-				4960AB472DDCE34E00EB1410 /* Geometry */,
-				4960AB4F2DDCE34E00EB1410 /* GeometryTests */,
-				494EFBF82DDF36B100C66063 /* RelativityKit */,
-				494EFC002DDF36B200C66063 /* RelativityKitTests */,
-				49EF5D4E2DE20D36008AFB31 /* QuantumMechanics */,
-				49EF5D562DE20D36008AFB31 /* QuantumMechanicsTests */,
+				4960AB472DDCE34E00EB1410 /* GeometryCore */,
+				4960AB4F2DDCE34E00EB1410 /* GeometryCoreTests */,
+				494EFBF82DDF36B100C66063 /* RelativityCore */,
+				494EFC002DDF36B200C66063 /* RelativityCoreTests */,
+				49EF5D4E2DE20D36008AFB31 /* QuantumMechanicsCore */,
+				49EF5D562DE20D36008AFB31 /* QuantumMechanicsCoreTests */,
 				498FA26A2E2459DE0058A9C8 /* ObservationKit */,
 				496813632E4643BA00B22450 /* ObservationKitTests */,
 				49AAEB382F0822F600667191 /* LaboratoryKit */,
@@ -883,7 +883,7 @@
 /* Begin PBXTargetDependency section */
 		494EFC042DDF36B200C66063 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 494EFBF82DDF36B100C66063 /* RelativityKit */;
+			target = 494EFBF82DDF36B100C66063 /* RelativityCore */;
 			targetProxy = 494EFC032DDF36B200C66063 /* PBXContainerItemProxy */;
 		};
 		494EFC062DDF36B200C66063 /* PBXTargetDependency */ = {
@@ -893,7 +893,7 @@
 		};
 		494EFC182DDF36D700C66063 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 4960AB472DDCE34E00EB1410 /* Geometry */;
+			target = 4960AB472DDCE34E00EB1410 /* GeometryCore */;
 			targetProxy = 494EFC172DDF36D700C66063 /* PBXContainerItemProxy */;
 		};
 		4968136A2E4643BA00B22450 /* PBXTargetDependency */ = {
@@ -903,7 +903,7 @@
 		};
 		497244DB2E4A616100481D5B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 4960AB472DDCE34E00EB1410 /* Geometry */;
+			target = 4960AB472DDCE34E00EB1410 /* GeometryCore */;
 			targetProxy = 497244DA2E4A616100481D5B /* PBXContainerItemProxy */;
 		};
 		498FA27D2E2459DE0058A9C8 /* PBXTargetDependency */ = {
@@ -913,12 +913,12 @@
 		};
 		498FA2F82E2591E80058A9C8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 49EF5D4E2DE20D36008AFB31 /* QuantumMechanics */;
+			target = 49EF5D4E2DE20D36008AFB31 /* QuantumMechanicsCore */;
 			targetProxy = 498FA2F72E2591E80058A9C8 /* PBXContainerItemProxy */;
 		};
 		49AAEB442F08235200667191 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 49EF5D4E2DE20D36008AFB31 /* QuantumMechanics */;
+			target = 49EF5D4E2DE20D36008AFB31 /* QuantumMechanicsCore */;
 			targetProxy = 49AAEB432F08235200667191 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1005,7 +1005,7 @@
 				MARKETING_VERSION = 1.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.RelativityKit";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.RelativityCore";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1043,7 +1043,7 @@
 				MARKETING_VERSION = 1.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.RelativityKit";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.RelativityCore";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1063,7 +1063,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.RelativityKitTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.RelativityCoreTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 			};
@@ -1078,7 +1078,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.RelativityKitTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.RelativityCoreTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 			};
@@ -1110,7 +1110,7 @@
 				MARKETING_VERSION = 1.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.Geometry";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.GeometryCore";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1147,7 +1147,7 @@
 				MARKETING_VERSION = 1.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.Geometry";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.GeometryCore";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1167,7 +1167,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.GeometryTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.GeometryCoreTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 			};
@@ -1182,7 +1182,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.GeometryTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.GeometryCoreTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 			};
@@ -1406,7 +1406,7 @@
 				MARKETING_VERSION = 1.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.QuantumMechanics";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.QuantumMechanicsCore";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1443,7 +1443,7 @@
 				MARKETING_VERSION = 1.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.QuantumMechanics";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.QuantumMechanicsCore";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1465,7 +1465,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.QuantumMechanicsTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.QuantumMechanicsCoreTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1482,7 +1482,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.QuantumMechanicsTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.supernova-oss.deus.QuantumMechanicsCoreTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 			};
@@ -1626,7 +1626,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		494EFC132DDF36B200C66063 /* Build configuration list for PBXNativeTarget "RelativityKit" */ = {
+		494EFC132DDF36B200C66063 /* Build configuration list for PBXNativeTarget "RelativityCore" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				494EFC0F2DDF36B200C66063 /* Debug */,
@@ -1635,7 +1635,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		494EFC142DDF36B200C66063 /* Build configuration list for PBXNativeTarget "RelativityKitTests" */ = {
+		494EFC142DDF36B200C66063 /* Build configuration list for PBXNativeTarget "RelativityCoreTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				494EFC112DDF36B200C66063 /* Debug */,
@@ -1644,7 +1644,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4960AB622DDCE34E00EB1410 /* Build configuration list for PBXNativeTarget "Geometry" */ = {
+		4960AB622DDCE34E00EB1410 /* Build configuration list for PBXNativeTarget "GeometryCore" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4960AB5E2DDCE34E00EB1410 /* Debug */,
@@ -1653,7 +1653,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4960AB632DDCE34E00EB1410 /* Build configuration list for PBXNativeTarget "GeometryTests" */ = {
+		4960AB632DDCE34E00EB1410 /* Build configuration list for PBXNativeTarget "GeometryCoreTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4960AB602DDCE34E00EB1410 /* Debug */,
@@ -1689,7 +1689,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		49EF5D642DE20D36008AFB31 /* Build configuration list for PBXNativeTarget "QuantumMechanics" */ = {
+		49EF5D642DE20D36008AFB31 /* Build configuration list for PBXNativeTarget "QuantumMechanicsCore" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				49EF5D652DE20D36008AFB31 /* Debug */,
@@ -1698,7 +1698,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		49EF5D672DE20D36008AFB31 /* Build configuration list for PBXNativeTarget "QuantumMechanicsTests" */ = {
+		49EF5D672DE20D36008AFB31 /* Build configuration list for PBXNativeTarget "QuantumMechanicsCoreTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				49EF5D682DE20D36008AFB31 /* Debug */,

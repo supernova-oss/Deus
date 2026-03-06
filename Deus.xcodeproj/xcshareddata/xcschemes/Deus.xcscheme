@@ -63,8 +63,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "494EFC002DDF36B200C66063"
-               BuildableName = "RelativityKitTests.xctest"
-               BlueprintName = "RelativityKitTests"
+               BuildableName = "RelativityCoreTests.xctest"
+               BlueprintName = "RelativityCoreTests"
                ReferencedContainer = "container:Deus.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -74,8 +74,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "49EF5D562DE20D36008AFB31"
-               BuildableName = "QuantumMechanicsTests.xctest"
-               BlueprintName = "QuantumMechanicsTests"
+               BuildableName = "QuantumMechanicsCoreTests.xctest"
+               BlueprintName = "QuantumMechanicsCoreTests"
                ReferencedContainer = "container:Deus.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -84,8 +84,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "49EF5D562DE20D36008AFB31"
-               BuildableName = "QuantumMechanicsTests.xctest"
-               BlueprintName = "QuantumMechanicsTests"
+               BuildableName = "QuantumMechanicsCoreTests.xctest"
+               BlueprintName = "QuantumMechanicsCoreTests"
                ReferencedContainer = "container:Deus.xcodeproj">
             </BuildableReference>
          </TestableReference>
