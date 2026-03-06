@@ -17,29 +17,22 @@
 // this program. If not, see https://www.gnu.org/licenses.
 // ===-----------------------------------------------------------------------===
 
-import AppKit
-import RealityKit
-import QuantumMechanicsCore
+@testable import RelativityCore
 
-/// Shape of a quark-like: a sphere.
-@MainActor
-private let mesh = MeshResource.generateSphere(radius: 0.2)
-
-extension Entity {
-  /// Converts a quark-like from the Standard Model into an `Entity`.
+extension Array where Element: Sendable {
+  /// Produces an array containing the result of having applied the given
+  /// transformation to each element of this array. Differs from the one in the
+  /// standard library in that it is asynchronous and, thus, allows for
+  /// asynchronous transformations.
   ///
-  /// - Parameters:
-  ///   - quarkLike: Quark-like from which an `Entity` is to be initialized.
-  convenience init?(_ quarkLike: some QuarkLike) {
-    self.init()
-    guard let materialColor = NSColor(quarkLike.colorLike) else { return nil }
-    let metal = SimpleMaterial(
-      color: materialColor,
-      roughness: 0.8,
-      isMetallic: true
-    )
-    let component = ModelComponent(mesh: mesh, materials: [metal])
-    name = quarkLike.symbol
-    components.set(component)
+  /// - Parameter transform: Transformation to be performed to an element
+  ///   contained in this array.
+  /// - Returns: The transformations made to each element.
+  func map<R>(
+    _ transform: @Sendable (Element) async throws -> R
+  ) async rethrows -> [R] {
+    var results = [R?](count: count) { _ in nil }
+    for index in indices { results[index] = try await transform(self[index]) }
+    return results as! [R]
   }
 }

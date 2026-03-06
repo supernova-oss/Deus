@@ -18,7 +18,7 @@
 // ===-----------------------------------------------------------------------===
 
 import AppKit
-import QuantumMechanics
+import QuantumMechanicsCore
 
 extension NSColor {
   /// Converts a color-like from the Standard Model into an `NSColor`.

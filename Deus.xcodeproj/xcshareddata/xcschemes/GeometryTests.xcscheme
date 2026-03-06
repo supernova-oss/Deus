@@ -20,8 +20,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "4960AB4F2DDCE34E00EB1410"
-               BuildableName = "GeometryTests.xctest"
-               BlueprintName = "GeometryTests"
+               BuildableName = "GeometryCoreTests.xctest"
+               BlueprintName = "GeometryCoreTests"
                ReferencedContainer = "container:Deus.xcodeproj">
             </BuildableReference>
          </TestableReference>

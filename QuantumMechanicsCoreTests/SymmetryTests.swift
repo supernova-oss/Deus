@@ -17,29 +17,36 @@
 // this program. If not, see https://www.gnu.org/licenses.
 // ===-----------------------------------------------------------------------===
 
-import AppKit
-import RealityKit
-import QuantumMechanicsCore
+import Numerics
+import Testing
+@testable import QuantumMechanicsCore
 
-/// Shape of a quark-like: a sphere.
-@MainActor
-private let mesh = MeshResource.generateSphere(radius: 0.2)
+struct SymmetryTests {
+  @Suite("U1")
+  struct U1Tests {
+    @Test
+    func fieldIsUntransformedWhenUnrotated() {
+      #expect(Complex(2, 4).u1(by: .zero) == Complex(2, 4))
+    }
 
-extension Entity {
-  /// Converts a quark-like from the Standard Model into an `Entity`.
-  ///
-  /// - Parameters:
-  ///   - quarkLike: Quark-like from which an `Entity` is to be initialized.
-  convenience init?(_ quarkLike: some QuarkLike) {
-    self.init()
-    guard let materialColor = NSColor(quarkLike.colorLike) else { return nil }
-    let metal = SimpleMaterial(
-      color: materialColor,
-      roughness: 0.8,
-      isMetallic: true
+    @Test(
+      arguments: stride(from: 2, to: 64, by: 2).map { Angle.radians(.pi * $0) }
     )
-    let component = ModelComponent(mesh: mesh, materials: [metal])
-    name = quarkLike.symbol
-    components.set(component)
+    func fieldIsUntransformedUponFullTurn(of angle: Angle) {
+      #expect(
+        Complex(2, 4).u1(by: angle).isApproximatelyEqual(to: Complex(2, 4))
+      )
+    }
+
+    @Test
+    func fieldIsTransformedWhenRotatedByNonGroupIdentity() {
+      #expect(
+        Complex(2, 4).u1(by: .radians(2))
+          .isApproximatelyEqual(
+            to: Complex(-4.46, 0.15),
+            relativeTolerance: 0.01
+          )
+      )
+    }
   }
 }

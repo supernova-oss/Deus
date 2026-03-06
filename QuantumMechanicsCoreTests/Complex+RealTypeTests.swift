@@ -17,29 +17,11 @@
 // this program. If not, see https://www.gnu.org/licenses.
 // ===-----------------------------------------------------------------------===
 
-import AppKit
-import RealityKit
-import QuantumMechanicsCore
+import Numerics
+import Testing
+@testable import QuantumMechanicsCore
 
-/// Shape of a quark-like: a sphere.
-@MainActor
-private let mesh = MeshResource.generateSphere(radius: 0.2)
-
-extension Entity {
-  /// Converts a quark-like from the Standard Model into an `Entity`.
-  ///
-  /// - Parameters:
-  ///   - quarkLike: Quark-like from which an `Entity` is to be initialized.
-  convenience init?(_ quarkLike: some QuarkLike) {
-    self.init()
-    guard let materialColor = NSColor(quarkLike.colorLike) else { return nil }
-    let metal = SimpleMaterial(
-      color: materialColor,
-      roughness: 0.8,
-      isMetallic: true
-    )
-    let component = ModelComponent(mesh: mesh, materials: [metal])
-    name = quarkLike.symbol
-    components.set(component)
-  }
+struct ComplexPlusRealTypeTests {
+  @Test
+  func multipliesByScalar() { #expect(Complex(2.0, 4) * 2.0 == .init(4, 8)) }
 }

@@ -17,29 +17,28 @@
 // this program. If not, see https://www.gnu.org/licenses.
 // ===-----------------------------------------------------------------------===
 
-import AppKit
-import RealityKit
-import QuantumMechanicsCore
+import Testing
+@testable import QuantumMechanicsCore
 
-/// Shape of a quark-like: a sphere.
-@MainActor
-private let mesh = MeshResource.generateSphere(radius: 0.2)
-
-extension Entity {
-  /// Converts a quark-like from the Standard Model into an `Entity`.
-  ///
-  /// - Parameters:
-  ///   - quarkLike: Quark-like from which an `Entity` is to be initialized.
-  convenience init?(_ quarkLike: some QuarkLike) {
-    self.init()
-    guard let materialColor = NSColor(quarkLike.colorLike) else { return nil }
-    let metal = SimpleMaterial(
-      color: materialColor,
-      roughness: 0.8,
-      isMetallic: true
+struct QuarkLikeTests {
+  @Suite("Charge")
+  struct ChargeTests {
+    @Test(
+      arguments: AnyQuarkLike.discretion.filter({ quarkLike in
+        quarkLike.symbol.contains(#/u|c|t/#)
+      })
     )
-    let component = ModelComponent(mesh: mesh, materials: [metal])
-    name = quarkLike.symbol
-    components.set(component)
+    func chargeOfUpTypeQuarkIsTwoThirdsOfE(_ quarkLike: AnyQuarkLike) {
+      #expect(quarkLike.charge == .elementary(2 / 3))
+    }
+
+    @Test(
+      arguments: AnyQuarkLike.discretion.filter({ quarkLike in
+        quarkLike.symbol.contains(#/d|s|b/#)
+      })
+    )
+    func chargeOfDownTypeQuarkIsNegativeOneThirdOfE(_ quarkLike: AnyQuarkLike) {
+      #expect(quarkLike.charge == .elementary(-1 / 3))
+    }
   }
 }

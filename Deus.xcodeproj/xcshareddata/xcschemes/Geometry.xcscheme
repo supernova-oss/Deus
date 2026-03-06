@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "4960AB472DDCE34E00EB1410"
-               BuildableName = "Geometry.framework"
-               BlueprintName = "Geometry"
+               BuildableName = "GeometryCore.framework"
+               BlueprintName = "GeometryCore"
                ReferencedContainer = "container:Deus.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -51,8 +51,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4960AB472DDCE34E00EB1410"
-            BuildableName = "Geometry.framework"
-            BlueprintName = "Geometry"
+            BuildableName = "GeometryCore.framework"
+            BlueprintName = "GeometryCore"
             ReferencedContainer = "container:Deus.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

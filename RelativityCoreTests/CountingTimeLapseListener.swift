@@ -17,29 +17,22 @@
 // this program. If not, see https://www.gnu.org/licenses.
 // ===-----------------------------------------------------------------------===
 
-import AppKit
-import RealityKit
-import QuantumMechanicsCore
+import Foundation
+@testable import RelativityCore
 
-/// Shape of a quark-like: a sphere.
-@MainActor
-private let mesh = MeshResource.generateSphere(radius: 0.2)
+/// ``TimeLapseListener`` which counts the amount of times it has been notified
+/// of ticks.
+///
+/// - SeeAlso: ``count``
+final class CountingTimeLapseListener: @unchecked Sendable, TimeLapseListener {
+  /// Amount of times ticks have been notified to this
+  /// ``CountingTimeLapseListener``.
+  private(set) var count = 0
 
-extension Entity {
-  /// Converts a quark-like from the Standard Model into an `Entity`.
-  ///
-  /// - Parameters:
-  ///   - quarkLike: Quark-like from which an `Entity` is to be initialized.
-  convenience init?(_ quarkLike: some QuarkLike) {
-    self.init()
-    guard let materialColor = NSColor(quarkLike.colorLike) else { return nil }
-    let metal = SimpleMaterial(
-      color: materialColor,
-      roughness: 0.8,
-      isMetallic: true
-    )
-    let component = ModelComponent(mesh: mesh, materials: [metal])
-    name = quarkLike.symbol
-    components.set(component)
-  }
+  func timeDidElapse(
+    on clock: Clock,
+    from start: Duration,
+    after previous: Duration?,
+    towards end: Duration
+  ) async { count += 1 }
 }

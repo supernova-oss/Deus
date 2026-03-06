@@ -17,29 +17,27 @@
 // this program. If not, see https://www.gnu.org/licenses.
 // ===-----------------------------------------------------------------------===
 
-import AppKit
-import RealityKit
-import QuantumMechanicsCore
+import Testing
+@testable import GeometryCore
 
-/// Shape of a quark-like: a sphere.
-@MainActor
-private let mesh = MeshResource.generateSphere(radius: 0.2)
+struct TwoDTests {
+  @Test
+  func returnsZero2DAbstractionWhenRequestingOneAtZeroZero() throws {
+    #expect(Point.at(x: 0, y: 0) == Point.zero)
+  }
 
-extension Entity {
-  /// Converts a quark-like from the Standard Model into an `Entity`.
-  ///
-  /// - Parameters:
-  ///   - quarkLike: Quark-like from which an `Entity` is to be initialized.
-  convenience init?(_ quarkLike: some QuarkLike) {
-    self.init()
-    guard let materialColor = NSColor(quarkLike.colorLike) else { return nil }
-    let metal = SimpleMaterial(
-      color: materialColor,
-      roughness: 0.8,
-      isMetallic: true
-    )
-    let component = ModelComponent(mesh: mesh, materials: [metal])
-    name = quarkLike.symbol
-    components.set(component)
+  @Test
+  func sumsNonZero2DAbstractions() throws {
+    #expect(Point.at(x: 1, y: 2) + .at(x: 3, y: 4) == .at(x: 4, y: 6))
+  }
+
+  @Test
+  func returnsZeroPointWhenSubtractingTwoEqualPoints() throws {
+    #expect(Point.at(x: 3, y: 4) - .at(x: 3, y: 4) == Point.at(x: 0, y: 0))
+  }
+
+  @Test
+  func subtracts() throws {
+    #expect(Point.at(x: 3, y: 4) - .at(x: 1, y: 2) == .at(x: 2, y: 2))
   }
 }

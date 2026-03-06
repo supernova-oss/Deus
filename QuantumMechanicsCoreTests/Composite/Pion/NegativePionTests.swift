@@ -17,29 +17,33 @@
 // this program. If not, see https://www.gnu.org/licenses.
 // ===-----------------------------------------------------------------------===
 
-import AppKit
-import RealityKit
-import QuantumMechanicsCore
+import Testing
+@testable import QuantumMechanicsCore
 
-/// Shape of a quark-like: a sphere.
-@MainActor
-private let mesh = MeshResource.generateSphere(radius: 0.2)
+struct NegativePionTests {
+  private let downQuark = DownQuark(colorLike: red)
+  private let upAntiquark = Anti(UpQuark(colorLike: red))
+  private lazy var negativePion = downQuark + upAntiquark
 
-extension Entity {
-  /// Converts a quark-like from the Standard Model into an `Entity`.
-  ///
-  /// - Parameters:
-  ///   - quarkLike: Quark-like from which an `Entity` is to be initialized.
-  convenience init?(_ quarkLike: some QuarkLike) {
-    self.init()
-    guard let materialColor = NSColor(quarkLike.colorLike) else { return nil }
-    let metal = SimpleMaterial(
-      color: materialColor,
-      roughness: 0.8,
-      isMetallic: true
+  @Test("d + ū → π⁻")
+  mutating func resultsFromCombiningADownQuarkAndAnUpAntiquark() {
+    #expect(
+      negativePion.quarks.elementsEqual([.init(downQuark), .init(upAntiquark)])
     )
-    let component = ModelComponent(mesh: mesh, materials: [metal])
-    name = quarkLike.symbol
-    components.set(component)
+  }
+
+  @Test
+  mutating func chargeIsNegativeOneE() {
+    #expect(negativePion.charge.isApproximatelyEqual(to: .elementary(-1)))
+  }
+
+  @Test
+  mutating func
+    massIsOneHundredAndThirtyNinePointFiftySevenThousandAndThirtyNineGeV()
+  {
+    #expect(
+      negativePion.getMass(approximatedBy: .base)
+        == .gigaelectronvoltsPerLightSpeedSquared(139.57039)
+    )
   }
 }

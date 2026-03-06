@@ -19,7 +19,7 @@
 
 import AppKit
 @preconcurrency import RealityKit
-import QuantumMechanics
+import QuantumMechanicsCore
 import Testing
 @testable import ObservationKit
 

@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "494EFBF82DDF36B100C66063"
-               BuildableName = "RelativityKit.framework"
-               BlueprintName = "RelativityKit"
+               BuildableName = "RelativityCore.framework"
+               BlueprintName = "RelativityCore"
                ReferencedContainer = "container:Deus.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -51,8 +51,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "494EFBF82DDF36B100C66063"
-            BuildableName = "RelativityKit.framework"
-            BlueprintName = "RelativityKit"
+            BuildableName = "RelativityCore.framework"
+            BlueprintName = "RelativityCore"
             ReferencedContainer = "container:Deus.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

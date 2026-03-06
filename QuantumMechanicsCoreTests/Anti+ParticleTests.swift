@@ -17,29 +17,26 @@
 // this program. If not, see https://www.gnu.org/licenses.
 // ===-----------------------------------------------------------------------===
 
-import AppKit
-import RealityKit
-import QuantumMechanicsCore
+import Testing
+@testable import QuantumMechanicsCore
 
-/// Shape of a quark-like: a sphere.
-@MainActor
-private let mesh = MeshResource.generateSphere(radius: 0.2)
+struct AntiparticleTests {
+  @Test
+  func chargeIsOpposite() {
+    #expect(Anti(UpQuark(colorLike: red)).charge == .elementary(-2 / 3))
+  }
 
-extension Entity {
-  /// Converts a quark-like from the Standard Model into an `Entity`.
-  ///
-  /// - Parameters:
-  ///   - quarkLike: Quark-like from which an `Entity` is to be initialized.
-  convenience init?(_ quarkLike: some QuarkLike) {
-    self.init()
-    guard let materialColor = NSColor(quarkLike.colorLike) else { return nil }
-    let metal = SimpleMaterial(
-      color: materialColor,
-      roughness: 0.8,
-      isMetallic: true
+  @Test
+  func massIsSameAsOfCounterpart() {
+    let particle = UpQuark(colorLike: red)
+    #expect(
+      Anti(particle).getMass(approximatedBy: .base)
+        == particle.getMass(approximatedBy: .base)
     )
-    let component = ModelComponent(mesh: mesh, materials: [metal])
-    name = quarkLike.symbol
-    components.set(component)
+  }
+
+  @Test
+  func symbolHasOverbar() {
+    #expect(Anti(UpQuark(colorLike: red)).symbol == "u̅")
   }
 }

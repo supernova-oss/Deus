@@ -17,29 +17,32 @@
 // this program. If not, see https://www.gnu.org/licenses.
 // ===-----------------------------------------------------------------------===
 
-import AppKit
-import RealityKit
-import QuantumMechanicsCore
+import Testing
+@testable import RelativityCore
 
-/// Shape of a quark-like: a sphere.
-@MainActor
-private let mesh = MeshResource.generateSphere(radius: 0.2)
+@Suite("Clock+Duration tests")
+struct ClockDurationTests {
+  @Test
+  func oneSubtickIsOneMicrosecond() {
+    #expect(Duration.subtick == .microseconds(1))
+    #expect(Duration.subticks(1) == .microseconds(1))
+  }
 
-extension Entity {
-  /// Converts a quark-like from the Standard Model into an `Entity`.
-  ///
-  /// - Parameters:
-  ///   - quarkLike: Quark-like from which an `Entity` is to be initialized.
-  convenience init?(_ quarkLike: some QuarkLike) {
-    self.init()
-    guard let materialColor = NSColor(quarkLike.colorLike) else { return nil }
-    let metal = SimpleMaterial(
-      color: materialColor,
-      roughness: 0.8,
-      isMetallic: true
-    )
-    let component = ModelComponent(mesh: mesh, materials: [metal])
-    name = quarkLike.symbol
-    components.set(component)
+  @Test
+  func oneTickIsOneMillisecond() { #expect(Duration.tick == .milliseconds(1)) }
+
+  @Test
+  func comprisableSubtickCountIsAmountOfAttosecondsConvertedIntoMicroseconds() {
+    #expect(Duration.nanoseconds(2_500).comprisableSubtickCount == 2.5)
+  }
+
+  @Test
+  func nonIntegerAmountOfTicksCannotCompriseOnlyWholeTicks() {
+    #expect(!Duration.subticks(1_024).canOnlyCompriseWholeTicks)
+  }
+
+  @Test
+  func integerAmountOfTicksCanCompriseOnlyWholeTicks() {
+    #expect(Duration.subticks(2_000).canOnlyCompriseWholeTicks)
   }
 }

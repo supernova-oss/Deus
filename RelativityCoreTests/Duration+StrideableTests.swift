@@ -17,29 +17,38 @@
 // this program. If not, see https://www.gnu.org/licenses.
 // ===-----------------------------------------------------------------------===
 
-import AppKit
-import RealityKit
-import QuantumMechanicsCore
+import Testing
+@testable import RelativityCore
 
-/// Shape of a quark-like: a sphere.
-@MainActor
-private let mesh = MeshResource.generateSphere(radius: 0.2)
+@Suite("Duration+Strideable tests")
+struct DurationStrideableTests {
+  private static let secondScale = Int128(1e18)
 
-extension Entity {
-  /// Converts a quark-like from the Standard Model into an `Entity`.
-  ///
-  /// - Parameters:
-  ///   - quarkLike: Quark-like from which an `Entity` is to be initialized.
-  convenience init?(_ quarkLike: some QuarkLike) {
-    self.init()
-    guard let materialColor = NSColor(quarkLike.colorLike) else { return nil }
-    let metal = SimpleMaterial(
-      color: materialColor,
-      roughness: 0.8,
-      isMetallic: true
+  @Test
+  func advancesByAttoseconds() {
+    #expect(
+      Duration.zero.advanced(by: Self.secondScale + 256)
+        == .init(secondsComponent: 1, attosecondsComponent: 256)
     )
-    let component = ModelComponent(mesh: mesh, materials: [metal])
-    name = quarkLike.symbol
-    components.set(component)
+  }
+
+  @Test
+  func advancesByNanoseconds() {
+    #expect(Duration.zero.advanced(by: .init(1e9)) == .nanoseconds(1))
+  }
+
+  @Test
+  func advancesByMicroseconds() {
+    #expect(Duration.zero.advanced(by: .init(1e12)) == .microseconds(1))
+  }
+
+  @Test
+  func advancesByMilliseconds() {
+    #expect(Duration.zero.advanced(by: .init(1e15)) == .milliseconds(1))
+  }
+
+  @Test
+  func advancesBySeconds() {
+    #expect(Duration.zero.advanced(by: Self.secondScale) == .seconds(1))
   }
 }
