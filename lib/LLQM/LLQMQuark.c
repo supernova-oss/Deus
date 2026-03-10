@@ -17,23 +17,23 @@
 // this program. If not, see https://www.gnu.org/licenses.
 // ===-----------------------------------------------------------------------===
 
-#include <errno.h>
 #include <LLQM/LLQMColor.h>
 #include <LLQM/LLQMQuark.h>
+#include <errno.h>
 #include <stdlib.h>
 
-#define LLQM_QUARK_FLAVOR_MASK  0b11100000
-#define LLQM_QUARK_COLOR_MASK   0b00011000
+#define LLQM_QUARK_FLAVOR_MASK 0b11100000
+#define LLQM_QUARK_COLOR_MASK  0b00011000
 
 LLQMQuarkFlavor LLQMQuarkGetFlavor(LLQMQuark quark) {
   switch (quark & LLQM_QUARK_FLAVOR_MASK) {
-    case 0b00000000:  return UP;
-    case 0b00100000:  return DOWN;
-    case 0b01000000:  return CHARM;
-    case 0b01100000:  return STRANGE;
-    case 0b10000000:  return BOTTOM;
-    case 0b10100000:  return TOP;
-    default:          exit(EINVAL);
+    case 0b00000000: return UP;
+    case 0b00100000: return DOWN;
+    case 0b01000000: return CHARM;
+    case 0b01100000: return STRANGE;
+    case 0b10000000: return BOTTOM;
+    case 0b10100000: return TOP;
+    default:         exit(EINVAL);
   }
 }
 

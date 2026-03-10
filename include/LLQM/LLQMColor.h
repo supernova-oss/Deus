@@ -1,4 +1,4 @@
-//// ===-----------------------------------------------------------------------===
+// ===-----------------------------------------------------------------------===
 // Copyright © 2026 Supernova
 //
 // This file is part of the Deus open-source project.
@@ -53,4 +53,4 @@ enum LLQMColor {
   BLUE
 } typedef LLQMColor;
 
-#endif // !LLQMC_COLOR_H
+#endif  // !LLQMC_COLOR_H

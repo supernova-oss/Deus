@@ -22,6 +22,9 @@ import Subprocess
 import System
 
 extension Executable {
+  /// Executable at `/opt/homebrew/bin/brew`.
+  static let brew = Self.name("/opt/homebrew/bin/brew")
+
   /// Executable at `/bin/chmod`.
   static let chmod = Self.name("/bin/chmod")
 

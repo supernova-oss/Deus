@@ -125,4 +125,4 @@ LLQMColor LLQMQuarkGetColor(LLQMQuark quark);
  */
 double LLQMQuarkGetElectricCharge(LLQMQuark quark);
 
-#endif // !LLQM_QUARK_H
+#endif  // !LLQM_QUARK_H
