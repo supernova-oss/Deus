@@ -25,6 +25,9 @@ extension Executable {
   /// Executable at `/bin/chmod`.
   static let chmod = Self.name("/bin/chmod")
 
+  /// Executable at `/opt/homebrew/bin/cmake`.
+  static let cmake = Self.name("/opt/homebrew/bin/cmake")
+
   /// Executable at `/usr/bin/find`.
   static let find = Self.name("/usr/bin/find")
 
