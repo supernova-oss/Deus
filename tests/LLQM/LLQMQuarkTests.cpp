@@ -49,25 +49,25 @@ TEST_CASE("Gets color") {
 }
 
 TEST_CASE("Up-type quarks have electric charge of ⅔ e") {
-  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkUpRed) == 2 / 3);
-  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkUpGreen) == 2 / 3);
-  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkUpBlue) == 2 / 3);
-  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkCharmRed) == 2 / 3);
-  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkCharmGreen) == 2 / 3);
-  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkCharmBlue) == 2 / 3);
-  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkTopRed) == 2 / 3);
-  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkTopGreen) == 2 / 3);
-  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkTopBlue) == 2 / 3);
+  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkUpRed) == 2.0 / 3.0);
+  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkUpGreen) == 2.0 / 3.0);
+  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkUpBlue) == 2.0 / 3.0);
+  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkCharmRed) == 2.0 / 3.0);
+  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkCharmGreen) == 2.0 / 3.0);
+  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkCharmBlue) == 2.0 / 3.0);
+  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkTopRed) == 2.0 / 3.0);
+  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkTopGreen) == 2.0 / 3.0);
+  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkTopBlue) == 2.0 / 3.0);
 }
 
 TEST_CASE("Down-type quarks have electric charge of -⅓ e") {
-  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkDownRed) == -1 / 3);
-  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkDownGreen) == -1 / 3);
-  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkDownBlue) == -1 / 3);
-  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkStrangeRed) == -1 / 3);
-  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkStrangeGreen) == -1 / 3);
-  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkStrangeBlue) == -1 / 3);
-  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkBottomRed) == -1 / 3);
-  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkBottomGreen) == -1 / 3);
-  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkBottomBlue) == -1 / 3);
+  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkDownRed) == -1.0 / 3.0);
+  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkDownGreen) == -1.0 / 3.0);
+  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkDownBlue) == -1.0 / 3.0);
+  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkStrangeRed) == -1.0 / 3.0);
+  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkStrangeGreen) == -1.0 / 3.0);
+  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkStrangeBlue) == -1.0 / 3.0);
+  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkBottomRed) == -1.0 / 3.0);
+  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkBottomGreen) == -1.0 / 3.0);
+  CHECK(LLQMQuarkGetElectricCharge(LLQMQuarkBottomBlue) == -1.0 / 3.0);
 }
