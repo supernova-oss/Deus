@@ -48,12 +48,12 @@ LLQMColor LLQMQuarkGetColor(LLQMQuark quark) {
 
 double LLQMQuarkGetElectricCharge(LLQMQuark quark) {
   switch (LLQMQuarkGetFlavor(quark)) {
-    case UP:      return 2 / 3;
-    case DOWN:    return -1 / 3;
-    case CHARM:   return 2 / 3;
-    case STRANGE: return -1 / 3;
-    case BOTTOM:  return -1 / 3;
-    case TOP:     return 2 / 3;
+    case UP:      return 2.0 / 3.0;
+    case DOWN:    return -1.0 / 3.0;
+    case CHARM:   return 2.0 / 3.0;
+    case STRANGE: return -1.0 / 3.0;
+    case BOTTOM:  return -1.0 / 3.0;
+    case TOP:     return 2.0 / 3.0;
     default:      exit(EINVAL);
   }
 }
