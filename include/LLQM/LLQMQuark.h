@@ -47,14 +47,15 @@ enum LLQMQuarkFlavor {
  * There are six flavors of quarks, divided into two charge-based types and
  * three generations:
  *
- * Flavor      | Generation | Spin   | Charge | Type    | Lagrangian mass             |
- * ----------- | ---------- | ------ | ------ | ------- | --------------------------- |
- * Up (u)      | 1ˢᵗ        | ½ *ħ*  | +⅔ e   | Up      | 2.3 ± 0.7 ± 0.5 MeV/c²      |
- * Down (d)    | 1ˢᵗ        | ½ *ħ*  | -⅓ e   | Down    | 4.8 ± 0.5 ± 0.3 MeV/c²      |
- * Strange (s) | 2ⁿᵈ        | ½ *ħ*  | -⅓ e   | Down    | 95 ± 5 MeV/c²               |
- * Charm (c)   | 2ⁿᵈ        | ½ *ħ*  | +⅔ e   | Up      | 1.275 ± 0.025 GeV/c²        |
- * Bottom (b)  | 3ʳᵈ        | ½ *ħ*  | -⅓ e   | Down    | 4.18 ± 30 GeV/c²            |
- * Top (t)     | 3ʳᵈ        | ½ *ħ*  | +⅔ e   | Up      | 173.21 ± 0.51 ± 0.7 GeV/c²  |
+ * Flavor      | Generation | Spin   | Charge | Type    | Lagrangian mass |
+ * ----------- | ---------- | ------ | ------ | ------- |
+ * --------------------------- | Up (u)      | 1ˢᵗ        | ½ *ħ*  | +⅔ e   | Up
+ * | 2.3 ± 0.7 ± 0.5 MeV/c²      | Down (d)    | 1ˢᵗ        | ½ *ħ*  | -⅓ e   |
+ * Down    | 4.8 ± 0.5 ± 0.3 MeV/c²      | Strange (s) | 2ⁿᵈ        | ½ *ħ*  |
+ * -⅓ e   | Down    | 95 ± 5 MeV/c²               | Charm (c)   | 2ⁿᵈ        | ½
+ * *ħ*  | +⅔ e   | Up      | 1.275 ± 0.025 GeV/c²        | Bottom (b)  | 3ʳᵈ | ½
+ * *ħ*  | -⅓ e   | Down    | 4.18 ± 30 GeV/c²            | Top (t)     | 3ʳᵈ | ½
+ * *ħ*  | +⅔ e   | Up      | 173.21 ± 0.51 ± 0.7 GeV/c²  |
  *
  * NOTE: The names up, down, strange, charm, bottom and top have no intrinsic
  * meaning nor do they describe the behavior of such quarks; they were chosen
@@ -85,24 +86,24 @@ enum LLQMQuarkFlavor {
  */
 typedef uint8_t LLQMQuark;
 
-const LLQMQuark LLQMQuarkUpRed        = 0b00000000;
-const LLQMQuark LLQMQuarkUpGreen      = 0b00001000;
-const LLQMQuark LLQMQuarkUpBlue       = 0b00010000;
-const LLQMQuark LLQMQuarkDownRed      = 0b00100000;
-const LLQMQuark LLQMQuarkDownGreen    = 0b00101000;
-const LLQMQuark LLQMQuarkDownBlue     = 0b00110000;
-const LLQMQuark LLQMQuarkStrangeRed   = 0b01100000;
-const LLQMQuark LLQMQuarkStrangeGreen = 0b01101000;
-const LLQMQuark LLQMQuarkStrangeBlue  = 0b01110000;
-const LLQMQuark LLQMQuarkCharmRed     = 0b01000000;
-const LLQMQuark LLQMQuarkCharmGreen   = 0b01001000;
-const LLQMQuark LLQMQuarkCharmBlue    = 0b01010000;
-const LLQMQuark LLQMQuarkBottomRed    = 0b10000000;
-const LLQMQuark LLQMQuarkBottomGreen  = 0b10001000;
-const LLQMQuark LLQMQuarkBottomBlue   = 0b10010000;
-const LLQMQuark LLQMQuarkTopRed       = 0b10100000;
-const LLQMQuark LLQMQuarkTopGreen     = 0b10101000;
-const LLQMQuark LLQMQuarkTopBlue      = 0b10110000;
+const LLQMQuark LLQMQuarkUpRed = 0b00000000;
+const LLQMQuark LLQMQuarkUpGreen = 0b00001000;
+const LLQMQuark LLQMQuarkUpBlue = 0b00010000;
+const LLQMQuark LLQMQuarkDownRed = 0b00100000;
+const LLQMQuark LLQMQuarkDownGreen = 0b00101000;
+const LLQMQuark LLQMQuarkDownBlue = 0b00110000;
+const LLQMQuark LLQMQuarkStrangeRed = 0b01000000;
+const LLQMQuark LLQMQuarkStrangeGreen = 0b01001000;
+const LLQMQuark LLQMQuarkStrangeBlue = 0b01010000;
+const LLQMQuark LLQMQuarkCharmRed = 0b01100000;
+const LLQMQuark LLQMQuarkCharmGreen = 0b01101000;
+const LLQMQuark LLQMQuarkCharmBlue = 0b01110000;
+const LLQMQuark LLQMQuarkBottomRed = 0b10000000;
+const LLQMQuark LLQMQuarkBottomGreen = 0b10001000;
+const LLQMQuark LLQMQuarkBottomBlue = 0b10010000;
+const LLQMQuark LLQMQuarkTopRed = 0b10100000;
+const LLQMQuark LLQMQuarkTopGreen = 0b10101000;
+const LLQMQuark LLQMQuarkTopBlue = 0b10110000;
 
 /**
  * Returns the flavor of a quark.

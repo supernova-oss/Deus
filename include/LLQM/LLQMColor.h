@@ -47,10 +47,6 @@
  * electromagnetic spectrum and a projection of physical movement from one point
  * toward another). These are uniquely-quantum properties of a colored particle.
  */
-enum LLQMColor {
-  RED,
-  GREEN,
-  BLUE
-} typedef LLQMColor;
+enum LLQMColor { RED, GREEN, BLUE } typedef LLQMColor;
 
 #endif  // !LLQMC_COLOR_H
