@@ -72,12 +72,8 @@ struct Formatting: Step {
       # \
       ===------------------------------------------------------------------------===
 
-      find .                                           -path "*/.build" -prune \
-      -o                     -path "external" -prune -o                     \
-      -name '*.[c|cpp|cxx|hpp]'                      \
-      -print                                         -type \
-      f                                        -exec clang-format \
-      --style=Chromium -i {} +;
+      find . -path "*/.build" -prune -o -path "external" -prune -o -name \
+      '*.[c|cpp|cxx|hpp]' -type f -exec clang-format -i {} +
       swift-format -p -r -i \(projectURL.path())
       swift-format lint -p -r -s \(projectURL.path())
       git add .

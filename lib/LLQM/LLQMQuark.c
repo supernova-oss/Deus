@@ -22,65 +22,47 @@
 #include <errno.h>
 #include <stdlib.h>
 
-#define LLQM_QUARK_FLAVOR_MASK 0b11100000
-#define LLQM_QUARK_FLAVOR_UP 0b00000000
-#define LLQM_QUARK_FLAVOR_DOWN 0b00100000
+#define LLQM_QUARK_FLAVOR_MASK    0b11100000
+#define LLQM_QUARK_FLAVOR_UP      0b00000000
+#define LLQM_QUARK_FLAVOR_DOWN    0b00100000
 #define LLQM_QUARK_FLAVOR_STRANGE 0b01000000
-#define LLQM_QUARK_FLAVOR_CHARM 0b01100000
-#define LLQM_QUARK_FLAVOR_BOTTOM 0b10000000
-#define LLQM_QUARK_FLAVOR_TOP 0b10100000
-#define LLQM_QUARK_COLOR_MASK 0b00011000
-#define LLQM_QUARK_COLOR_RED 0b00000000
-#define LLQM_QUARK_COLOR_GREEN 0b00001000
-#define LLQM_QUARK_COLOR_BLUE 0b00010000
+#define LLQM_QUARK_FLAVOR_CHARM   0b01100000
+#define LLQM_QUARK_FLAVOR_BOTTOM  0b10000000
+#define LLQM_QUARK_FLAVOR_TOP     0b10100000
+#define LLQM_QUARK_COLOR_MASK     0b00011000
+#define LLQM_QUARK_COLOR_RED      0b00000000
+#define LLQM_QUARK_COLOR_GREEN    0b00001000
+#define LLQM_QUARK_COLOR_BLUE     0b00010000
 
 LLQMQuarkFlavor LLQMQuarkGetFlavor(LLQMQuark quark) {
   switch (quark & LLQM_QUARK_FLAVOR_MASK) {
-    case LLQM_QUARK_FLAVOR_UP:
-      return UP;
-    case LLQM_QUARK_FLAVOR_DOWN:
-      return DOWN;
-    case LLQM_QUARK_FLAVOR_STRANGE:
-      return STRANGE;
-    case LLQM_QUARK_FLAVOR_CHARM:
-      return CHARM;
-    case LLQM_QUARK_FLAVOR_BOTTOM:
-      return BOTTOM;
-    case LLQM_QUARK_FLAVOR_TOP:
-      return TOP;
-    default:
-      exit(EINVAL);
+    case LLQM_QUARK_FLAVOR_UP:      return UP;
+    case LLQM_QUARK_FLAVOR_DOWN:    return DOWN;
+    case LLQM_QUARK_FLAVOR_STRANGE: return STRANGE;
+    case LLQM_QUARK_FLAVOR_CHARM:   return CHARM;
+    case LLQM_QUARK_FLAVOR_BOTTOM:  return BOTTOM;
+    case LLQM_QUARK_FLAVOR_TOP:     return TOP;
+    default:                        exit(EINVAL);
   }
 }
 
 LLQMColor LLQMQuarkGetColor(LLQMQuark quark) {
   switch (quark & LLQM_QUARK_COLOR_MASK) {
-    case LLQM_QUARK_COLOR_RED:
-      return RED;
-    case LLQM_QUARK_COLOR_GREEN:
-      return GREEN;
-    case LLQM_QUARK_COLOR_BLUE:
-      return BLUE;
-    default:
-      exit(EINVAL);
+    case LLQM_QUARK_COLOR_RED:   return RED;
+    case LLQM_QUARK_COLOR_GREEN: return GREEN;
+    case LLQM_QUARK_COLOR_BLUE:  return BLUE;
+    default:                     exit(EINVAL);
   }
 }
 
 double LLQMQuarkGetElectricCharge(LLQMQuark quark) {
   switch (quark & LLQM_QUARK_FLAVOR_MASK) {
-    case LLQM_QUARK_FLAVOR_UP:
-      return 2.0 / 3.0;
-    case LLQM_QUARK_FLAVOR_DOWN:
-      return -1.0 / 3.0;
-    case LLQM_QUARK_FLAVOR_STRANGE:
-      return -1.0 / 3.0;
-    case LLQM_QUARK_FLAVOR_CHARM:
-      return 2.0 / 3.0;
-    case LLQM_QUARK_FLAVOR_BOTTOM:
-      return -1.0 / 3.0;
-    case LLQM_QUARK_FLAVOR_TOP:
-      return 2.0 / 3.0;
-    default:
-      exit(EINVAL);
+    case LLQM_QUARK_FLAVOR_UP:      return 2.0 / 3.0;
+    case LLQM_QUARK_FLAVOR_DOWN:    return -1.0 / 3.0;
+    case LLQM_QUARK_FLAVOR_STRANGE: return -1.0 / 3.0;
+    case LLQM_QUARK_FLAVOR_CHARM:   return 2.0 / 3.0;
+    case LLQM_QUARK_FLAVOR_BOTTOM:  return -1.0 / 3.0;
+    case LLQM_QUARK_FLAVOR_TOP:     return 2.0 / 3.0;
+    default:                        exit(EINVAL);
   }
 }
