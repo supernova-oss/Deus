@@ -18,5 +18,5 @@ this program. If not, see https://www.gnu.org/licenses.
 
 include(DeusLibrary)
 
-add_library(llqm STATIC lib/LLQMQuark.c)
+add_library(llqm STATIC LLQMQuark.c)
 set_up_library(llqm)
