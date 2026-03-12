@@ -34,6 +34,17 @@
 #define LLQM_QUARK_COLOR_GREEN    0b00001000
 #define LLQM_QUARK_COLOR_BLUE     0b00010000
 
+#define LLQM_QUARK_FOLD_TYPE(QUARK, FOR_UP_TYPE, FOR_DOWN_TYPE) \
+  switch (quark & LLQM_QUARK_FLAVOR_MASK) {                     \
+    case LLQM_QUARK_FLAVOR_UP:      return FOR_UP_TYPE;         \
+    case LLQM_QUARK_FLAVOR_DOWN:    return FOR_DOWN_TYPE;       \
+    case LLQM_QUARK_FLAVOR_STRANGE: return FOR_DOWN_TYPE;       \
+    case LLQM_QUARK_FLAVOR_CHARM:   return FOR_UP_TYPE;         \
+    case LLQM_QUARK_FLAVOR_BOTTOM:  return FOR_DOWN_TYPE;       \
+    case LLQM_QUARK_FLAVOR_TOP:     return FOR_UP_TYPE;         \
+    default:                        exit(EINVAL);                                      \
+  }
+
 LLQMQuarkFlavor LLQMQuarkGetFlavor(LLQMQuark quark) {
   switch (quark & LLQM_QUARK_FLAVOR_MASK) {
     case LLQM_QUARK_FLAVOR_UP:      return UP;
@@ -56,13 +67,5 @@ LLQMColor LLQMQuarkGetColor(LLQMQuark quark) {
 }
 
 double LLQMQuarkGetElectricCharge(LLQMQuark quark) {
-  switch (quark & LLQM_QUARK_FLAVOR_MASK) {
-    case LLQM_QUARK_FLAVOR_UP:      return 2.0 / 3.0;
-    case LLQM_QUARK_FLAVOR_DOWN:    return -1.0 / 3.0;
-    case LLQM_QUARK_FLAVOR_STRANGE: return -1.0 / 3.0;
-    case LLQM_QUARK_FLAVOR_CHARM:   return 2.0 / 3.0;
-    case LLQM_QUARK_FLAVOR_BOTTOM:  return -1.0 / 3.0;
-    case LLQM_QUARK_FLAVOR_TOP:     return 2.0 / 3.0;
-    default:                        exit(EINVAL);
-  }
+  LLQM_QUARK_FOLD_TYPE(quark, 2.0 / 3.0, -1.0 / 3.0);
 }
