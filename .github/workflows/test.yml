@@ -28,9 +28,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Test libraries
+        run: |
+             cmake -B .build
+             cmake --build .build
+             ctest --no-tests=error --output-on-failure --parallel 0 --test-dir .build
       - name: Select Xcode
         run: sudo xcode-select -switch /Applications/Xcode_26.2.app/Contents/Developer
-      - name: Test
+      - name: Test frameworks and application
         run: |
              chmod +x configure
              ./configure

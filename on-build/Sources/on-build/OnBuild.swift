@@ -24,12 +24,32 @@ import Foundation
 /// these steps is to ensure consistency and correctness throughout the project.
 @main
 struct OnBuild {
-  static func main() async throws {
-    let fileManager = FileManager.default
-    var projectURL = URL(filePath: FileManager.default.currentDirectoryPath)
+  /// URL of the root directory of the Deus project.
+  private static var projectURL: URL {
+    var projectURL = URL(filePath: fileManager.currentDirectoryPath)
     projectURL.deleteLastPathComponent()
-    try await FileGeneration(fileManager: fileManager, projectURL: projectURL)
-      .run()
-    try await Formatting(fileManager: fileManager, projectURL: projectURL).run()
+    return projectURL
+  }
+
+  /// Manager by which files may be modified.
+  private static var fileManager: FileManager { FileManager.default }
+
+  static func main() async throws {
+    try await withThrowingTaskGroup { taskGroup in
+      taskGroup.addTask(name: "File generation and formatting") {
+        try await FileGeneration(
+          fileManager: fileManager,
+          projectURL: projectURL
+        )
+        .run()
+        try await Formatting(fileManager: fileManager, projectURL: projectURL)
+          .run()
+      }
+      taskGroup.addTask(name: "CMake build") {
+        try await CMakeBuild(fileManager: fileManager, projectURL: projectURL)
+          .run()
+      }
+      try await taskGroup.waitForAll()
+    }
   }
 }

@@ -129,9 +129,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4916137F2F5CB74200CE1999 /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
 		4921F2692DD4ECA900393B6F /* Deus.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Deus.xctestplan; sourceTree = "<group>"; };
 		4921F3192DD54F0B00393B6F /* .swift-format */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".swift-format"; sourceTree = "<group>"; };
 		49267D662EF1DA6C00FFA7AD /* .swift-version */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".swift-version"; sourceTree = "<group>"; };
+		492786562F60BAAE00AC903A /* .clang-format */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".clang-format"; sourceTree = "<group>"; };
 		4927F36C2DD25BC400E368D8 /* Deus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Deus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		492A77552EE2EBD500BDB7D1 /* on-build */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = "on-build"; sourceTree = "<group>"; };
 		494EFBF92DDF36B100C66063 /* RelativityCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RelativityCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -168,6 +170,26 @@
 			path = bin;
 			sourceTree = "<group>";
 		};
+		491613702F5CAD2500CE1999 /* lib */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = lib;
+			sourceTree = "<group>";
+		};
+		491613802F5CB77800CE1999 /* modules */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = modules;
+			sourceTree = "<group>";
+		};
+		491613832F5CB7CA00CE1999 /* include */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = include;
+			sourceTree = "<group>";
+		};
+		491613912F5CC76B00CE1999 /* tests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = tests;
+			sourceTree = "<group>";
+		};
 		4927F36D2DD25BC400E368D8 /* Deus */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Deus;
@@ -181,6 +203,11 @@
 		494EFC072DDF36B200C66063 /* RelativityCoreTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = RelativityCoreTests;
+			sourceTree = "<group>";
+		};
+		4956A8142F5F6E79004FBCCE /* external */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = external;
 			sourceTree = "<group>";
 		};
 		4960AB492DDCE34E00EB1410 /* GeometryCore */ = {
@@ -321,6 +348,7 @@
 		49FD31192DBFC9E2003CEAF9 = {
 			isa = PBXGroup;
 			children = (
+				492786562F60BAAE00AC903A /* .clang-format */,
 				4921F3192DD54F0B00393B6F /* .swift-format */,
 				49267D662EF1DA6C00FFA7AD /* .swift-version */,
 				495EBF6C2F013ACE00B568B0 /* configure */,
@@ -332,6 +360,7 @@
 				498FA26B2E2459DE0058A9C8 /* ObservationKit.framework */,
 				49EF5D4F2DE20D36008AFB31 /* QuantumMechanicsCore.framework */,
 				494EFBF92DDF36B100C66063 /* RelativityCore.framework */,
+				4916137F2F5CB74200CE1999 /* CMakeLists.txt */,
 				4960AB502DDCE34E00EB1410 /* GeometryCoreTests.xctest */,
 				496813642E4643BA00B22450 /* ObservationKitTests.xctest */,
 				49EF5D572DE20D36008AFB31 /* QuantumMechanicsCoreTests.xctest */,
@@ -340,16 +369,21 @@
 				490C46FD2F02A40E00B5EC1C /* .github */,
 				490C47012F02A40E00B5EC1C /* bin */,
 				4927F36D2DD25BC400E368D8 /* Deus */,
+				4956A8142F5F6E79004FBCCE /* external */,
 				4960AB6D2DDCE45D00EB1410 /* Frameworks */,
 				4960AB492DDCE34E00EB1410 /* GeometryCore */,
 				4960AB562DDCE34E00EB1410 /* GeometryCoreTests */,
+				491613832F5CB7CA00CE1999 /* include */,
 				49AAEB3A2F0822F600667191 /* LaboratoryKit */,
+				491613702F5CAD2500CE1999 /* lib */,
+				491613802F5CB77800CE1999 /* modules */,
 				498FA26C2E2459DE0058A9C8 /* ObservationKit */,
 				496813652E4643BA00B22450 /* ObservationKitTests */,
 				49EF5D502DE20D36008AFB31 /* QuantumMechanicsCore */,
 				49EF5D5D2DE20D36008AFB31 /* QuantumMechanicsCoreTests */,
 				494EFBFA2DDF36B100C66063 /* RelativityCore */,
 				494EFC072DDF36B200C66063 /* RelativityCoreTests */,
+				491613912F5CC76B00CE1999 /* tests */,
 				49D988142F5B624E009F4A9B /* tooling */,
 			);
 			sourceTree = "<group>";
